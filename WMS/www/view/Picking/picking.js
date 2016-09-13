@@ -475,6 +475,7 @@ appControllers.controller( 'PickingDetailCtrl', [
                                objUri.addSearch('TrxNo', imgi2.TrxNo);
                                objUri.addSearch('ReceiptMovementTrxNo', imgi2.ReceiptMovementTrxNo);
                                objUri.addSearch('QtyRemarkQty', imgi2.ScanQty);
+                                objUri.addSearch('QtyRemarkBackQty', (imgi2.Qty-imgi2.ScanQty));
                                objUri.addSearch('QtyFieldName', imgi2.QtyName);
                                objUri.addSearch('UserId', userID);
                                objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:'+imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>'+imgi2.ScanQty);

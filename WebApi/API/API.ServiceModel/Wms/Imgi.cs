@@ -28,6 +28,7 @@ namespace WebApi.ServiceModel.Wms
         public string ReceiptMovementTrxNo { get; set; }
         public string QtyRemark { get; set; }
         public string QtyRemarkQty { get; set; }
+        public string QtyRemarkBackQty { get; set; }
         public string QtyFieldName { get; set; }
         public string PackingNo { get; set; }
     }
@@ -237,7 +238,7 @@ namespace WebApi.ServiceModel.Wms
                              },
                         p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
                        );
-                        Result = db.Update("Impm1", "BalancePackingQty = " + request.QtyRemarkQty
+                        Result = db.Update("Impm1", "BalancePackingQty = BalancePackingQty + " + request.QtyRemarkBackQty
                               ,
                          " TrxNo = " + Modfunction.SQLSafeValue(request.ReceiptMovementTrxNo)
                         );
@@ -252,7 +253,7 @@ namespace WebApi.ServiceModel.Wms
                               },
                          p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
                         );
-                        Result = db.Update("Impm1", "BalanceWholeQty = " + request.QtyRemarkQty
+                        Result = db.Update("Impm1", "BalanceWholeQty = BalanceWholeQty + " + request.QtyRemarkBackQty
                               ,
                          " TrxNo = " + Modfunction.SQLSafeValue(request.ReceiptMovementTrxNo)
                         );
@@ -267,7 +268,7 @@ namespace WebApi.ServiceModel.Wms
                               },
                          p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
                         );
-                        Result = db.Update("Impm1", "BalanceLooseQty = " + request.QtyRemarkQty
+                        Result = db.Update("Impm1", "BalanceLooseQty = BalanceLooseQty + " + request.QtyRemarkBackQty
                               ,
                          " TrxNo = " + Modfunction.SQLSafeValue(request.ReceiptMovementTrxNo)
                         );
