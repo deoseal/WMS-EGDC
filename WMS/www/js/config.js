@@ -1,11 +1,11 @@
 'use strict';
 var appConfig = angular.module('WMSAPP.config',[]);
 appConfig.constant('ENV', {
-    website:      'www.sysfreight.net/app/wms/sysfreight',
-    api:          'www.sysfreight.net/apis/wms/sysfreight',
+    website:      'www.sysfreight.net/app/wms/egdcwms',
+    api:          'www.sysfreight.net/apis/wms/egdcwms',
     reset:  {
-        website:      'www.sysfreight.net/app/wms/sysfreight',
-        api:          'www.sysfreight.net/apis/wms/sysfreight',
+        website:      'www.sysfreight.net/app/wms/egdcwms',
+        api:          'www.sysfreight.net/apis/wms/egdcwms',
         port:         '8081'
     },
     ssl:          false, // 0 : false, 1 : true

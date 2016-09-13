@@ -309,8 +309,23 @@ appControllers.controller( 'PickingDetailCtrl', [
                 $ionicLoading.hide();
             } );
         };
+        $scope.StatusAll = ["", "Damaged", "Shortlanded"];
+        $scope.updateQtyStatus = function () {
+            var len = $scope.Detail.Imgi2sDb.length;
+            if (len > 0) {
+                for (var i = 0; i < len; i++) {
+                    var Imgi2_PickingFilter = "TrxNo='" + $scope.Detail.Imgi2sDb[i].TrxNo + "' and  LineItemNo='" + $scope.Detail.Imgi2sDb[i].LineItemNo + "' "; // not record
+                    var objImgi2_Picking = {
+                        QtyStatus: $scope.Detail.Imgi2sDb[i].QtyStatus
+                    };
+                    SqlService.Update('Imgi2_Picking', objImgi2_Picking, Imgi2_PickingFilter).then(function (res) {});
+                }
+            }
+        }
+
         $scope.closeModal = function () {
-            $scope.Detail.Imgi2sDb = {};
+            $scope.updateQtyStatus();
+            $scope.Detail.Imgi2sDbImgi2sDb = {};
             $scope.modal.hide();
         };
         $scope.returnList = function () {
@@ -437,8 +452,22 @@ appControllers.controller( 'PickingDetailCtrl', [
                         imgi2 = results.rows.item( i );
                         if ( is.not.empty( imgi2.BarCode ) ) {
                             if ( imgi2.Qty != imgi2.ScanQty ) {
-                                console.log( 'Product (' + imgi2.ProductCode + ') Qty not equal.' );
-                                blnDiscrepancies = true;
+                              if (imgi2.Qty > imgi2.ScanQty && imgi2.QtyStatus != null && (imgi2.QtyStatus === 'Damaged' || imgi2.QtyStatus === 'Shortlanded'))
+                             {
+                               var objUri = ApiService.Uri(true, '/api/wms/imgi2/qtyremark');
+                               objUri.addSearch('LineItemNo', imgi2.LineItemNo);
+                               objUri.addSearch('TrxNo', imgi2.TrxNo);
+                               objUri.addSearch('ReceiptMovementTrxNo', imgi2.ReceiptMovementTrxNo);
+                               objUri.addSearch('QtyRemarkQty', imgi2.ScanQty);
+                               objUri.addSearch('QtyFieldName', imgi2.QtyName);
+                               objUri.addSearch('UserId', userID);
+                              objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:'+imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>'+imgi2.ScanQty);
+                               ApiService.Get(objUri, true).then(function success(result) {});
+                             }
+                             else {
+                               console.log( 'Product (' + imgi2.ProductCode + ') Qty not equal.' );
+                               blnDiscrepancies = true;
+                             }
                             }
                         } else {
                             blnDiscrepancies = true;

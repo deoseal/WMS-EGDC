@@ -88,6 +88,7 @@
     <Compile Include="Freight\Tracking.cs" />
     <Compile Include="Freight\Rcvy.cs" />
     <Compile Include="Freight\ViewPDF.cs" />
+    <Compile Include="Tables\saal1.cs" />
     <Compile Include="Tables\Imgi2_Verify.cs" />
     <Compile Include="Tables\Imgi2_Picking.cs" />
     <Compile Include="Tables\Imgr2_Receipt.cs" />
@@ -150,6 +151,7 @@
     <Compile Include="Wms\Imgi.cs" />
     <Compile Include="Wms\Impm.cs" />
     <Compile Include="Wms\Impa.cs" />
+    <Compile Include="Wms\Saal.cs" />
     <Compile Include="Wms\Whwh.cs" />
     <Compile Include="Wms\Imsn.cs" />
     <Compile Include="Freight\Rcbp.cs" />

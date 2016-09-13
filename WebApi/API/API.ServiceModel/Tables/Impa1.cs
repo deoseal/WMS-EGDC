@@ -7,6 +7,6 @@ namespace WebApi.ServiceModel.Tables
 {
     public class Impa1
     {
-								public string BarCodeField { get; set; }
+        public string BarCodeField { get; set; }
     }
 }

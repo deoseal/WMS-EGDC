@@ -1,5 +1,5 @@
 'use strict';
-var app = angular.module( 'WMSAPP', [
+var app = angular.module( 'WMSEGDCAPP', [
     'ionic',
     'jett.ionic.filter.bar',
     'ionic-datepicker',

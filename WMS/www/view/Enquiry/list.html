@@ -5,18 +5,7 @@
     </ion-header-bar>
     <ion-pane style="margin-top:44px; height:70px; overflow:visible;">
         <div>
-            <div class="row row-center" id="div-list-option">
-                <div class="col col-40" style="text-align:center;">
-                    <label>Scan</label>
-                </div>
-                <label class="toggle toggle-balanced">
-                    <input type="checkbox" ng-model="scanFlag.checked" ng-change="scanChange()">
-                    <div class="track">
-                        <div class="handle"></div>
-                    </div>
-                </label>
-            </div>
-            <div class="row row-center" id="div-list-impr" ng-show="funcRoleJuage(1)">
+            <div class="row row-center" id="div-list-impr">
                 <div class="col col-40" style="text-align:center;">
                     <label>Product Code</label>
                 </div>
@@ -28,16 +17,10 @@
                         <ui-select-choices repeat="Impr1 in Impr1s track by $index" refresh="refreshImpr1($select.search)" refresh-delay="0" position="down">
                             <div ng-bind-html="Impr1.ProductCode | highlight: $select.search"></div>
                         </ui-select-choices>
-                        <div class="col col-10">
-                            <button class="button button-clear button-small" ng-click="openCam('ProductCode')"><i class="icon ion-qr-scanner"></i></button>
-                        </div>
-                        <div class="col">
-                            <button class="button button-clear button-small" ng-click="clearInput('ProductCode')"><i class="icon ion-android-close"></i></button>
-                        </div>
                     </ui-select>
                 </div>
             </div>
-            <div class="row row-center" id="div-list-impm" ng-show="funcRoleJuage(1)">
+            <div class="row row-center" id="div-list-impm">
                 <div class="col col-40" style="text-align:center;">
                     <label>Cust Batch No</label>
                 </div>

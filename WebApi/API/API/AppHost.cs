@@ -22,7 +22,7 @@ namespace WebApi
     public class AppHost : AppHostBase
     {
         private static string ver = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-								private static string strSecretKey;
+        private static string strSecretKey;
         public AppHost()
             : base("Web Api v" + ver, typeof(ApiServices).Assembly)
         {
@@ -36,7 +36,7 @@ namespace WebApi
                 DebugMode = false,
                 UseCustomMetadataTemplates = true,
                 //DefaultContentType = ContentType.Json,
-																//GlobalResponseHeaders = {
+                //GlobalResponseHeaders = {
                 //    { "Access-Control-Allow-Origin", "*" },
                 //    { "Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS" },
                 //    { "Access-Control-Allow-Headers", "Content-Type, Signature" }
@@ -48,33 +48,34 @@ namespace WebApi
             this.Plugins.Add(cf);
             this.Plugins.Add(new SwaggerFeature());
             //DB
-												var dbConnectionFactory = new OrmLiteConnectionFactory(GetConnectionString("Freight"), SqlServerDialect.Provider)
+            var dbConnectionFactory = new OrmLiteConnectionFactory(GetConnectionString("Freight"), SqlServerDialect.Provider)
             {
                 ConnectionFilter =
-                    x =>
-                    new ProfiledDbConnection(x, Profiler.Current)
+x =>
+new ProfiledDbConnection(x, Profiler.Current)
             };
-												dbConnectionFactory.RegisterConnection("TMS", GetConnectionString("TMS"), SqlServerDialect.Provider);
-												dbConnectionFactory.RegisterConnection("WMS", GetConnectionString("WMS"), SqlServerDialect.Provider);
+            dbConnectionFactory.RegisterConnection("TMS", GetConnectionString("TMS"), SqlServerDialect.Provider);
+            dbConnectionFactory.RegisterConnection("WMS", GetConnectionString("WMS"), SqlServerDialect.Provider);
             container.Register<IDbConnectionFactory>(dbConnectionFactory);
-												//
+            //
             var secretKey = new WebApi.ServiceModel.SecretKeyFactory(strSecretKey);
             container.Register<WebApi.ServiceModel.ISecretKey>(secretKey);
             //Auth
             container.RegisterAutoWired<WebApi.ServiceModel.Auth>();
             //WMS
-												container.RegisterAutoWired<WebApi.ServiceModel.Wms.Wms_Login_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Wms.Rcbp_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Wms_Login_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Rcbp_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Wms.Imgr_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Wms.Impr_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Wms.Imgi_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Wms.Imsn_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Wms.Imit_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Wms.Impm_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Wms.Whwh_Logic>();
-												//TMS
-												container.RegisterAutoWired<WebApi.ServiceModel.Tms.Jmjm_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Tms.Sibl_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Imsn_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Imit_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Impm_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Whwh_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Wms.Saal_Logic>();
+            //TMS
+            container.RegisterAutoWired<WebApi.ServiceModel.Tms.Jmjm_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Tms.Sibl_Logic>();
             //Event
             container.RegisterAutoWired<WebApi.ServiceModel.Event.Event_Login_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Event.List_Jmjm6_Logic>();
@@ -82,15 +83,15 @@ namespace WebApi
             container.RegisterAutoWired<WebApi.ServiceModel.Event.Update_Done_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Event.List_Container_Logic>();
             //Freight
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Freight_Login_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Saus_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Rcbp_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Smsa_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Smct_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Plvi_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Freight_Login_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Saus_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Rcbp_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Smsa_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Smct_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Plvi_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Freight.Rcvy_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.Tracking_Logic>();
-												container.RegisterAutoWired<WebApi.ServiceModel.Freight.ViewPDF_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Tracking_Logic>();
+            container.RegisterAutoWired<WebApi.ServiceModel.Freight.ViewPDF_Logic>();
         }
         #region DES
         //private string DESKey = "F322186F";
@@ -165,18 +166,19 @@ namespace WebApi
             string[] strDataBase = new string[3];
             if (string.IsNullOrEmpty(strAppSetting))
             {
-																if (string.Equals(type, "TMS"))
-																{
-																				strAppSetting = System.Configuration.ConfigurationManager.AppSettings["TMS_DB"];
-																}else if(string.Equals(type,"WMS"))
-																{
-																				strAppSetting = System.Configuration.ConfigurationManager.AppSettings["WMS_DB"];
-																}
-																else if (string.Equals(type, "Freight"))
-																{
-																				strAppSetting = System.Configuration.ConfigurationManager.AppSettings["Mobile_DB"];
-																}
-																strSecretKey = System.Configuration.ConfigurationManager.AppSettings["SecretKey"];
+                if (string.Equals(type, "TMS"))
+                {
+                    strAppSetting = System.Configuration.ConfigurationManager.AppSettings["TMS_DB"];
+                }
+                else if (string.Equals(type, "WMS"))
+                {
+                    strAppSetting = System.Configuration.ConfigurationManager.AppSettings["WMS_DB"];
+                }
+                else if (string.Equals(type, "Freight"))
+                {
+                    strAppSetting = System.Configuration.ConfigurationManager.AppSettings["Mobile_DB"];
+                }
+                strSecretKey = System.Configuration.ConfigurationManager.AppSettings["SecretKey"];
                 strDataBase = strAppSetting.Split(',');
                 int intCnt;
                 for (intCnt = 0; intCnt <= strDataBase.Length - 1; intCnt++)
@@ -193,7 +195,7 @@ namespace WebApi
                         strConnection = IniConnection.Replace("#DataSource", strDatabaseInfo[0]);
                         strConnection = strConnection.Replace("#Catalog", strDatabaseInfo[1]);
                         strConnection = strConnection.Replace("#UserName", strDatabaseInfo[2]);
-																								strConnection = strConnection.Replace("#Password", strDatabaseInfo[3].Equals("") ? "" : DesDecrypt(strDatabaseInfo[3]));
+                        strConnection = strConnection.Replace("#Password", strDatabaseInfo[3].Equals("") ? "" : DesDecrypt(strDatabaseInfo[3]));
                         return strConnection;
                     }
                     //}

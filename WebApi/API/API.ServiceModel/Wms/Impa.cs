@@ -10,22 +10,22 @@ using WebApi.ServiceModel.Tables;
 
 namespace WebApi.ServiceModel.Wms
 {
-				[Route("/wms/impa1", "Get")]
+    [Route("/wms/impa1", "Get")]
     public class Impa : IReturn<CommonResponse>
     {
     }
-				public class Impa_Logic
-    {        
+    public class Impa_Logic
+    {
         public IDbConnectionFactory DbConnectionFactory { get; set; }
-								public List<Impa1> Get_Impa1_List()
+        public List<Impa1> Get_Impa1_List()
         {
-												List<Impa1> Result = null;
+            List<Impa1> Result = null;
             try
             {
-																using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
-																{
-																				string strSQL = "Select * from Impa1";
-																				Result = db.Select<Impa1>(strSQL);
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    string strSQL = "Select * from Impa1";
+                    Result = db.Select<Impa1>(strSQL);
                 }
             }
             catch { throw; }

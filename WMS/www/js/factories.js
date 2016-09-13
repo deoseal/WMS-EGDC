@@ -7,7 +7,8 @@ appFactory.factory( 'TABLE_DB', function () {
             TrxNo: 'INT',
             LineItemNo: 'INT',
             ProductTrxNo: 'INT',
-            ProductCode: 'TEXT',
+            GoodsReceiptNoteNo: 'TEXT',
+              ProductCode: 'TEXT',
             ProductDescription: 'TEXT',
             UserDefine1: 'TEXT',
             SerialNoFlag: 'TEXT',
@@ -16,7 +17,8 @@ appFactory.factory( 'TABLE_DB', function () {
             PackingQty: 'INT',
             WholeQty: 'INT',
             LooseQty: 'INT',
-            ScanQty: 'INT'
+            ScanQty: 'INT',
+            QtyStatus:'TEXT'
         },
         Imsn1_Receipt: {
             ReceiptNoteNo: 'TEXT',
@@ -37,7 +39,8 @@ appFactory.factory( 'TABLE_DB', function () {
             PackingQty: 'INT',
             WholeQty: 'INT',
             LooseQty: 'INT',
-            ScanQty: 'INT'
+            ScanQty: 'INT',
+            QtyStatus:'TEXT'
         },
         Imsn1_Putaway: {
             ReceiptNoteNo:'TEXT',
@@ -58,14 +61,16 @@ appFactory.factory( 'TABLE_DB', function () {
             SerialNoFlag:'TEXT',
             BarCode:'TEXT',
             ScanQtyFrom:'INT',
-            ScanQtyTo:'INT'
+            ScanQtyTo:'INT',
+            QtyStatus:'TEXT'
         },
         Imsn1_Transfer : {
             ReceiptNoteNo:'TEXT',
             ReceiptLineItemNo:'INT',
             IssueNoteNo:'TEXT',
             IssueLineItemNo:'INT',
-            SerialNo:'TEXT'
+            SerialNo:'TEXT',
+            QtyStatus:'TEXT'
         },
         Imgi2_Picking : {
             RowNum:'INT',
@@ -80,7 +85,9 @@ appFactory.factory( 'TABLE_DB', function () {
             BarCode:'TEXT',
             Qty:'INT',
             ScanQty:'INT',
-            QtyBal:'INT'
+            QtyBal:'INT',
+            ReceiptMovementTrxNo:'INT',
+            QtyStatus:'TEXT'
         },
         Imsn1_Picking:{
             ReceiptNoteNo:'TEXT',
@@ -102,7 +109,8 @@ appFactory.factory( 'TABLE_DB', function () {
             BarCode:'TEXT',
             Qty:'INT',
             ScanQty:'INT',
-            QtyBal:'INT'
+            QtyBal:'INT',
+            QtyStatus:'TEXT'
         },
         Imsn1_Verify : {
             ReceiptNoteNo:'TEXT',
