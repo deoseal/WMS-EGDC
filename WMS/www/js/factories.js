@@ -77,6 +77,7 @@ appFactory.factory( 'TABLE_DB', function () {
             TrxNo:'INT',
             LineItemNo:'INT',
             StoreNo:'TEXT',
+            PackingNo:'TEXT',
             ProductTrxNo:'INT',
             ProductCode:'TEXT',
             ProductDescription:'TEXT',

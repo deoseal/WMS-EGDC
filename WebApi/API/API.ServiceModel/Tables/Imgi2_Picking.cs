@@ -11,6 +11,7 @@ namespace WebApi.ServiceModel.Tables
         public int TrxNo { get; set; }
         public int LineItemNo { get; set; }
         public string StoreNo { get; set; }
+        public string PackingNo { get; set; }
         public int ProductTrxNo { get; set; }
         public int ReceiptMovementTrxNo { get; set; }
         public string ProductCode { get; set; }

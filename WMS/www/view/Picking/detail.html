@@ -46,6 +46,20 @@
                     <div class="row">
                         <div class="col col-80" style="padding:0px;">
                             <label class="item item-input">
+                                <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Carton No&nbsp;&nbsp;:&nbsp;&nbsp;</span>
+                                <input type="text" id="txt-packing" ng-model="PackingNo" ng-keypress="enter($event, 'packingno')">
+                            </label>
+                        </div>
+                        <div class="col col-10">
+                            <button class="button button-clear button-small" ng-click="openCam('PackingNo')"><i class="icon ion-qr-scanner"></i></button>
+                        </div>
+                        <div class="col">
+                            <button class="button button-clear button-small" ng-click="clearInput('PackingNo')"><i class="icon ion-android-close"></i></button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col col-80" style="padding:0px;">
+                            <label class="item item-input">
                                 <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:&nbsp;&nbsp;</span>
                                 <input type="text" id="txt-storeno" ng-model="Detail.Scan.StoreNo" ng-keypress="enter($event, 'storeno')">
                             </label>
@@ -200,7 +214,7 @@
             							<div class="col col-67" ng-show="true">
             								<select ng-model="Imgi2.QtyStatus" ng-options="item for item in StatusAll"></select>
             							</div>
-            						</label>	
+            						</label>
                     </div>
                 </ion-list>
             </ion-content>

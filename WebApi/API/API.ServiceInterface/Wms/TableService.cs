@@ -144,6 +144,14 @@ namespace WebApi.ServiceInterface.Wms
                 {
                     ecr.data.results = imgi_Logic.Get_Imgi2_Verify_List(request);
                 }
+                else if (uri.IndexOf("/wms/imgi2/qtyremark") > 0)
+                {
+                    ecr.data.results = imgi_Logic.Update_Imgi2_QtyRemark(request);
+                }
+                else if (uri.IndexOf("/wms/imgi2/packingno") > 0)
+                {
+                    ecr.data.results = imgi_Logic.Update_Imgi2_PackingNo(request);
+                }
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";
             }

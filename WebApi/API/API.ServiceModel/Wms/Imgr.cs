@@ -287,7 +287,7 @@ namespace WebApi.ServiceModel.Wms
                          " BatchNo = " + Modfunction.SQLSafeValue(request.GoodsReceiptNoteNo) + " AND BatchLineItemNo = " + Modfunction.SQLSafeValue(request.LineItemNo)
                         );
                     }                    
-                    Result = db.Update<Imgr1>(" Remark=isnull(Remark,'') + (case isnull(Remark,'') when '' then '' else char(13)+char(10)  end) + " + Modfunction.SQLSafeValue(request.QtyRemark) + ",UpdateBy = " + Modfunction.SQLSafeValue(request.UserID)
+                    Result = db.Update<Imgr1>(" Remark=isnull(Remark,'') + (case isnull(Remark,'') when '' then '' else char(13)+char(10)  end) + " + Modfunction.SQLSafeValue(request.QtyRemark) + ",UpdateDateTime = getdate(),UpdateBy = " + Modfunction.SQLSafeValue(request.UserID)
                         ,
                      " TrxNo = " + request.TrxNo
                     );                   

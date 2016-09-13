@@ -16,17 +16,20 @@ namespace WebApi.ServiceModel.Wms
     [Route("/wms/imgi2/picking", "Get")]                //picking?GoodsIssueNoteNo=
     [Route("/wms/imgi2/verify", "Get")]					//verify?GoodsIssueNoteNo=
     [Route("/wms/imgi2/qtyremark", "Get")]
+    [Route("/wms/imgi2/packingno", "Get")]
     public class Imgi : IReturn<CommonResponse>
     {
         public string CustomerCode { get; set; }
         public string GoodsIssueNoteNo { get; set; }
         public string TrxNo { get; set; }
+        public string LineItemNo { get; set; }
         public string UserID { get; set; }
         public string StatusCode { get; set; }
         public string ReceiptMovementTrxNo { get; set; }
         public string QtyRemark { get; set; }
         public string QtyRemarkQty { get; set; }
         public string QtyFieldName { get; set; }
+        public string PackingNo { get; set; }
     }
     public class Imgi_Logic
     {
@@ -93,7 +96,7 @@ namespace WebApi.ServiceModel.Wms
                                     "(Select Top 1 " + strBarCodeFiled + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode," +
                                     "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
                                     "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
-                                    "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo " +
+                                    "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo,PackingNo " +
                                     "From Imgi2 " +
                                     "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
                                     "Where IsNull(Imgi1.StatusCode,'')='USE' And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
@@ -174,6 +177,7 @@ namespace WebApi.ServiceModel.Wms
             catch { throw; }
             return Result;
         }
+
         public int Update_Imgi1_Status(Imgi request)
         {
             int Result = -1;
@@ -189,6 +193,88 @@ namespace WebApi.ServiceModel.Wms
                                         CompleteDate = DateTime.Now
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo)
+                    );
+                }
+            }
+            catch { throw; }
+            return Result;
+        }
+
+        public int Update_Imgi2_PackingNo(Imgi request)
+        {
+            int Result = -1;
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    Result = db.Update<Imgi2>(
+                                    new
+                                    {
+                                        PackingNo = request.PackingNo
+                                    },
+                                    p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
+                    );
+                }
+            }
+            catch { throw; }
+            return Result;
+        }
+        public int Update_Imgi2_QtyRemark(Imgi request)
+        {
+            Update_Imgi2_PackingNo(request);
+            int Result = -1;
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    if (request.QtyFieldName == "PackingQty")
+                    {
+                        Result = db.Update<Imgr2>(
+                             new
+                             {
+                                 PackingQty = request.QtyRemarkQty,
+                                 UpdateBy = request.UserID
+                             },
+                        p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
+                       );
+                        Result = db.Update("Impm1", "BalancePackingQty = " + request.QtyRemarkQty
+                              ,
+                         " TrxNo = " + Modfunction.SQLSafeValue(request.ReceiptMovementTrxNo)
+                        );
+                    }
+                    else if (request.QtyFieldName == "WholeQty")
+                    {
+                        Result = db.Update<Imgr2>(
+                              new
+                              {
+                                  WholeQty = request.QtyRemarkQty,
+                                  UpdateBy = request.UserID
+                              },
+                         p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
+                        );
+                        Result = db.Update("Impm1", "BalanceWholeQty = " + request.QtyRemarkQty
+                              ,
+                         " TrxNo = " + Modfunction.SQLSafeValue(request.ReceiptMovementTrxNo)
+                        );
+                    }
+                    else
+                    {
+                        Result = db.Update<Imgr2>(
+                              new
+                              {
+                                  LooseQty = request.QtyRemarkQty,
+                                  UpdateBy = request.UserID
+                              },
+                         p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
+                        );
+                        Result = db.Update("Impm1", "BalanceLooseQty = " + request.QtyRemarkQty
+                              ,
+                         " TrxNo = " + Modfunction.SQLSafeValue(request.ReceiptMovementTrxNo)
+                        );
+                    }
+                    Result = db.Update<Imgi1>(" Remark=isnull(Remark,'') + (case isnull(Remark,'') when '' then '' else char(13)+char(10)  end) + " + Modfunction.SQLSafeValue(request.QtyRemark) + ",UpdateDateTime = getdate(),UpdateBy = " + Modfunction.SQLSafeValue(request.UserID)
+                        ,
+                     " TrxNo = " + request.TrxNo
                     );
                 }
             }

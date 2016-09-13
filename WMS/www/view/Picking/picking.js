@@ -118,6 +118,7 @@ appControllers.controller( 'PickingDetailCtrl', [
                 ProductDescription: '',
                 SerialNoFlag: '',
                 BarCode: '',
+                PackingNo:'',
                 Qty: 0,
                 QtyBal: 0
             },
@@ -244,6 +245,7 @@ appControllers.controller( 'PickingDetailCtrl', [
                     SerialNoFlag: $scope.Detail.Imgi2s[ row ].SerialNoFlag,
                     BarCode: $scope.Detail.Imgi2s[ row ].BarCode,
                     SerialNo: $scope.Detail.Imgi2s[ row ].SerialNo,
+                    PackingNo: $scope.Detail.Imgi2s[ row ].PackingNo,
                     Qty: $scope.Detail.Imgi2s[ row ].Qty,
                     QtyBal: $scope.Detail.Imgi2s[ row ].Qty - $scope.Detail.Imgi2s[ row ].ScanQty
                 };
@@ -301,6 +303,7 @@ appControllers.controller( 'PickingDetailCtrl', [
                     imgi2.Qty = results.rows.item( i ).Qty > 0 ? results.rows.item( i ).Qty : 0;
                     imgi2.ScanQty = results.rows.item( i ).ScanQty > 0 ? results.rows.item( i ).ScanQty : 0;
                     imgi2.QtyBal = results.rows.item( i ).QtyBal > 0 ? results.rows.item( i ).QtyBal : 0;
+                    imgi2.PackingNo = results.rows.item(i).PackingNo;
                     arr.push( imgi2 );
                 }
                 $scope.Detail.Imgi2sDb = arr;
@@ -376,7 +379,14 @@ appControllers.controller( 'PickingDetailCtrl', [
                     }, function ( error ) {
                         $cordovaToast.showShortBottom( error );
                     } );
-                } else if ( is.equal( type, 'BarCode' ) ) {
+                }else if ( is.equal( type, 'PackingNo' ) ) {
+                    $cordovaBarcodeScanner.scan().then( function ( imageData ) {
+                        $scope.PackingNo = imageData.text;
+                        $scope.Detail.Scan.PackingNo =  $scope.Detail.Scan.PackingNo ==='' ? $scope.Detail.Scan.PackingNo : imageData.text;
+                    }, function ( error ) {
+                        $cordovaToast.showShortBottom( error );
+                    } );
+                }  else if ( is.equal( type, 'BarCode' ) ) {
                     $cordovaBarcodeScanner.scan().then( function ( imageData ) {
                         $scope.Detail.Scan.BarCode = imageData.text;
                         showImpr( $scope.Detail.Scan.BarCode, true );
@@ -414,12 +424,18 @@ appControllers.controller( 'PickingDetailCtrl', [
                     $scope.Detail.Scan.StoreNo = '';
                     $( '#txt-storeno' ).select();
                 }
+            } else if ( is.equal( type, 'PackingNo' ) ) {
+                if ( $scope.PackingNo.length > 0 ) {
+                    $scope.PackingNo = '';
+                    $( '#txt-packingno' ).select();
+                }
             } else {
                 $scope.Detail.Scan.StoreNo = '';
                 $scope.Detail.Scan.BarCode = '';
                 $scope.Detail.Scan.SerialNo = '';
                 $scope.Detail.Scan.Qty = 0;
-                //$('#txt-sn').attr('readonly', true);
+                $scope.Detail.Scan.PackingNo = $scope.PackingNo;
+              //$('#txt-sn').attr('readonly', true);
                 $( '#txt-storeno' ).select();
             }
         };
@@ -461,7 +477,7 @@ appControllers.controller( 'PickingDetailCtrl', [
                                objUri.addSearch('QtyRemarkQty', imgi2.ScanQty);
                                objUri.addSearch('QtyFieldName', imgi2.QtyName);
                                objUri.addSearch('UserId', userID);
-                              objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:'+imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>'+imgi2.ScanQty);
+                               objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:'+imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>'+imgi2.ScanQty);
                                ApiService.Get(objUri, true).then(function success(result) {});
                              }
                              else {
@@ -497,6 +513,7 @@ appControllers.controller( 'PickingDetailCtrl', [
                 }
             } );
         };
+        $scope.PackingNo
         $scope.enter = function ( ev, type ) {
             if ( is.equal( ev.keyCode, 13 ) ) {
                 if ( is.equal( type, 'barcode' ) && is.not.empty( $scope.Detail.Scan.BarCode ) ) {
