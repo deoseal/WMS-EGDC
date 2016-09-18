@@ -87,51 +87,7 @@ namespace WebApi.ServiceInterface.Freight
 																ecr.meta.message = "Unauthorized";
 												}
 								}
-								public void TS_Rcbp(Auth auth, Rcbp request, Rcbp_Logic logic, CommonResponse ecr, string[] token, string uri)
-        {
-            if (auth.AuthResult(token, uri))
-            {
-																if (uri.IndexOf("/freight/rcbp1/sps") > 0)
-																{
-																				ecr.data.results = logic.Get_Rcbp1_SpsList(request);
-																}
-																else if (uri.IndexOf("/freight/rcbp1/read") > 0)
-																{
-																				ecr.data.results = logic.Get_Rcbp1_List(request);
-																}
-																else if (uri.IndexOf("/freight/rcbp1/update") > 0)
-																{
-																				ecr.data.results = logic.Update_Rcbp1(request);
-																}
-																else if (uri.IndexOf("/freight/rcbp3/read") > 0)
-																{
-																				ecr.data.results = logic.Read_Rcbp3_List(request);
-																}
-																else if (uri.IndexOf("/freight/rcbp3/create") > 0)
-																{
-																				ecr.data.results = logic.Insert_Rcbp3(request);
-																}
-																else if (uri.IndexOf("/freight/rcbp3/update") > 0)
-																{
-																				ecr.data.results = logic.Update_Rcbp3(request);
-																}
-																else if (uri.IndexOf("/freight/rcbp3/delete") > 0)
-																{
-																				ecr.data.results = logic.Delete_Rcbp3(request);
-																}
-																else
-																{
-																				ecr.data.results = -1;
-																}
-                ecr.meta.code = 200;
-                ecr.meta.message = "OK";
-            }
-            else
-            {
-                ecr.meta.code = 401;
-                ecr.meta.message = "Unauthorized";
-            }
-        }
+		
         public void TS_Saus(Auth auth, Saus request, Saus_Logic logic, CommonResponse ecr, string[] token, string uri)
 								{
 												if (auth.AuthResult(token, uri))

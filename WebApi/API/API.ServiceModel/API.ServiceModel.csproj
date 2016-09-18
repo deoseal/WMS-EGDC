@@ -154,7 +154,6 @@
     <Compile Include="Wms\Saal.cs" />
     <Compile Include="Wms\Whwh.cs" />
     <Compile Include="Wms\Imsn.cs" />
-    <Compile Include="Freight\Rcbp.cs" />
     <Compile Include="Wms\Impr.cs" />
     <Compile Include="Wms\Imgr.cs" />
     <Compile Include="Wms\Rcbp.cs" />

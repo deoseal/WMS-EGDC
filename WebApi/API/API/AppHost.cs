@@ -85,7 +85,7 @@ new ProfiledDbConnection(x, Profiler.Current)
             //Freight
             container.RegisterAutoWired<WebApi.ServiceModel.Freight.Freight_Login_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Freight.Saus_Logic>();
-            container.RegisterAutoWired<WebApi.ServiceModel.Freight.Rcbp_Logic>();
+      
             container.RegisterAutoWired<WebApi.ServiceModel.Freight.Smsa_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Freight.Smct_Logic>();
             container.RegisterAutoWired<WebApi.ServiceModel.Freight.Plvi_Logic>();

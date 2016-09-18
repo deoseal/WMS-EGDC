@@ -97,7 +97,7 @@ namespace WebApi.ServiceModel.Wms
                                     "(Select Top 1 " + strBarCodeFiled + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode," +
                                     "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
                                     "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
-                                    "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo,PackingNo " +
+                                    "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo, UserDefine2 as  PackingNo " +
                                     "From Imgi2 " +
                                     "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
                                     "Where IsNull(Imgi1.StatusCode,'')='USE' And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
@@ -211,7 +211,7 @@ namespace WebApi.ServiceModel.Wms
                     Result = db.Update<Imgi2>(
                                     new
                                     {
-                                        PackingNo = request.PackingNo
+                                        UserDefine2 = request.PackingNo
                                     },
                                     p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
                     );
