@@ -19,6 +19,7 @@ namespace WebApi.ServiceModel.Wms
         public string ProductCode { get; set; }
         public string TrxNo { get; set; }
         public string WarehouseCode { get; set; }
+      
         public string StoreNo { get; set; }
     }
     public class Impm_Logic
@@ -61,6 +62,10 @@ namespace WebApi.ServiceModel.Wms
                     if (!string.IsNullOrEmpty(request.ProductCode))
                     {
                         strSql = strSql + "Where (CASE Impm1.DimensionFlag When '1' THEN Impm1.BalancePackingQty When '2' THEN Impm1.BalanceWholeQty ELSE Impm1.BalanceLooseQty END) >0 AND ProductCode='" + request.ProductCode + "'";
+                    }
+                    else if (!string.IsNullOrEmpty(request.WarehouseCode) && !string.IsNullOrEmpty(request.StoreNo))
+                    {
+                        strSql = strSql + "Where (CASE Impm1.DimensionFlag When '1' THEN Impm1.BalancePackingQty When '2' THEN Impm1.BalanceWholeQty ELSE Impm1.BalanceLooseQty END) >0 AND WarehouseCode='" + Modfunction.SQLSafe(request.WarehouseCode) + "' And StoreNo='" + Modfunction.SQLSafe(request.StoreNo) + "'";
                     }
                     else if (!string.IsNullOrEmpty(request.TrxNo))
                     {

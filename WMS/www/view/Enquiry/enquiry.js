@@ -18,7 +18,17 @@ appControllers.controller('EnquiryListCtrl', [
         ApiService) {
         $scope.Impr1 = {};
         $scope.Impm1 = {};
+        $scope.Whwh1 = {};
+        $scope.Whwh2 = {};
         $scope.Impm1sEnquiry = {};
+        $scope.defaultWhwh1 = function () {
+            var objUri1 = ApiService.Uri(true, '/api/wms/whwh1');
+            ApiService.Get(objUri1, false).then(function success(result) {
+                $scope.Whwh1s = result.data.results;
+                $scope.Whwh1.selected = $scope.Whwh1s[0];
+            });
+        };
+        $scope.defaultWhwh1();
         $scope.refreshImpr1 = function (ScanProductCode, ProductCode) {
             if (is.not.undefined(ProductCode) && is.not.empty(ProductCode)) {
                 var objUri = ApiService.Uri(true, '/api/wms/impr1');
@@ -38,6 +48,26 @@ appControllers.controller('EnquiryListCtrl', [
                 $scope.showImpm(null, null);
             }
         };
+
+        $scope.refreshWhwh1 = function (WarehouseName) {
+            if (is.not.undefined(WarehouseName) && is.not.empty(WarehouseName)) {
+                var objUri = ApiService.Uri(true, '/api/wms/whwh1');
+                objUri.addSearch('WarehouseName', WarehouseName);
+                ApiService.Get(objUri, false).then(function success(result) {
+                    $scope.Whwh1s = result.data.results;
+                });
+            }
+        };
+        $scope.refreshWhwh2 = function (StoreNo) {
+            if (is.not.empty($scope.Whwh1) && is.not.undefined(StoreNo) && is.not.empty(StoreNo)) {
+                var objUri = ApiService.Uri(true, '/api/wms/whwh2');
+                objUri.addSearch('WarehouseCode', $scope.Whwh1.selected.WarehouseCode);
+                objUri.addSearch('StoreNo', StoreNo);
+                ApiService.Get(objUri, false).then(function success(result) {
+                    $scope.Whwh2s = result.data.results;
+                });
+            }
+        };
         $scope.refreshImpm1s = function (ScanUserDefine1, UserDefine1) {
             if (is.not.undefined(UserDefine1) && is.not.empty(UserDefine1)) {
                 var objUri = ApiService.Uri(true, '/api/wms/impm1');
@@ -52,9 +82,11 @@ appControllers.controller('EnquiryListCtrl', [
                             $scope.showImpm(null, null);
                         }
                     }
+
                 });
             } else {
                 $scope.showImpm(null, null);
+
             }
         };
         $scope.showDate = function (utc) {
@@ -77,6 +109,7 @@ appControllers.controller('EnquiryListCtrl', [
                 objUri.addSearch('TrxNo', Impm1.TrxNo);
                 ApiService.Get(objUri, false).then(function success(result) {
                     $scope.Impm1sEnquiry = result.data.results;
+
                 });
             } else {
                 $scope.Impm1sEnquiry = {};
@@ -85,7 +118,21 @@ appControllers.controller('EnquiryListCtrl', [
                 $cordovaKeyboard.close();
             }
         };
-
+        $scope.showImpmwh = function (WarehouseCode, StoreNo) {
+            if (is.not.undefined(StoreNo) && is.not.null(StoreNo)) {
+                var objUri = ApiService.Uri(true, '/api/wms/impm1/enquiry');
+                objUri.addSearch('WarehouseCode', $scope.Whwh1.selected.WarehouseCode);
+                objUri.addSearch('StoreNo', StoreNo);
+                ApiService.Get(objUri, false).then(function success(result) {
+                    $scope.Impm1sEnquiry = result.data.results;
+                });
+            } else {
+                $scope.Impm1sEnquiry = {};
+            }
+            if (!ENV.fromWeb) {
+                $cordovaKeyboard.close();
+            }
+        };
         $scope.openCam = function (type) {
             if (!ENV.fromWeb) {
                 if (is.equal(type, 'ProductCode')) {
@@ -103,5 +150,17 @@ appControllers.controller('EnquiryListCtrl', [
                 }
             }
         };
+        $scope.Change = function (ChangeValue) {
+            if (ChangeValue !== '') {
+                Console.log(ChangeValue);
+            } else {
+                conosole.log('dd');
+            }
+        };
+        $('#iProductCode').on('keydown', function (e) {
+            if (e.which === 9 || e.which === 13) {
+                $('#iCustBatchNo').focus();
+            }
+        });
     }
 ]);
