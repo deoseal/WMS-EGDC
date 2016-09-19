@@ -9,31 +9,37 @@
                 <div class="col col-40" style="text-align:center;">
                     <label>Product Code</label>
                 </div>
-                <div class="col col-60">
+                <div class="col col-50">
                     <ui-select ng-model="Impr1.selected" theme="bootstrap" reset-search-input="true" on-select="showImpm(Impr1.selected.ProductCode,null)">
                         <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">
                             {{$select.selected.ProductCode | limitTo:16}}
                         </ui-select-match>
-                        <ui-select-choices repeat="Impr1 in Impr1s track by $index" refresh="refreshImpr1($select.search)" refresh-delay="0" position="down">
+                        <ui-select-choices repeat="Impr1 in Impr1s track by $index" refresh="refreshImpr1(null,$select.search)" refresh-delay="0" position="down">
                             <div ng-bind-html="Impr1.ProductCode | highlight: $select.search"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>
+                <div class="col col-10">
+                  <button class="button button-clear  button-positive button-small" ng-click="openCam('ProductCode')"><i class="icon ion-qr-scanner"></i></button>
+              </div>
             </div>
             <div class="row row-center" id="div-list-impm">
                 <div class="col col-40" style="text-align:center;">
                     <label>Cust Batch No</label>
                 </div>
-                <div class="col col-60">
+                <div class="col col-50">
                     <ui-select theme="bootstrap" ng-model="Impm1.selected" reset-search-input="true" on-select="showImpm(null,Impm1.selected)">
                         <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">
                             {{$select.selected.UserDefine1 | limitTo:16}}
                         </ui-select-match>
-                        <ui-select-choices repeat="Impm1 in Impm1s track by $index" refresh="refreshImpm1s($select.search)" refresh-delay="0">
+                        <ui-select-choices repeat="Impm1 in Impm1s track by $index" refresh="refreshImpm1s(null,$select.search)" refresh-delay="0">
                             <div ng-bind-html="Impm1.UserDefine1 | highlight: $select.search"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>
+                <div class="col col-10">
+                  <button class="button button-clear  button-positive button-small" ng-click="openCam('UserDefine1')"><i class="icon ion-qr-scanner"></i></button>
+              </div>
             </div>
             <hr style="margin-top:-0.3em;">
         </div>

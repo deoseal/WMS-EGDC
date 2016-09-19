@@ -160,8 +160,9 @@ appControllers.controller('PickingDetailCtrl', [
                 hmImgi2.remove(barcode);
                 hmImgi2.set(barcode, imgi2);
                 var obj = {
-                    ScanQty: imgi2.ScanQty
-                }
+                    ScanQty: imgi2.ScanQty,
+                    PackingNo:$scope.Detail.Scan.PackingNo
+                };
                 var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
                 SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
                     $scope.Detail.Scan.Qty = imgi2.ScanQty;
@@ -186,8 +187,9 @@ appControllers.controller('PickingDetailCtrl', [
             hmImgi2.remove(barcode);
             hmImgi2.set(barcode, imgi2);
             var obj = {
-                ScanQty: imgi2.ScanQty
-            }
+                ScanQty: imgi2.ScanQty,
+
+            };
             var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
             SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
                 $scope.Detail.Scan.Qty = imgi2.ScanQty;
@@ -382,7 +384,7 @@ appControllers.controller('PickingDetailCtrl', [
                 } else if (is.equal(type, 'PackingNo')) {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.PackingNo = imageData.text;
-                        $scope.Detail.Scan.PackingNo = $scope.Detail.Scan.PackingNo === '' ? $scope.Detail.Scan.PackingNo : imageData.text;
+                        $scope.Detail.Scan.PackingNo = $scope.Detail.Scan.PackingNo === '' ?  imageData.text :　$scope.Detail.Scan.PackingNo;
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
                     });
@@ -477,7 +479,7 @@ appControllers.controller('PickingDetailCtrl', [
                                     objUri.addSearch('QtyRemarkBackQty', (imgi2.Qty - imgi2.ScanQty));
                                     objUri.addSearch('QtyFieldName', imgi2.QtyName);
                                     objUri.addSearch('PackingNo', imgi2.PackingNo);
-                                    objUri.addSearch('UserId', userID);
+                                    objUri.addSearch('UserId', sessionStorage.getItem('UserId').toString());
                                     objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:' + imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>' + imgi2.ScanQty);
                                     ApiService.Get(objUri, true).then(function success(result) {});
                                 } else {
@@ -488,7 +490,7 @@ appControllers.controller('PickingDetailCtrl', [
                                 var objUri = ApiService.Uri(true, '/api/wms/imgi2/packingno');
                                 objUri.addSearch('LineItemNo', imgi2.LineItemNo);
                                 objUri.addSearch('TrxNo', imgi2.TrxNo);
-                                objUri.addSearch('UserId', userID);
+                                objUri.addSearch('UserId', sessionStorage.getItem('UserId').toString());
                                 objUri.addSearch('PackingNo', imgi2.PackingNo);
                                 ApiService.Get(objUri, true).then(function success(result) {});
                             }
@@ -520,7 +522,7 @@ appControllers.controller('PickingDetailCtrl', [
                 }
             });
         };
-        $scope.PackingNo
+        $scope.PackingNo;
         $scope.enter = function (ev, type) {
             if (is.equal(ev.keyCode, 13)) {
                 if (is.equal(type, 'barcode') && is.not.empty($scope.Detail.Scan.BarCode)) {
@@ -535,7 +537,11 @@ appControllers.controller('PickingDetailCtrl', [
                     if (blnVerifyInput('StoreNo')) {
                         $('#txt-barcode').focus();
                     }
+                }else if (is.equal(type,'packingno') && is.not.empty($scope.PackingNo)){
+                    $scope.Detail.Scan.PackingNo = $scope.PackingNo;
+                    $('#txt-storeno').focus();
                 }
+
                 if (!ENV.fromWeb) {
                     $cordovaKeyboard.close();
                 }

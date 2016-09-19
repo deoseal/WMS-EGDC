@@ -3,13 +3,14 @@ var appConfig = angular.module('WMSAPP.config',[]);
 appConfig.constant('ENV', {
     website:      'www.sysfreight.net/app/wms/egdcwms',
     api:          'www.sysfreight.net/apis/wms/egdcwms',
+    // api:        'localhost:5550',
     reset:  {
         website:      'www.sysfreight.net/app/wms/egdcwms',
         api:          'www.sysfreight.net/apis/wms/egdcwms',
         port:         '8081'
     },
     ssl:          false, // 0 : false, 1 : true
-    port:         '8081', // http port no
+     port:         '8081', // http port no
     debug:        true,
     mock:         false,
     fromWeb:      true,
@@ -24,11 +25,11 @@ appConfig.constant('ENV', {
         location: 'default'
     },
     appId:        '9CBA0A78-7D1D-49D3-BA71-C72E93F9E48F',
-    apkName:      'WMS',
+    apkName:      'WMS-Egdc',
     updateFile:   'update.json',
-    rootPath:     'WMS',
+    rootPath:     'WMSEGDC',
     configFile:   'config.txt',
-    version:      '1.0.4',
+    version:      '1.0.1',
     parameter: {
         showSerialNo : false
     },
