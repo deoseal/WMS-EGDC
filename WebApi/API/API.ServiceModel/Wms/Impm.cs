@@ -37,12 +37,37 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    string strSql = "Select Top 10 Impm1.TrxNo, Impm1.UserDefine1 " +
-                                    "From Impm1 " +
-                                    "Where Impm1.UserDefine1 LIKE '" + request.UserDefine1 + "%' " +
-                                    "Order By Impm1.TrxNo ASC";
+                    List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
+                    string strBarCodeFiled = impa1[0].BarCodeField;
+                    string[] strBarCodeList = strBarCodeFiled.Split(',');
+                    string strSql = "";
+                    string strSqlDetail = "";
+                    if (strBarCodeList.Length <= 1)
+                    {
+                        strSqlDetail = "Select cast(" + strBarCodeFiled + " AS nvarchar(2000)) AS UserDefine1,TrxNo from Impr1 Where " + strBarCodeFiled + " like '" + Modfunction.SQLSafe(request.UserDefine1) + "%'";
+                    }
+                    else
+                    {
+                        for (int i = 0; i < strBarCodeList.Length; i++)
+                        {
+                          string strSqlNew = "Select cast(" + strBarCodeList[i] + " AS nvarchar(2000)) AS UserDefine1,TrxNo from Impr1 Where " + strBarCodeList[i] + " like '" + Modfunction.SQLSafe(request.UserDefine1) + "%'";
+                            if (strSqlDetail == "")
+                            {
+                                strSqlDetail = strSqlNew;
+                            }
+                            else
+                            {
+                                strSqlDetail = strSqlDetail +  " union all " + strSqlNew;
+                            }
+                        }
+                    }
+                    if (strSqlDetail!="")
+                    {
+                        strSql = "Select Top 10 * From (" + strSqlDetail + ") a " +
+                                   "Order By a.UserDefine1 ASC";
                     Result = db.Select<Impm1_UserDefine>(strSql);
                 }
+            }
             }
             catch { throw; }
             return Result;
@@ -58,20 +83,21 @@ namespace WebApi.ServiceModel.Wms
                                     "IsNull(Impm1.GoodsReceiveorIssueNo,'') AS GoodsReceiveorIssueNo, IsNull(Impm1.RefNo,'') AS RefNo," +
                                     "IsNull(Impm1.StoreNo,'') AS StoreNo, " +
                                     "(CASE Impm1.DimensionFlag When '1' THEN Impm1.BalancePackingQty When '2' THEN Impm1.BalanceWholeQty ELSE Impm1.BalanceLooseQty END) AS BalanceQty " +
-                                    "From Impm1 ";
+                                    "From Impm1 Where ";
+                    string strFilter = " (CASE Impm1.DimensionFlag When '1' THEN Impm1.BalancePackingQty When '2' THEN Impm1.BalanceWholeQty ELSE Impm1.BalanceLooseQty END) >0 ";
                     if (!string.IsNullOrEmpty(request.ProductCode))
                     {
-                        strSql = strSql + "Where (CASE Impm1.DimensionFlag When '1' THEN Impm1.BalancePackingQty When '2' THEN Impm1.BalanceWholeQty ELSE Impm1.BalanceLooseQty END) >0 AND ProductCode='" + request.ProductCode + "'";
+                        strFilter = strFilter + " AND ProductCode='" + request.ProductCode + "'";
                     }
                     else if (!string.IsNullOrEmpty(request.WarehouseCode) && !string.IsNullOrEmpty(request.StoreNo))
                     {
-                        strSql = strSql + "Where (CASE Impm1.DimensionFlag When '1' THEN Impm1.BalancePackingQty When '2' THEN Impm1.BalanceWholeQty ELSE Impm1.BalanceLooseQty END) >0 AND WarehouseCode='" + Modfunction.SQLSafe(request.WarehouseCode) + "' And StoreNo='" + Modfunction.SQLSafe(request.StoreNo) + "'";
+                        strFilter = strFilter + " AND WarehouseCode='" + Modfunction.SQLSafe(request.WarehouseCode) + "' And StoreNo='" + Modfunction.SQLSafe(request.StoreNo) + "'";
                     }
                     else if (!string.IsNullOrEmpty(request.TrxNo))
                     {
-                        strSql = strSql + "Where TrxNo = " + int.Parse(request.TrxNo);
+                        strFilter = strFilter + " AND ProductTrxNo = " + int.Parse(request.TrxNo);
                     }
-                    Result = db.Select<Impm1_Enquiry>(strSql);
+                    Result = db.Select<Impm1_Enquiry>(strSql + strFilter);
                 }
             }
             catch { throw; }

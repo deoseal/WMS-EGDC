@@ -30,7 +30,7 @@
     <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>1</WarningLevel>
     <IncludeIisSettings>false</IncludeIisSettings>
     <DeployEncryptKey>加密密码仅在任何部署设置标记为安全时使用</DeployEncryptKey>
     <PublishDatabases>false</PublishDatabases>
