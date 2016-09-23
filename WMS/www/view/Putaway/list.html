@@ -7,102 +7,42 @@
         <div>
             <div class="row row-center" id="div-list-rcbp">
                 <div class="col col-33" style="text-align:center;">
-                    <label>Customer</label>
+                    <label ng-click="openCam('BusinessPartyName')">Customer</label>
                 </div>
-                <div class="col col-67">
+                <div class="col col-60">
                     <ui-select ng-model="Rcbp1.selected" theme="bootstrap" reset-search-input="true" on-select="showImgr1(Rcbp1.selected.BusinessPartyCode)">
                         <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">{{$select.selected.BusinessPartyName | limitTo:16}}</ui-select-match>
-                        <ui-select-choices repeat="Rcbp1 in Rcbp1s track by $index" refresh="refreshRcbp1($select.search)" refresh-delay="0" position="down">
+                        <ui-select-choices repeat="Rcbp1 in Rcbp1s track by $index" refresh="refreshRcbp1(null,$select.search)" refresh-delay="0" position="down">
                             <div ng-bind-html="Rcbp1.BusinessPartyName | highlight: $select.search"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>
-            </div>
+                <div class="col">
+                    <button class="button button-clear button-positive button-small" ng-click="clearInput('Customer')"><i class="icon ion-android-close"></i></button>
+                </div>
+          </div>
             <div class="row row-center" id="div-list-grn">
                 <div class="col col-33" style="text-align:center;">
-                    <label>GRN No</label>
+                    <label ng-click="openCam('GrnNo')">GRN No</label>
                 </div>
-                <div class="col col-67">
-                    <ui-select theme="bootstrap" ng-model="GrnNo.selected" reset-search-input="true" on-select="showImgr2(true, GrnNo.selected.GoodsReceiptNoteNo)">
+                <div class="col col-60">
+                    <ui-select theme="bootstrap" ng-model="GrnNo.selected" reset-search-input="true" on-select="GoToDetail(GrnNo.selected)">
                         <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">{{$select.selected.GoodsReceiptNoteNo}}</ui-select-match>
-                        <ui-select-choices repeat="GrnNo in GrnNos track by $index" refresh="refreshGrnNos($select.search)" refresh-delay="0" position="down">
+                        <ui-select-choices repeat="GrnNo in GrnNos track by $index" refresh="refreshGrnNos(null,$select.search)" refresh-delay="0" position="down">
                             <div ng-bind-html="GrnNo.GoodsReceiptNoteNo | highlight: $select.search"></div>
                         </ui-select-choices>
                     </ui-select>
+                </div>
+                <div class="col">
+                    <button class="button button-clear button-positive button-small" ng-click="clearInput('GrnNo')"><i class="icon ion-android-close"></i></button>
                 </div>
             </div>
             <hr style="margin-top:-0.3em;">
         </div>
     </ion-pane>
     <ion-content style="margin-top:100px;">
-        <ion-list tabindex="-1">
-            <div class="card" ng-repeat="Imgr2 in Imgr2s">
-                <div class="item item-input">
-                    <div class="col-33">
-                        <p>Product Code<span class="pull-right">:&nbsp;</span></p>
-                    </div>
-                    <div class="col-67">
-                        <div class="item-text-wrap">
-                            <p>
-                                <span ng-bind="Imgr2.ProductCode"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item item-input">
-                    <div class="col-33">
-                        <p>Description<span class="pull-right">:&nbsp;</span></p>
-                    </div>
-                    <div class="col-67">
-                        <div class="item-text-wrap">
-                            <p>
-                                <span ng-bind="Imgr2.ProductDescription"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item item-input">
-                    <div class="col-40">
-                        <p>Cust Batch No<span class="pull-right">:&nbsp;</span></p>
-                    </div>
-                    <div class="col-60">
-                        <div class="item-text-wrap">
-                            <p>
-                                <span ng-bind="Imgr2.UserDefine1"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin-left:-5px;">
-                    <div class="col col-80" style="padding:0px;">
-                        <label class="item item-input">
-                            <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:</span>
-                            <input type="text" id="txt-storeno-{{ Imgr2.LineItemNo }}" ng-model="Imgr2.StoreNo" style="padding-right: 14px;">
-                        </label>
-                    </div>
-                    <div class="col col-10">
-                        <button class="button button-clear button-small" ng-click="openCam(Imgr2)"><i class="icon ion-qr-scanner"></i></button>
-                    </div>
-                    <div class="col">
-                        <button class="button button-clear button-small" ng-click="clearInput(Imgr2)"><i class="icon ion-android-close"></i></button>
-                    </div>
-                </div>
-            </div>
-        </ion-list>
-        <ion-list tabindex="-2">
-            <div class="card" ng-repeat="Imgr1 in Imgr1s" id="Imgr1-{{ Imgr1.Index }}" ng-click="showImgr2(false, Imgr1.GoodsReceiptNoteNo)">
-                <div class="item item-input">
-                    <div class="col-33">
-                        <p>Customer<span class="pull-right">:&nbsp;</span></p>
-                    </div>
-                    <div class="col-67">
-                        <div class="item-text-wrap">
-                            <p>
-                                <span ng-bind="Imgr1.CustomerCode"></span>
-                            </p>
-                        </div>
-                    </div>
-                </div>
+        <ion-list id="div-grt-list">
+            <div class="card" ng-repeat="Imgr1 in Imgr1s" id="Imgr1-{{ Imgr1.Index }}" ng-click="GoToDetail(Imgr1)">
                 <div class="item item-input">
                     <div class="col-33">
                         <p>GRN No<span class="pull-right">:&nbsp;</span></p>
@@ -142,14 +82,4 @@
             </div>
         </ion-list>
     </ion-content>
-    <ion-footer-bar class="bar-positive hide-on-keyboard-open" ng-show="Imgr2s.length > 0">
-        <div class="button-bar">
-            <button class="button icon ion-android-done" ng-click="checkConfirm()">
-                &nbsp;Confirm
-            </button>
-            <button class="button icon ion-arrow-return-right" ng-click="clearImgr()">
-                &nbsp;Cancel
-            </button>
-        </div>
-    </ion-footer-bar>
 </ion-view>

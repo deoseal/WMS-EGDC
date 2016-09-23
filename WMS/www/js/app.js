@@ -292,6 +292,12 @@ app.config( [ '$httpProvider', '$stateProvider', '$urlRouterProvider', '$ionicCo
                 templateUrl: 'view/Putaway/list.html',
                 controller: 'PutawayListCtrl'
             } )
+            .state( 'GrPutawayDetail', {
+                url: '/putaway/detail/:CustomerCode/:TrxNo/:GoodsReceiptNoteNo',
+                cache: 'false',
+                templateUrl: 'view/Putaway/detail.html',
+                controller: 'GrPutawayDetailCtrl'
+            } )
             .state( 'gtList', {
                 url: '/gt/list',
                 cache: 'false',

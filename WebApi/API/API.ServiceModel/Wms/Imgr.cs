@@ -16,10 +16,9 @@ namespace WebApi.ServiceModel.Wms
     [Route("/wms/imgr2/putaway", "Get")]                //putaway?GoodsReceiptNoteNo=
     [Route("/wms/imgr2/putaway/update", "Get")]             //update?StoreNo= & TrxNo= & LineItemNo=
     [Route("/wms/imgr2/transfer", "Get")]			//transfer?GoodsReceiptNoteNo=
-    [Route("/wms/imgr2/qtyremark", "Get")]	
+    [Route("/wms/imgr2/qtyremark", "Get")]
     public class Imgr : IReturn<CommonResponse>
     {
-        public string CustomerCode { get; set; }
         public string GoodsReceiptNoteNo { get; set; }
         public string StatusCode { get; set; }
         public string TrxNo { get; set; }
@@ -29,6 +28,7 @@ namespace WebApi.ServiceModel.Wms
         public string QtyRemark { get; set; }
         public string QtyRemarkQty { get; set; }
         public string QtyFieldName { get; set; }
+        public string CustomerCode { get; set; }
     }
     public class Imgr_Logic
     {
@@ -117,20 +117,30 @@ namespace WebApi.ServiceModel.Wms
             catch { throw; }
             return Result;
         }
+
+        public string[] getBarCodeFromImpa1()
+        {
+            string[] strBarCodeList=null;
+            using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+            {
+                List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
+                string strBarCodeFiled = impa1[0].BarCodeField;
+                strBarCodeList = strBarCodeFiled.Split(',');
+            }
+            return strBarCodeList;
+        }
         public List<Imgr2_Receipt> Get_Imgr2_Receipt_List(Imgr request)
         {
             List<Imgr2_Receipt> Result = null;
             try
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
-                {
-                    List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
-                    string strBarCodeFiled = impa1[0].BarCodeField;
-                    string[] strBarCodeList = strBarCodeFiled.Split(',');
+                {                    
+                    string[] strBarCodeList = getBarCodeFromImpa1();
                     if (strBarCodeList.Length <= 1)
                     {
                         string strSql = "Select Imgr2.*,'' As QtyStatus, " +
-                                    "(Select Top 1 " + strBarCodeFiled + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode," +
+                                    "(Select Top 1 " + strBarCodeList[0] + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode," +
                                     "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
                                     "0 AS ScanQty,GoodsReceiptNoteNo " +
                                     "From Imgr2 " +
@@ -155,7 +165,6 @@ namespace WebApi.ServiceModel.Wms
                             }
                         }
                     }
-
                 }
             }
             catch { throw; }

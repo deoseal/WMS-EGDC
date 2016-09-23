@@ -215,6 +215,10 @@ namespace WebApi.ServiceInterface.Wms
                 {
                     ecr.data.results = impm_Logic.Get_Impm1_Enquiry_List(request);
                 }
+                else if (uri.IndexOf("/wms/impm1/defaultstoreno") > 0)
+                {
+                    ecr.data.results = impm_Logic.get_DefaultStoreNo(request);
+                }
                 else if (uri.IndexOf("/wms/impm1/transfer") > 0)
                 {
                     ecr.data.results = impm_Logic.Get_Impm1_Transfer_List(request);
