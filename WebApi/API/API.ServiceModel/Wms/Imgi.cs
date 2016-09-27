@@ -79,6 +79,51 @@ namespace WebApi.ServiceModel.Wms
             catch { throw; }
             return Result;
         }
+
+        public string[] getBarCodeFromImpa1()
+        {
+            string[] strBarCodeList = null;
+            using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+            {
+                List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
+                string strBarCodeFiled = impa1[0].BarCodeField;
+                strBarCodeList = strBarCodeFiled.Split(',');
+            }
+            return strBarCodeList;
+        }
+
+        public string getBarCodeListSelect()
+        {
+            string BarCodeFieldList = "";
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    string[] strBarCodeList = getBarCodeFromImpa1();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (BarCodeFieldList == "")
+                        {
+                            BarCodeFieldList = "(Select Top 1 " + strBarCodeList[0] + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode,(Select Top 1 " + strBarCodeList[0] + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode1,";
+                        }
+                        else
+                        {
+                            if (strBarCodeList.Length > i)
+                            {
+                                BarCodeFieldList = BarCodeFieldList + "(Select Top 1 " + strBarCodeList[i] + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode" + (i + 1).ToString() + ",";
+                            }
+                            else
+                            {
+                                BarCodeFieldList = BarCodeFieldList + "'' AS BarCode" + (i + 1).ToString() + ",";
+                            }
+                        }
+                    }
+                }
+            }
+            catch { throw; }
+            return BarCodeFieldList;
+        }
+
         public List<Imgi2_Picking> Get_Imgi2_Picking_List(Imgi request)
         {
             List<Imgi2_Picking> Result = null;
@@ -86,43 +131,17 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
-                    string strBarCodeFiled = impa1[0].BarCodeField;
-                    string[] strBarCodeList = strBarCodeFiled.Split(',');
-                    if (strBarCodeList.Length <= 1)
-                    {
-                        string strSql = "Select RowNum = ROW_NUMBER() OVER (ORDER BY Imgi2.StoreNo ASC), " +
+                    string strSql = "Select RowNum = ROW_NUMBER() OVER (ORDER BY Imgi2.StoreNo ASC), " +
                                     "Imgi2.*, " +
                                     "(Select Top 1 UserDefine1 From Impm1 Where TrxNo=Imgi2.ReceiptMovementTrxNo) AS SerialNo," +
-                                    "(Select Top 1 " + strBarCodeFiled + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode," +
+                                    "" + getBarCodeListSelect() +
                                     "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
                                     "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
                                     "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo, UserDefine2 as  PackingNo " +
                                     "From Imgi2 " +
                                     "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
                                     "Where IsNull(Imgi1.StatusCode,'')='USE' And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
-                        Result = db.Select<Imgi2_Picking>(strSql);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < strBarCodeList.Length; i++)
-                        {
-                            if (Result == null || Result.Count == 0)
-                            {
-                                string strSql = "Select RowNum = ROW_NUMBER() OVER (ORDER BY Imgi2.StoreNo ASC), " +
-                                   "Imgi2.*, " +
-                                   "(Select Top 1 UserDefine1 From Impm1 Where TrxNo=Imgi2.ReceiptMovementTrxNo) AS SerialNo," +
-                                   "(Select Top 1 " + strBarCodeList[i] + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode," +
-                                   "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
-                                   "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
-                                   "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo " +
-                                   "From Imgi2 " +
-                                   "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
-                                   "Where IsNull(Imgi1.StatusCode,'')='USE' And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
-                                Result = db.Select<Imgi2_Picking>(strSql);
-                            }
-                        }
-                            }
+                    Result = db.Select<Imgi2_Picking>(strSql);
                 }
             }
             catch { throw; }
@@ -135,44 +154,18 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
-                    string strBarCodeFiled = impa1[0].BarCodeField;
                     string strSql = "";
-                    string[] strBarCodeList = strBarCodeFiled.Split(',');
-                    if (strBarCodeList.Length <= 1)
-                    {
-                        strSql = "Select RowNum = ROW_NUMBER() OVER (ORDER BY Imgi2.StoreNo ASC), " +
-                                                           "Imgi2.*, " +
-                                                           "(Select Top 1 UserDefine1 From Impm1 Where TrxNo=Imgi2.ReceiptMovementTrxNo) AS SerialNo," +
-                                                           "(Select Top 1 " + strBarCodeFiled + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode," +
-                                                           "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
-                                                           "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
-                                                           "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo " +
-                                                           "From Imgi2 " +
-                                                           "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
-                                                           "Where (IsNull(Imgi1.StatusCode,'')='USE' Or IsNull(Imgi1.StatusCode,'')='CMP') And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
-                        Result = db.Select<Imgi2_Verify>(strSql);
-                    }
-                    else {
-
-                        for (int i = 0; i < strBarCodeList.Length; i++)
-                        {
-                            if (Result == null || Result.Count == 0)
-                            {
-                                strSql = "Select RowNum = ROW_NUMBER() OVER (ORDER BY Imgi2.StoreNo ASC), " +
-                                                              "Imgi2.*, " +
-                                                              "(Select Top 1 UserDefine1 From Impm1 Where TrxNo=Imgi2.ReceiptMovementTrxNo) AS SerialNo," +
-                                                              "(Select Top 1 " + strBarCodeList[i] + " From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS BarCode," +
-                                                              "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
-                                                              "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
-                                                              "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo " +
-                                                              "From Imgi2 " +
-                                                              "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
-                                                              "Where (IsNull(Imgi1.StatusCode,'')='USE' Or IsNull(Imgi1.StatusCode,'')='CMP') And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
-                                Result = db.Select<Imgi2_Verify>(strSql);
-                            }
-                        }
-                    }
+                    strSql = "Select RowNum = ROW_NUMBER() OVER (ORDER BY Imgi2.StoreNo ASC), " +
+                            "Imgi2.*, " +
+                            "(Select Top 1 UserDefine1 From Impm1 Where TrxNo=Imgi2.ReceiptMovementTrxNo) AS SerialNo," +
+                            "" + getBarCodeListSelect() +
+                            "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgi2.ProductTrxNo) AS SerialNoFlag," +
+                            "(CASE Imgi2.DimensionFlag When '1' THEN Imgi2.PackingQty When '2' THEN Imgi2.WholeQty ELSE Imgi2.LooseQty END) AS Qty, " +
+                            "0 AS QtyBal, 0 AS ScanQty,ReceiptMovementTrxNo " +
+                            "From Imgi2 " +
+                            "Left Join Imgi1 On Imgi2.TrxNo=Imgi1.TrxNo " +
+                            "Where (IsNull(Imgi1.StatusCode,'')='USE' Or IsNull(Imgi1.StatusCode,'')='CMP') And Imgi1.GoodsIssueNoteNo='" + Modfunction.SQLSafe(request.GoodsIssueNoteNo) + "'";
+                    Result = db.Select<Imgi2_Verify>(strSql);
                 }
             }
             catch { throw; }
@@ -230,7 +223,7 @@ namespace WebApi.ServiceModel.Wms
                 {
                     if (request.QtyFieldName == "PackingQty")
                     {
-                        Result = db.Update<Imgr2>(
+                        Result = db.Update<Imgi2>(
                              new
                              {
                                  PackingQty = request.QtyRemarkQty,
@@ -245,7 +238,7 @@ namespace WebApi.ServiceModel.Wms
                     }
                     else if (request.QtyFieldName == "WholeQty")
                     {
-                        Result = db.Update<Imgr2>(
+                        Result = db.Update<Imgi2>(
                               new
                               {
                                   WholeQty = request.QtyRemarkQty,
@@ -260,7 +253,7 @@ namespace WebApi.ServiceModel.Wms
                     }
                     else
                     {
-                        Result = db.Update<Imgr2>(
+                        Result = db.Update<Imgi2>(
                               new
                               {
                                   LooseQty = request.QtyRemarkQty,
