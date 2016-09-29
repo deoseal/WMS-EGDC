@@ -144,7 +144,7 @@ appControllers.controller('VginDetailCtrl', [
                         SqlService.Select('Imgi2_Verify', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
                                 if (results.rows.length === 1) {
                                     imgi2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
-                                    imgr2.StoreNo = results.rows.item(0).StoreNo;
+                                    imgi2.StoreNo = results.rows.item(0).StoreNo;
                                 }
                                 imgi2.ScanQty += 1;
                                 hmImgi2.remove(barcode);
@@ -176,7 +176,7 @@ appControllers.controller('VginDetailCtrl', [
                         SqlService.Select('Imgi2_Verify', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
                                 if (results.rows.length === 1) {
                                     imgi2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
-                                    imgr2.StoreNo = results.rows.item(0).StoreNo;
+                                    imgi2.StoreNo = results.rows.item(0).StoreNo;
                                 }
                                 imgi2.ScanQty += 1;
                                 hmImgi2.remove(barcode);
@@ -280,7 +280,7 @@ appControllers.controller('VginDetailCtrl', [
                                 }
                                 $scope.Detail.Imgi2sDb = arr;
                                 $ionicLoading.hide();
-                            }, function () {
+                            }, function (error) {
                                 $ionicLoading.hide();
                             });
                         };
@@ -298,7 +298,7 @@ appControllers.controller('VginDetailCtrl', [
                             }
                         };
                         $scope.changeQty = function () {
-                            if (is.not.empqty($scope.Detail.Scan.BarCode) && hmImgi2.count() > 0) {
+                            if (is.not.empty($scope.Detail.Scan.BarCode) && hmImgi2.count() > 0) {
                                 var imgi2 = hmImgi2.get($scope.Detail.Scan.BarCode);
                                 var promptPopup = $ionicPopup.show({
                                     template: '<input type="number" ng-model="Detail.Scan.Qty" ng-change="checkQty();">',

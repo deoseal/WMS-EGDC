@@ -30,7 +30,7 @@
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Bar Code&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-barcode" ng-model="Detail.Scan.BarCode" style="padding-right: 14px;" ng-keypress="enter($event, 'barcode')">
+								<input type="text" id="txt-barcode" ng-model="Detail.Scan.BarCode" style="padding-right: 14px;" ng-keypress="enter($event, 'BarCode')" ng-focus="Onfocus('BarCode')">
 							</label>
 						</div>
 						<div class="col col-10">
@@ -50,7 +50,7 @@
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-barcode" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-keypress="enter($event, 'StoreNo')">
+								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-keypress="enter($event, 'StoreNo')" ng-focus="Onfocus('StoreNo')">
 							</label>
 						</div>
 						<div class="col col-10">
@@ -60,7 +60,7 @@
 							<button class="button button-clear button-positive button-small" ng-click="clearInput('StoreNo')"><i class="icon ion-android-close"></i></button>
 						</div>
 					</div>
-					<div class="row" ng-if="ENV.parameter.showSerialNo">
+					<div class="row"  ng-if="Detail.Scan.SerialNoFlag='Y'" class="animate-if">
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Serial No&nbsp;&nbsp;:</span>
@@ -95,7 +95,7 @@
 			<button class="button icon ion-android-done" ng-click="checkConfirm()">
 				&nbsp;Confirm
 			</button>
-			<button class="button icon ion-ios-skipforward" ng-click="checkConfirm()">
+			<button class="button icon ion-ios-skipforward" ng-click="clearInput('BarCode')">
 				&nbsp;Next
 			</button>
 			<button class="button icon ion-arrow-return-right" ng-click="returnList()">

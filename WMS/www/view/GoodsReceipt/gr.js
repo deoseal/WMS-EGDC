@@ -195,6 +195,7 @@ appControllers.controller('GrDetailCtrl', [
                 imgr2.QtyStatus='';
                 hmImgr2.remove(barcode);
                 hmImgr2.set(barcode, imgr2);
+                var barcode1 = barcode;
                 var objImgr2 = {
                         ScanQty: imgr2.ScanQty,
                         QtyStatus:imgr2.QtyStatus
@@ -202,13 +203,12 @@ appControllers.controller('GrDetailCtrl', [
                     strFilter = 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo;
                 SqlService.Update('Imgr2_Receipt', objImgr2, strFilter).then();
                 $scope.Detail.Scan = {
-                    BarCode: '',
+                    BarCode: barcode1,
                     SerialNo: '',
                     Qty: imgr2.ScanQty
-                };
+                };                
               })
             }
-            $scope.$apply();
         };
         var showImpr = function (barcode) {
             if (hmImgr2.has(barcode)) {
@@ -241,7 +241,6 @@ appControllers.controller('GrDetailCtrl', [
             SqlService.Update('Imgr2_Receipt', objImgr2, strFilter).then();
             $scope.Detail.Scan.Qty = imgr2.ScanQty;
             $scope.Detail.Scan.SerialNo = '';
-            $scope.$apply();
           })
         };
         var showSn = function (sn) {
@@ -264,7 +263,6 @@ appControllers.controller('GrDetailCtrl', [
                         hmImsn1.set(barcode, SnArray);
                     } else {
                         $scope.Detail.Scan.SerialNo = '';
-                        $scope.$apply();
                         return;
                     }
                 } else {

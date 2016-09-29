@@ -93,13 +93,13 @@ namespace WebApi.ServiceModel.Wms
                     }
                     else if (!string.IsNullOrEmpty(request.WarehouseCode) && !string.IsNullOrEmpty(request.StoreNo))
                     {
-                        strSql = strSql + " AND WarehouseCode='" + Modfunction.SQLSafe(request.WarehouseCode) + "' And StoreNo='" + Modfunction.SQLSafe(request.StoreNo) + "'";
+                        strFilter = strFilter + " AND WarehouseCode='" + Modfunction.SQLSafe(request.WarehouseCode) + "' And StoreNo='" + Modfunction.SQLSafe(request.StoreNo) + "'";
                     }
                     else if (!string.IsNullOrEmpty(request.TrxNo))
                     {
-                        strSql = strSql + " AND ProductTrxNo = " + int.Parse(request.TrxNo);
+                        strFilter = strFilter + " AND ProductTrxNo = " + int.Parse(request.TrxNo);
                     }
-                    Result = db.Select<Impm1_Enquiry>(strSql);
+                    Result = db.Select<Impm1_Enquiry>(strSql+ strFilter);
                 }
             }
             catch { throw; }
