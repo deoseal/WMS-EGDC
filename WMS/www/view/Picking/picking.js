@@ -156,6 +156,11 @@ appControllers.controller('PickingDetailCtrl', [
                 //$( '#txt-sn' ).removeAttr( 'readonly' );
                 $('#txt-sn').select();
             } else {
+              SqlService.Select('Imgi2_Picking',  '*','TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+                if(results.rows.length===1)
+                {
+                  imgi2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
+               }
                 imgi2.ScanQty += 1;
                 hmImgi2.remove(barcode);
                 hmImgi2.set(barcode, imgi2);
@@ -172,17 +177,26 @@ appControllers.controller('PickingDetailCtrl', [
                         $scope.showNext();
                     }
                 });
+              });
             }
         };
         var showImpr = function (barcode, blnScan) {
+          if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
+          {
             if (hmImgi2.has(barcode)) {
                 var imgi2 = hmImgi2.get(barcode);
                 setScanQty(barcode, imgi2);
             } else {
                 showPopup('Invalid Product Picked', 'assertive');
             }
+          }
         };
         var setSnQty = function (barcode, imgi2) {
+          SqlService.Select('Imgi2_Picking',  '*','TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+            if(results.rows.length===1)
+            {
+              imgi2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
+           }
             imgi2.ScanQty += 1;
             hmImgi2.remove(barcode);
             hmImgi2.set(barcode, imgi2);
@@ -201,6 +215,7 @@ appControllers.controller('PickingDetailCtrl', [
                     $('#txt-sn').select();
                 }
             });
+          });
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {
@@ -269,6 +284,8 @@ appControllers.controller('PickingDetailCtrl', [
                         for (var i in $scope.Detail.Imgi2s) {
                             var imgi2 = $scope.Detail.Imgi2s[i];
                             hmImgi2.set(imgi2.BarCode, imgi2);
+                            hmImgi2.set(imgi2.BarCode2, imgi2);
+                            hmImgi2.set(imgi2.BarCode3, imgi2);
                             SqlService.Insert('Imgi2_Picking', imgi2).then();
                         }
                         showImgi2(0);

@@ -16,10 +16,9 @@ namespace WebApi.ServiceModel.Wms
     [Route("/wms/imgr2/putaway", "Get")]                //putaway?GoodsReceiptNoteNo=
     [Route("/wms/imgr2/putaway/update", "Get")]             //update?StoreNo= & TrxNo= & LineItemNo=
     [Route("/wms/imgr2/transfer", "Get")]			//transfer?GoodsReceiptNoteNo=
-    [Route("/wms/imgr2/qtyremark", "Get")]	
+    [Route("/wms/imgr2/qtyremark", "Get")]
     public class Imgr : IReturn<CommonResponse>
     {
-        public string CustomerCode { get; set; }
         public string GoodsReceiptNoteNo { get; set; }
         public string StatusCode { get; set; }
         public string TrxNo { get; set; }
@@ -29,6 +28,15 @@ namespace WebApi.ServiceModel.Wms
         public string QtyRemark { get; set; }
         public string QtyRemarkQty { get; set; }
         public string QtyFieldName { get; set; }
+        public string CustomerCode { get; set; }
+
+        public string QtyRemarkList { get; set; }
+        public string LineItemNoList { get; set; }
+        public string DimensionFlagList { get; set; }
+        public string NewFlagList { get; set; }
+        public string DimensionQtyList { get; set; }
+        public string StoreNoList { get; set; }
+
     }
     public class Imgr_Logic
     {
@@ -59,13 +67,26 @@ namespace WebApi.ServiceModel.Wms
                             //Result = db.SelectParam<Imgr1>(
                             //				i => i.GoodsReceiptNoteNo != null && i.GoodsReceiptNoteNo != "" && i.StatusCode == request.StatusCode && i.CustomerCode == request.CustomerCode
                             //).OrderByDescending(i => i.ReceiptDate).ToList<Imgr1>();
-                            Result = db.Select<Imgr1>(
+                            if (request.StatusCode == "EXE")
+                            {
+                                Result = db.Select<Imgr1>(
+                                                "Select Top 10 Imgr1.* From Imgr1 " +
+                                                "Where IsNull(GoodsReceiptNoteNo,'')<>'' " +
+                                                "And (IsNUll(StatusCode,'') != 'EXE' AND IsNUll(StatusCode,'') != 'DEL') " +
+                                                "And IsNUll(CustomerCode,'') = '" + request.CustomerCode + "' " +
+                                                "Order By Imgr1.ReceiptDate Desc"
+                                );
+                            }
+                            else
+                            {
+                                Result = db.Select<Imgr1>(
                                             "Select Top 10 Imgr1.* From Imgr1 " +
                                             "Where IsNull(GoodsReceiptNoteNo,'')<>'' " +
                                             "And IsNUll(StatusCode,'') = '" + request.StatusCode + "' " +
                                             "And IsNUll(CustomerCode,'') = '" + request.CustomerCode + "' " +
                                             "Order By Imgr1.ReceiptDate Desc"
                             );
+                            }
                         }
                     }
                     else if (!string.IsNullOrEmpty(request.GoodsReceiptNoteNo))
@@ -87,12 +108,22 @@ namespace WebApi.ServiceModel.Wms
                             //Result = db.SelectParam<Imgr1>(
                             //					i => i.GoodsReceiptNoteNo != null && i.GoodsReceiptNoteNo != "" && i.StatusCode == request.StatusCode && i.GoodsReceiptNoteNo.StartsWith(request.GoodsReceiptNoteNo)
                             //);
-                            Result = db.Select<Imgr1>(
-                                            "Select Top 10 Imgr1.* From Imgr1 " +
-                                            "Where IsNUll(StatusCode,'')='" + request.StatusCode + "' " +
-                                            "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
-                                            "And IsNUll(GoodsReceiptNoteNo,'') LIKE '" + request.GoodsReceiptNoteNo + "%'"
-                            );
+                            if (request.StatusCode == "EXE") {
+                                Result = db.Select<Imgr1>(
+                                               "Select Top 10 Imgr1.* From Imgr1 " +
+                                               "Where IsNUll(StatusCode,'')<>'DEL' And IsNUll(StatusCode,'')<>'EXE' " +
+                                               "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
+                                               "And IsNUll(GoodsReceiptNoteNo,'') LIKE '" + request.GoodsReceiptNoteNo + "%'"
+                               );
+                            }
+                            else {
+                                Result = db.Select<Imgr1>(
+                                               "Select Top 10 Imgr1.* From Imgr1 " +
+                                               "Where IsNUll(StatusCode,'')='" + request.StatusCode + "' " +
+                                               "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
+                                               "And IsNUll(GoodsReceiptNoteNo,'') LIKE '" + request.GoodsReceiptNoteNo + "%'"
+                               );
+                            }                           
                         }
                     }
                 }
@@ -117,6 +148,51 @@ namespace WebApi.ServiceModel.Wms
             catch { throw; }
             return Result;
         }
+
+        public string[] getBarCodeFromImpa1()
+        {
+            string[] strBarCodeList = null;
+            using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+            {
+                List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
+                string strBarCodeFiled = impa1[0].BarCodeField;
+                strBarCodeList = strBarCodeFiled.Split(',');
+            }
+            return strBarCodeList;
+        }
+
+        public string getBarCodeListSelect()
+        {
+            string BarCodeFieldList = "";
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    string[] strBarCodeList = getBarCodeFromImpa1();
+                    for (int i = 0; i < 3; i++)
+                    {
+                        if (BarCodeFieldList == "")
+                        {
+                            BarCodeFieldList = "(Select Top 1 " + strBarCodeList[0] + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode,(Select Top 1 " + strBarCodeList[0] + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode1,";
+                        }
+                        else
+                        {
+                            if (strBarCodeList.Length > i)
+                            {
+                                BarCodeFieldList = BarCodeFieldList + "(Select Top 1 " + strBarCodeList[i] + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode" + (i + 1).ToString() + ",";
+                            }
+                            else
+                            {
+                                BarCodeFieldList = BarCodeFieldList + "'' AS BarCode" + (i + 1).ToString() + ",";
+                            }
+                        }
+                    }
+                }
+            }
+            catch { throw; }
+            return BarCodeFieldList;
+        }
+
         public List<Imgr2_Receipt> Get_Imgr2_Receipt_List(Imgr request)
         {
             List<Imgr2_Receipt> Result = null;
@@ -124,38 +200,14 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    List<Impa1> impa1 = db.Select<Impa1>("Select * from Impa1");
-                    string strBarCodeFiled = impa1[0].BarCodeField;
-                    string[] strBarCodeList = strBarCodeFiled.Split(',');
-                    if (strBarCodeList.Length <= 1)
-                    {
-                        string strSql = "Select Imgr2.*,'' As QtyStatus, " +
-                                    "(Select Top 1 " + strBarCodeFiled + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode," +
-                                    "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
-                                    "0 AS ScanQty,GoodsReceiptNoteNo " +
-                                    "From Imgr2 " +
-                                    "Left Join Imgr1 On Imgr2.TrxNo = Imgr1.TrxNo " +
-                                    "Where Imgr1.GoodsReceiptNoteNo='" + Modfunction.SQLSafe(request.GoodsReceiptNoteNo) + "'";
-                        Result = db.Select<Imgr2_Receipt>(strSql);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < strBarCodeList.Length; i++)
-                        {
-                            if (Result == null || Result.Count == 0)
-                            {
-                                string strSql = "Select Imgr2.*,'' As QtyStatus, " +
-                                    "(Select Top 1 " + strBarCodeList[i] + " From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS BarCode," +
-                                    "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
-                                    "0 AS ScanQty " +
-                                    "From Imgr2 " +
-                                    "Left Join Imgr1 On Imgr2.TrxNo = Imgr1.TrxNo " +
-                                    "Where Imgr1.GoodsReceiptNoteNo='" + Modfunction.SQLSafe(request.GoodsReceiptNoteNo) + "'";
-                                Result = db.Select<Imgr2_Receipt>(strSql);
-                            }
-                        }
-                    }
-
+                    string strSql = "Select Imgr2.*,'' As QtyStatus, " +
+                                     "" + getBarCodeListSelect() +
+                                     "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
+                                     "0 AS ScanQty,GoodsReceiptNoteNo " +
+                                     "From Imgr2 " +
+                                     "Left Join Imgr1 On Imgr2.TrxNo = Imgr1.TrxNo " +
+                                     "Where Imgr1.GoodsReceiptNoteNo='" + Modfunction.SQLSafe(request.GoodsReceiptNoteNo) + "'";
+                    Result = db.Select<Imgr2_Receipt>(strSql);
                 }
             }
             catch { throw; }
@@ -168,10 +220,12 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS StoreNo," +
+                    string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS StoreNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS DefaultStoreNo,0 as ProductIndex," +
                                     "(Select StagingAreaFlag From Whwh2 Where WarehouseCode=Imgr2.WarehouseCode And StoreNo=IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'')) AS StagingAreaFlag," +
                                     "IsNull(Imgr2.ProductCode,'') AS ProductCode, IsNull(Imgr2.ProductDescription,'') AS ProductDescription, IsNull(Imgr2.UserDefine1,'') AS UserDefine1," +
-                                    "(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS Qty,'' As QtyStatus " +
+                                    "(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS Qty,(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS ActualQty," + getBarCodeListSelect() +
+                                     "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
+                                     "0 AS ScanQty,Imgr2.DimensionFlag,Imgr2.PackingQty,Imgr2.WholeQty,Imgr2.LooseQty,Imgr1.GoodsReceiptNoteNo,'' As QtyStatus,'' AS NewBarCode,'' AS NewFlag " +
                                     "From Imgr2 " +
                                     "Left Join Imgr1 On Imgr2.TrxNo = Imgr1.TrxNo " +
                                     "Where Imgr1.GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "'";
@@ -192,7 +246,7 @@ namespace WebApi.ServiceModel.Wms
                                     "(Select StagingAreaFlag From Whwh2 Where WarehouseCode=Imgr2.WarehouseCode And StoreNo=Imgr2.StoreNo) AS StagingAreaFlag," +
                                     "IsNull(Imgr2.ProductCode,'') AS ProductCode, IsNull(Imgr2.ProductDescription,'') AS ProductDescription," +
                                     "(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS Balance," +
-                                    "0 AS Qty, '' AS NewStoreNo,'' As QtyStatus " +
+                                    "0 AS Qty, '' AS NewStoreNo,'' As QtyStatus ," + getBarCodeListSelect() +
                                     "From Imgr2 " +
                                     "Left Join Imgr1 On Imgr2.TrxNo = Imgr1.TrxNo " +
                                     "Where Imgr1.GoodsReceiptNoteNo='" + request.GoodsReceiptNoteNo + "'";
@@ -220,15 +274,30 @@ namespace WebApi.ServiceModel.Wms
             int Result = -1;
             try
             {
+                string[] QtyRemarkDetail = request.QtyRemarkList.Split(',');
+                string[] LineItemNoDetail = request.LineItemNoList.Split(',');
+                string[] DimensionFlagDetail = request.DimensionFlagList.Split(',');
+                string[] NewFlagDetail = request.NewFlagList.Split(',');
+                string[] DimensionQtyDetail = request.DimensionQtyList.Split(',');
+                string[] StoreNoDetail = request.StoreNoList.Split(',');
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    Result = db.Update<Imgr2>(
-                                    new
-                                    {
-                                        StoreNo = request.StoreNo
-                                    },
-                                    p => p.TrxNo == int.Parse(request.TrxNo) && p.LineItemNo == int.Parse(request.LineItemNo)
-                    );
+                    string UpdateNewFlag = "N";
+                    if (request.NewFlagList.Trim() == "")
+                    {
+                        Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(request.LineItemNoList), NewFlag = UpdateNewFlag, DimensionQty = int.Parse(request.DimensionQtyList), QtyRemark = request.QtyRemarkList, DimensionFlag = request.DimensionFlagList, StoreNo = request.StoreNoList, UpdateBy = request.UserID });
+                    }
+                    else
+                    {
+                        for (int i = 0; i < DimensionFlagDetail.Length; i++)
+                        {
+                            UpdateNewFlag= NewFlagDetail[i];
+                            if (UpdateNewFlag!="Y")
+                            {UpdateNewFlag="N";}
+                            Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(LineItemNoDetail[i]), NewFlag =UpdateNewFlag, DimensionQty = DimensionQtyDetail[i], QtyRemark = QtyRemarkDetail[i], DimensionFlag = DimensionFlagDetail[i], StoreNo = StoreNoDetail[i], UpdateBy = request.UserID });
+                        }
+                    }
+                    Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
                 }
             }
             catch { throw; }
@@ -286,11 +355,11 @@ namespace WebApi.ServiceModel.Wms
                               ,
                          " BatchNo = " + Modfunction.SQLSafeValue(request.GoodsReceiptNoteNo) + " AND BatchLineItemNo = " + Modfunction.SQLSafeValue(request.LineItemNo)
                         );
-                    }                    
+                    }
                     Result = db.Update<Imgr1>(" Remark=isnull(Remark,'') + (case isnull(Remark,'') when '' then '' else char(13)+char(10)  end) + " + Modfunction.SQLSafeValue(request.QtyRemark) + ",UpdateDateTime = getdate(),UpdateBy = " + Modfunction.SQLSafeValue(request.UserID)
                         ,
                      " TrxNo = " + request.TrxNo
-                    );                   
+                    );
                 }
             }
             catch { throw; }

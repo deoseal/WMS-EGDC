@@ -186,10 +186,16 @@ appControllers.controller('GrDetailCtrl', [
                 $scope.Detail.Scan.Qty = imgr2.ScanQty;
                 $('#txt-sn').removeAttr('readonly');
             } else {
+              SqlService.Select('Imgr2_Receipt', '*','TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo).then(function (results) {
+                if(results.rows.length===1)
+                {
+                 imgr2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
+                }
                 imgr2.ScanQty += 1;
                 imgr2.QtyStatus='';
                 hmImgr2.remove(barcode);
                 hmImgr2.set(barcode, imgr2);
+                var barcode1 = barcode;
                 var objImgr2 = {
                         ScanQty: imgr2.ScanQty,
                         QtyStatus:imgr2.QtyStatus
@@ -197,14 +203,16 @@ appControllers.controller('GrDetailCtrl', [
                     strFilter = 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo;
                 SqlService.Update('Imgr2_Receipt', objImgr2, strFilter).then();
                 $scope.Detail.Scan = {
-                    BarCode: '',
+                    BarCode: barcode1,
                     SerialNo: '',
                     Qty: imgr2.ScanQty
                 };
+              })
             }
-            $scope.$apply();
         };
         var showImpr = function (barcode) {
+          if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
+          {
             if (hmImgr2.has(barcode)) {
                 var imgr2 = hmImgr2.get(barcode);
                 $scope.Detail.Impr1 = {
@@ -216,8 +224,14 @@ appControllers.controller('GrDetailCtrl', [
             } else {
                 PopupService.Alert(popup, 'Wrong BarCode');
             }
+          }
         };
         var setSnQty = function (barcode, imgr2) {
+          SqlService.Select('Imgr2_Receipt', '*', 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo).then(function (results) {
+            if(results.rows.length===1)
+            {
+              imgr2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
+            }
             imgr2.ScanQty += 1;
             imgr2.QtyStatus='';
             hmImgr2.remove(barcode);
@@ -230,7 +244,7 @@ appControllers.controller('GrDetailCtrl', [
             SqlService.Update('Imgr2_Receipt', objImgr2, strFilter).then();
             $scope.Detail.Scan.Qty = imgr2.ScanQty;
             $scope.Detail.Scan.SerialNo = '';
-            $scope.$apply();
+          })
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {
@@ -252,7 +266,6 @@ appControllers.controller('GrDetailCtrl', [
                         hmImsn1.set(barcode, SnArray);
                     } else {
                         $scope.Detail.Scan.SerialNo = '';
-                        $scope.$apply();
                         return;
                     }
                 } else {
@@ -297,6 +310,9 @@ appControllers.controller('GrDetailCtrl', [
                         ProductCode: results.rows.item(i).ProductCode,
                         GoodsReceiptNoteNo: results.rows.item(i).GoodsReceiptNoteNo,
                         BarCode: results.rows.item(i).BarCode,
+                        BarCode1: results.rows.item(i).BarCode1,
+                        BarCode2: results.rows.item(i).BarCode2,
+                        BarCode3: results.rows.item(i).BarCode3,
                         ScanQty: results.rows.item(i).ScanQty > 0 ? results.rows.item(i).ScanQty : 0,
                         ActualQty: 0,
                         QtyStatus: results.rows.item(i).QtyStatus
@@ -366,7 +382,7 @@ appControllers.controller('GrDetailCtrl', [
             }
         };
         $scope.changeQty = function () {
-            if (is.not.empty($scope.Detail.Scan.BarCode)) {
+            if (is.not.null($scope.Detail.Scan.BarCode) && is.not.empty($scope.Detail.Scan.BarCode)) {
                 if (hmImgr2.count() > 0 && hmImgr2.has($scope.Detail.Scan.BarCode)) {
                     var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
                     var promptPopup = $ionicPopup.show({
@@ -380,9 +396,10 @@ appControllers.controller('GrDetailCtrl', [
                             text: '<b>Save</b>',
                             type: 'button-positive',
                             onTap: function (e) {
+                                var OldQty=imgr2.ScanQty;
                                 imgr2.ScanQty = $scope.Detail.Scan.Qty;
                                 var obj = {
-                                    ScanQty: imgr2.ScanQty
+                                    ScanQty:ScanQty+ imgr2.ScanQty- OldQty
                                 };
                                 var strFilter = 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo;
                                 SqlService.Update('Imgr2_Receipt', obj, strFilter).then();
@@ -406,6 +423,9 @@ appControllers.controller('GrDetailCtrl', [
                             ProductCode: results.rows.item(i).ProductCode,
                             ScanQty: results.rows.item(i).ScanQty,
                             BarCode: results.rows.item(i).BarCode,
+                            BarCode1: results.rows.item(i).BarCode1,
+                            BarCode2: results.rows.item(i).BarCode2,
+                            BarCode3: results.rows.item(i).BarCode3,
                             QtyStatus: results.rows.item(i).QtyStatus,
                             QtyName: '',
                             Qty: 0
@@ -440,7 +460,67 @@ appControllers.controller('GrDetailCtrl', [
                                     blnDiscrepancies = true;
                                 }
                             }
-                        } else {
+                        } else if (imgr2.BarCode2 != null && imgr2.BarCode2.length > 0) {
+                            switch (results.rows.item(i).DimensionFlag) {
+                            case '1':
+                                imgr2.Qty = results.rows.item(i).PackingQty;
+                                imgr2.QtyName = 'PackingQty';
+                                break;
+                            case '2':
+                                imgr2.Qty = results.rows.item(i).WholeQty;
+                                imgr2.QtyName = 'WholeQty';
+                                break;
+                            default:
+                                imgr2.Qty = results.rows.item(i).LooseQty;
+                                imgr2.QtyName = 'LooseQty';
+                            }
+                            if (imgr2.Qty != imgr2.ScanQty) {
+                                if (imgr2.Qty < imgr2.ScanQty && imgr2.QtyStatus != null && imgr2.QtyStatus === 'Overlanded')
+                                {
+                                  hmImgr2.remove(imgr2.BarCode2);
+                                  hmImgr2.set(imgr2.BarCode2, imgr2);
+                                }
+                                else if (imgr2.Qty > imgr2.ScanQty && imgr2.QtyStatus != null && (imgr2.QtyStatus === 'Damaged' || imgr2.QtyStatus === 'Shortlanded'))
+                                {
+                                  hmImgr2.remove(imgr2.BarCode2);
+                                  hmImgr2.set(imgr2.BarCode2, imgr2);
+                                }
+                                else {
+                                    console.log('Product (' + imgr2.ProductCode + ') Qty not equal.');
+                                    blnDiscrepancies = true;
+                                }
+                            }
+                        } else if (imgr2.BarCode3 != null && imgr2.BarCode3.length > 0) {
+                            switch (results.rows.item(i).DimensionFlag) {
+                            case '1':
+                                imgr2.Qty = results.rows.item(i).PackingQty;
+                                imgr2.QtyName = 'PackingQty';
+                                break;
+                            case '2':
+                                imgr2.Qty = results.rows.item(i).WholeQty;
+                                imgr2.QtyName = 'WholeQty';
+                                break;
+                            default:
+                                imgr2.Qty = results.rows.item(i).LooseQty;
+                                imgr2.QtyName = 'LooseQty';
+                            }
+                            if (imgr2.Qty != imgr2.ScanQty) {
+                                if (imgr2.Qty < imgr2.ScanQty && imgr2.QtyStatus != null && imgr2.QtyStatus === 'Overlanded')
+                                {
+                                  hmImgr2.remove(imgr2.BarCode3);
+                                  hmImgr2.set(imgr2.BarCode3, imgr2);
+                                }
+                                else if (imgr2.Qty > imgr2.ScanQty && imgr2.QtyStatus != null && (imgr2.QtyStatus === 'Damaged' || imgr2.QtyStatus === 'Shortlanded'))
+                                {
+                                  hmImgr2.remove(imgr2.BarCode3);
+                                  hmImgr2.set(imgr2.BarCode3, imgr2);
+                                }
+                                else {
+                                    console.log('Product (' + imgr2.ProductCode + ') Qty not equal.');
+                                    blnDiscrepancies = true;
+                                }
+                            }
+                        } else{
                             blnDiscrepancies = true;
                         }
                     }
@@ -507,8 +587,7 @@ appControllers.controller('GrDetailCtrl', [
                     objUri.addSearch('GoodsReceiptNoteNo', imgr2.GoodsReceiptNoteNo);
                     objUri.addSearch('QtyRemarkQty', imgr2.ScanQty);
                     objUri.addSearch('QtyFieldName', imgr2.QtyName);
-                    objUri.addSearch('UserId', userID);
-                   objUri.addSearch('QtyRemark', imgr2.QtyStatus + ' LN:'+imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>'+imgr2.ScanQty);
+                    objUri.addSearch('UserId', userID);   objUri.addSearch('QtyRemark', imgr2.QtyStatus + ' LN:'+imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>'+imgr2.ScanQty);
                     ApiService.Get(objUri, true).then(function success(result) {});
                 }
             });
@@ -531,6 +610,8 @@ appControllers.controller('GrDetailCtrl', [
                     for (var i = 0; i < $scope.Detail.Imgr2s.length; i++) {
                         var objImgr2 = $scope.Detail.Imgr2s[i];
                         hmImgr2.set(objImgr2.BarCode, objImgr2);
+                        hmImgr2.set(objImgr2.BarCode2, objImgr2);
+                        hmImgr2.set(objImgr2.BarCode3, objImgr2);
                         SqlService.Insert('Imgr2_Receipt', objImgr2).then();
                     }
                 });

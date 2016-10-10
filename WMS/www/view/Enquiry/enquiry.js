@@ -180,7 +180,7 @@ appControllers.controller('EnquiryListCtrl', [
                     objUri.addSearch('ProductCode', $scope.Impr1.selected.ProductCode);
                 }
                 if (is.not.undefined($scope.Impm1.selected) && is.not.null($scope.Impm1.selected)) {
-                    objUri.addSearch('TrxNo', $scope.Impm1.selected.TrxNo);
+                    objUri.addSearch('ProductTrxNo', $scope.Impm1.selected.TrxNo);
                 }
                 ApiService.Get(objUri, false).then(function success(result) {
                     $scope.Impm1sEnquiry = result.data.results;

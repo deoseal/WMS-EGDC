@@ -53,16 +53,29 @@ namespace WebApi.ServiceModel.Wms
                     }
                     else
                     {
-                        for (int i = 0; i < strBarCodeList.Length; i++)
+                        string strBarCodeFilter = "";
+                            for (int i = 0; i < strBarCodeList.Length; i++)
                         {
-                            if (Result == null || Result.ProductCode == null || Result.ProductCode == "")
+                            if (strBarCodeFilter == "")
                             {
-                                string strSql = "Select * From Impr1 Where IsNull(ProductCode,'')<>'' And IsNull(StatusCode,'')<>'DEL' And " + strBarCodeList[i] + "='" + Modfunction.SQLSafe(request.BarCode) + "'";
-                                Result = db.QuerySingle<Impr1>(strSql);
+                                strBarCodeFilter = strBarCodeList[i] + "='" + Modfunction.SQLSafe(request.BarCode) + "'";
+                            }
+                            else
+                            {
+                                strBarCodeFilter = strBarCodeFilter + " OR " + strBarCodeList[i] + "='" + Modfunction.SQLSafe(request.BarCode) + "'";
                             }
                         }
+                        if (strBarCodeFilter != "")
+                        {
+                            string strSql = "Select * From Impr1 Where IsNull(ProductCode,'')<>'' And IsNull(StatusCode,'')<>'DEL' And (" + strBarCodeFilter + ")";
+                            Result = db.QuerySingle<Impr1>(strSql);
+                        }
+                        else
+                        {
+                            string strSql = "Select top 0 * From Impr1 ";
+                            Result = db.QuerySingle<Impr1>(strSql);
+                        }
                     }
-
                 }
             }
             catch { throw; }

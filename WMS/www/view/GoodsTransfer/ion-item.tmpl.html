@@ -71,7 +71,7 @@
                     <input type="number" id="txt-qty-{{ item.BatchLineItemNo }}" ng-model="item.ScanQty" ng-change="checkQty(item);" style="padding-right:1em;padding-top: 0px;">
                 </div>
                 <div class="col-20">
-                    <button class="button button-clear button-small" ng-click="clearInput('qty',item)">
+                    <button class="button button-clear button-positive button-small" ng-click="clearInput('qty',item)">
                         <i class="icon ion-android-close"></i>
                     </button>
                 </div>
@@ -88,12 +88,12 @@
                     <input type="text" id="txt-storeno-{{ item.BatchLineItemNo }}" ng-model="item.FromToStoreNo" style="padding-right:1em;padding-top: 0px;" ng-keypress="enter($event)">
                 </div>
                 <div class="col col-20">
-                    <button class="button button-clear button-small" ng-click="openCam(item)">
+                    <button class="button button-clear button-positive button-small" ng-click="openCam(item)">
                         <i class="icon ion-qr-scanner"></i>
                     </button>
                 </div>
                 <div class="col col-20">
-                    <button class="button button-clear button-small" ng-click="clearInput('storeno',item)">
+                    <button class="button button-clear button-positive button-small" ng-click="clearInput('storeno',item)">
                         <i class="icon ion-android-close"></i>
                     </button>
                 </div>
