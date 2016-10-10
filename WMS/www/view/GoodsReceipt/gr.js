@@ -206,11 +206,13 @@ appControllers.controller('GrDetailCtrl', [
                     BarCode: barcode1,
                     SerialNo: '',
                     Qty: imgr2.ScanQty
-                };                
+                };
               })
             }
         };
         var showImpr = function (barcode) {
+          if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
+          {
             if (hmImgr2.has(barcode)) {
                 var imgr2 = hmImgr2.get(barcode);
                 $scope.Detail.Impr1 = {
@@ -222,6 +224,7 @@ appControllers.controller('GrDetailCtrl', [
             } else {
                 PopupService.Alert(popup, 'Wrong BarCode');
             }
+          }
         };
         var setSnQty = function (barcode, imgr2) {
           SqlService.Select('Imgr2_Receipt', '*', 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo).then(function (results) {
@@ -379,7 +382,7 @@ appControllers.controller('GrDetailCtrl', [
             }
         };
         $scope.changeQty = function () {
-            if (is.not.empty($scope.Detail.Scan.BarCode)) {
+            if (is.not.null($scope.Detail.Scan.BarCode) && is.not.empty($scope.Detail.Scan.BarCode)) {
                 if (hmImgr2.count() > 0 && hmImgr2.has($scope.Detail.Scan.BarCode)) {
                     var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
                     var promptPopup = $ionicPopup.show({
@@ -584,8 +587,7 @@ appControllers.controller('GrDetailCtrl', [
                     objUri.addSearch('GoodsReceiptNoteNo', imgr2.GoodsReceiptNoteNo);
                     objUri.addSearch('QtyRemarkQty', imgr2.ScanQty);
                     objUri.addSearch('QtyFieldName', imgr2.QtyName);
-                    objUri.addSearch('UserId', userID);
-                   objUri.addSearch('QtyRemark', imgr2.QtyStatus + ' LN:'+imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>'+imgr2.ScanQty);
+                    objUri.addSearch('UserId', userID);   objUri.addSearch('QtyRemark', imgr2.QtyStatus + ' LN:'+imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>'+imgr2.ScanQty);
                     ApiService.Get(objUri, true).then(function success(result) {});
                 }
             });

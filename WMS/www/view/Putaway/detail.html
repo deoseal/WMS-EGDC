@@ -40,17 +40,11 @@
 							<button class="button button-clear button-positive button-small" ng-click="clearInput('BarCode')"><i class="icon ion-android-close"></i></button>
 						</div>
 					</div>
-					<label class="item item-input">
-						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Product Code : <span ng-bind="Detail.Impr1.ProductCode"></span></span>
-					</label>
-					<label class="item item-input">
-						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Description : <span ng-bind="Detail.Impr1.ProductDescription"></span></span>
-					</label>
 					<div class="row">
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-keypress="enter($event, 'StoreNo')" ng-focus="Onfocus('StoreNo')">
+								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-keypress="enter($event, 'StoreNo')">
 							</label>
 						</div>
 						<div class="col col-10">
@@ -60,6 +54,12 @@
 							<button class="button button-clear button-positive button-small" ng-click="clearInput('StoreNo')"><i class="icon ion-android-close"></i></button>
 						</div>
 					</div>
+					<label class="item item-input">
+						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Product Code : <span ng-bind="Detail.Impr1.ProductCode"></span></span>
+					</label>
+					<label class="item item-input">
+						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Description : <span ng-bind="Detail.Impr1.ProductDescription"></span></span>
+					</label>
 					<div class="row"  ng-if="Detail.Scan.SerialNoFlag='Y'" class="animate-if">
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
@@ -95,7 +95,7 @@
 			<button class="button icon ion-android-done" ng-click="checkConfirm()">
 				&nbsp;Confirm
 			</button>
-			<button class="button icon ion-ios-skipforward" ng-click="clearInput('BarCode')">
+			<button class="button icon ion-ios-skipforward" ng-click="NewImgr2()">
 				&nbsp;Next
 			</button>
 			<button class="button icon ion-arrow-return-right" ng-click="returnList()">

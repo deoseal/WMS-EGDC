@@ -165,12 +165,15 @@ appControllers.controller('VginDetailCtrl', [
                         }
                     };
                     var showImpr = function (barcode) {
-                        if (hmImgi2.has(barcode)) {
-                            var imgi2 = hmImgi2.get(barcode);
-                            setScanQty(barcode, imgi2);
-                        } else {
-                            PopupService.Alert(popup, 'Wrong Product').then();
-                        }
+                        if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
+                        {
+                          if (hmImgi2.has(barcode)) {
+                              var imgi2 = hmImgi2.get(barcode);
+                              setScanQty(barcode, imgi2);
+                          } else {
+                              PopupService.Alert(popup, 'Wrong Product').then();
+                          }
+                        }                        
                     };
                     var setSnQty = function (barcode, imgi2) {
                         SqlService.Select('Imgi2_Verify', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {

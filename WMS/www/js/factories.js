@@ -31,14 +31,17 @@ appFactory.factory( 'TABLE_DB', function () {
             SerialNo: 'TEXT'
         },
         Imgr2_Putaway: {
+            ProductIndex: 'INT',
             TrxNo: 'INT',
             LineItemNo: 'INT',
+            DefaultStoreNo: 'TEXT',
             StoreNo: 'TEXT',
             StagingAreaFlag: 'TEXT',
             ProductTrxNo: 'INT',
             ProductCode: 'TEXT',
             ProductDescription: 'TEXT',
             UserDefine1: 'TEXT',
+            NewBarCode: 'TEXT',
             BarCode: 'TEXT',
             BarCode1: 'TEXT',
             BarCode2: 'TEXT',
@@ -49,9 +52,12 @@ appFactory.factory( 'TABLE_DB', function () {
             WholeQty: 'INT',
             LooseQty: 'INT',
             Qty: 'INT',
+            ActualQty: 'INT',
             SerialNoFlag:'TEXT',
             ScanQty: 'INT',
-            QtyStatus:'TEXT'
+            QtyName:'TEXT',
+            QtyStatus:'TEXT',
+            NewFlag:'TEXT'
         },
         Imsn1_Putaway: {
             ReceiptNoteNo:'TEXT',

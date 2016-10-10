@@ -67,6 +67,11 @@ app.run( [
 
                     } );
                 } );
+                SqlService.Drop( 'Imgr2_PutawayScan' ).then( function ( res ) {
+                    SqlService.Create( 'Imgr2_PutawayScan', TABLE_DB.Imgr2_Putaway ).then( function ( res ) {
+
+                    } );
+                } );
                 SqlService.Drop( 'Imgr2_Transfer' ).then( function ( res ) {
                     SqlService.Create( 'Imgr2_Transfer', TABLE_DB.Imgr2_Transfer ).then( function ( res ) {
 
