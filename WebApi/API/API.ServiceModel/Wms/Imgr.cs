@@ -35,6 +35,7 @@ namespace WebApi.ServiceModel.Wms
         public string DimensionFlagList { get; set; }
         public string NewFlagList { get; set; }
         public string DimensionQtyList { get; set; }
+        public string StoreNoList { get; set; }
 
     }
     public class Imgr_Logic
@@ -76,7 +77,8 @@ namespace WebApi.ServiceModel.Wms
                                                 "Order By Imgr1.ReceiptDate Desc"
                                 );
                             }
-                            else {
+                            else
+                            {
                                 Result = db.Select<Imgr1>(
                                             "Select Top 10 Imgr1.* From Imgr1 " +
                                             "Where IsNull(GoodsReceiptNoteNo,'')<>'' " +
@@ -85,7 +87,6 @@ namespace WebApi.ServiceModel.Wms
                                             "Order By Imgr1.ReceiptDate Desc"
                             );
                             }
-                            
                         }
                     }
                     else if (!string.IsNullOrEmpty(request.GoodsReceiptNoteNo))
@@ -107,12 +108,22 @@ namespace WebApi.ServiceModel.Wms
                             //Result = db.SelectParam<Imgr1>(
                             //					i => i.GoodsReceiptNoteNo != null && i.GoodsReceiptNoteNo != "" && i.StatusCode == request.StatusCode && i.GoodsReceiptNoteNo.StartsWith(request.GoodsReceiptNoteNo)
                             //);
-                            Result = db.Select<Imgr1>(
-                                            "Select Top 10 Imgr1.* From Imgr1 " +
-                                            "Where IsNUll(StatusCode,'')='" + request.StatusCode + "' " +
-                                            "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
-                                            "And IsNUll(GoodsReceiptNoteNo,'') LIKE '" + request.GoodsReceiptNoteNo + "%'"
-                            );
+                            if (request.StatusCode == "EXE") {
+                                Result = db.Select<Imgr1>(
+                                               "Select Top 10 Imgr1.* From Imgr1 " +
+                                               "Where IsNUll(StatusCode,'')<>'DEL' And IsNUll(StatusCode,'')<>'EXE' " +
+                                               "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
+                                               "And IsNUll(GoodsReceiptNoteNo,'') LIKE '" + request.GoodsReceiptNoteNo + "%'"
+                               );
+                            }
+                            else {
+                                Result = db.Select<Imgr1>(
+                                               "Select Top 10 Imgr1.* From Imgr1 " +
+                                               "Where IsNUll(StatusCode,'')='" + request.StatusCode + "' " +
+                                               "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
+                                               "And IsNUll(GoodsReceiptNoteNo,'') LIKE '" + request.GoodsReceiptNoteNo + "%'"
+                               );
+                            }                           
                         }
                     }
                 }
@@ -264,16 +275,27 @@ namespace WebApi.ServiceModel.Wms
             try
             {
                 string[] QtyRemarkDetail = request.QtyRemarkList.Split(',');
-                string[] StoreNoDetail = request.StoreNoList.Split(',');
                 string[] LineItemNoDetail = request.LineItemNoList.Split(',');
                 string[] DimensionFlagDetail = request.DimensionFlagList.Split(',');
                 string[] NewFlagDetail = request.NewFlagList.Split(',');
                 string[] DimensionQtyDetail = request.DimensionQtyList.Split(',');
+                string[] StoreNoDetail = request.StoreNoList.Split(',');
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    for (int i = 0; i < QtyRemarkDetail.Length; i++)
+                    string UpdateNewFlag = "N";
+                    if (request.NewFlagList.Trim() == "")
                     {
-                        Result = db.SqlScalar<int>("@TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(LineItemNoDetail[i]), NewFlag = NewFlagDetail[i], DimensionQty = DimensionQtyDetail[i], QtyRemark = QtyRemarkDetail[i], DimensionFlag = DimensionFlagDetail[i], UpdateBy = request.UserID });
+                        Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(request.LineItemNoList), NewFlag = UpdateNewFlag, DimensionQty = int.Parse(request.DimensionQtyList), QtyRemark = request.QtyRemarkList, DimensionFlag = request.DimensionFlagList, StoreNo = request.StoreNoList, UpdateBy = request.UserID });
+                    }
+                    else
+                    {
+                        for (int i = 0; i < DimensionFlagDetail.Length; i++)
+                        {
+                            UpdateNewFlag= NewFlagDetail[i];
+                            if (UpdateNewFlag!="Y")
+                            {UpdateNewFlag="N";}
+                            Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(LineItemNoDetail[i]), NewFlag =UpdateNewFlag, DimensionQty = DimensionQtyDetail[i], QtyRemark = QtyRemarkDetail[i], DimensionFlag = DimensionFlagDetail[i], StoreNo = StoreNoDetail[i], UpdateBy = request.UserID });
+                        }
                     }
                     Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
                 }

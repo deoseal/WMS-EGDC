@@ -95,9 +95,9 @@ namespace WebApi.ServiceModel.Wms
                     {
                         strFilter = strFilter + " AND WarehouseCode='" + Modfunction.SQLSafe(request.WarehouseCode) + "' And StoreNo='" + Modfunction.SQLSafe(request.StoreNo) + "'";
                     }
-                    else if (!string.IsNullOrEmpty(request.TrxNo))
+                   else if (!string.IsNullOrEmpty(request.ProductTrxNo))
                     {
-                        strFilter = strFilter + " AND ProductTrxNo = " + int.Parse(request.TrxNo);
+                        strFilter = strFilter + " AND ProductTrxNo = " + int.Parse(request.ProductTrxNo);
                     }
                     Result = db.Select<Impm1_Enquiry>(strSql+ strFilter);
                 }
