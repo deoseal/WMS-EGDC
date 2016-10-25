@@ -47,7 +47,7 @@ appControllers.controller('PickingListCtrl', [
             return moment(utc).format('DD-MMM-YYYY');
         };
         $scope.GoToDetail = function (Imgi1) {
-            if (Imgi1 != null) {
+            if (Imgi1 !== null) {
                 $state.go('pickingDetail', {
                     'CustomerCode': Imgi1.CustomerCode,
                     'TrxNo': Imgi1.TrxNo,

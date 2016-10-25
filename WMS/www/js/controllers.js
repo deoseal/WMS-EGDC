@@ -69,7 +69,7 @@ appControllers.controller( 'IndexCtrl', [
             } else {
                 PopupService.Info(popup, 'No Updates!').then();
             }
-        }
+        };
         $rootScope.$on( 'logout', function() {
             $scope.Status.Login = false;
             $ionicSideMenuDelegate.toggleLeft();

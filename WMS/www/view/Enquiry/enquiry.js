@@ -188,7 +188,7 @@ appControllers.controller('EnquiryListCtrl', [
             } else {
                 $scope.Impm1sEnquiry = {};
             }
-        }
+        };
         $scope.openCam = function (type) {
             if (!ENV.fromWeb) {
                 if (is.equal(type, 'ProductCode')) {

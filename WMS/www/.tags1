@@ -1,0 +1,45 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	0	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+refreshRcbp1	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.refreshRcbp1 = function (scanBusinessPartyName, BusinessPartyName) {$/;"	function	line:29
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^                ApiService.Get(objUri, false).then(function success(result) {$/;"	function	line:33
+refreshGrnNos	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.refreshGrnNos = function (scanGrn, Grn) {$/;"	function	line:48
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^                ApiService.Get(objUri, false).then(function success(result) {$/;"	function	line:53
+showImgr1	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.showImgr1 = function (Customer) {$/;"	function	line:64
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^                ApiService.Get(objUri, true).then(function success(result) {$/;"	function	line:69
+showDate	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.showDate = function (utc) {$/;"	function	line:79
+showImgr2	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.showImgr2 = function (blnGrn, GoodsReceiptNoteNo) {$/;"	function	line:82
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^                ApiService.Get(objUri, true).then(function success(result) {$/;"	function	line:86
+returnMain	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.returnMain = function () {$/;"	function	line:98
+openCam	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.openCam = function (imgr2) {$/;"	function	line:103
+GoToDetail	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.GoToDetail = function (Imgr1) {$/;"	function	line:120
+UpdateInsertImgr2	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var UpdateInsertImgr2 = function (barcode, Type) {$/;"	function	line:199
+NewImgr2	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.NewImgr2 = function () {$/;"	function	line:272
+showImpr	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var showImpr = function (barcode) {$/;"	function	line:326
+showImprk	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.showImprk = function () {$/;"	function	line:329
+ShowImgr1Detail	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.ShowImgr1Detail = function (barcode) {$/;"	function	line:332
+setScanQty	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var setScanQty = function (barcode, imgr2) {$/;"	function	line:341
+Onfocus	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.Onfocus = function (type) {$/;"	function	line:393
+ShowImprDetailNotQty	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.ShowImprDetailNotQty = function () {$/;"	function	line:402
+setStoreNo	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.setStoreNo = function () {$/;"	function	line:431
+setSnQty	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var setSnQty = function (barcode, imgr2) {$/;"	function	line:445
+showSn	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var showSn = function (sn) {$/;"	function	line:459
+openCam	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.openCam = function (type) {$/;"	function	line:490
+openModal	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.openModal = function () {$/;"	function	line:524
+ShowModalDetail	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.ShowModalDetail = function (results) {$/;"	function	line:541
+updateQtyStatus	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.updateQtyStatus = function () {$/;"	function	line:561
+closeModal	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.closeModal = function () {$/;"	function	line:573
+returnList	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.returnList = function () {$/;"	function	line:579
+clearInput	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.clearInput = function (type) {$/;"	function	line:589
+changeQty	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.changeQty = function () {$/;"	function	line:611
+onTap	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^                            onTap: function (e) {$/;"	function	line:627
+checkConfirm	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.checkConfirm = function (results) {$/;"	function	line:641
+enter	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        $scope.enter = function (ev, type) {$/;"	function	line:721
+sendConfirm	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var sendConfirm = function (hmImgr2Confirm) {$/;"	function	line:746
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^                    ApiService.Get(objUri, true).then(function success(result) {});$/;"	function	line:779
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^            ApiService.Get(objUriUpdate, false).then(function success(result) {});$/;"	function	line:813
+GetImgr2ProductCode	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^        var GetImgr2ProductCode = function (GoodsReceiptNoteNo) {$/;"	function	line:819
+success	C:\Users\Administrator\Desktop\WMS-EGDC\WMS\www\view\Putaway\putaway.js	/^            ApiService.Get(objUri, true).then(function success(result) {$/;"	function	line:822

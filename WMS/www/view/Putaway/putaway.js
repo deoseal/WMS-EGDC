@@ -48,7 +48,7 @@ appControllers.controller('PutawayListCtrl', [
         $scope.refreshGrnNos = function (scanGrn, Grn) {
             if (is.not.undefined(Grn) && is.not.empty(Grn)) {
                 var objUri = ApiService.Uri(true, '/api/wms/imgr1');
-                objUri.addSearch('StatusCode', 'EXE');
+                objUri.addSearch('StatusCode', 'USE');
                 objUri.addSearch('GoodsReceiptNoteNo', Grn);
                 ApiService.Get(objUri, false).then(function success(result) {
                     $scope.GrnNos = result.data.results;
@@ -64,7 +64,7 @@ appControllers.controller('PutawayListCtrl', [
         $scope.showImgr1 = function (Customer) {
             if (is.not.undefined(Customer) && is.not.empty(Customer)) {
                 var objUri = ApiService.Uri(true, '/api/wms/imgr1');
-                objUri.addSearch('StatusCode', 'EXE');
+                objUri.addSearch('StatusCode', 'USE');
                 objUri.addSearch('CustomerCode', Customer);
                 ApiService.Get(objUri, true).then(function success(result) {
                     $scope.Imgr1s = result.data.results;
@@ -118,7 +118,7 @@ appControllers.controller('PutawayListCtrl', [
             }
         };
         $scope.GoToDetail = function (Imgr1) {
-            if (Imgr1 != null) {
+            if (Imgr1 !== null) {
                 $state.go('GrPutawayDetail', {
                     'CustomerCode': Imgr1.CustomerCode,
                     'TrxNo': Imgr1.TrxNo,
@@ -128,6 +128,18 @@ appControllers.controller('PutawayListCtrl', [
                 });
             }
         };
+
+        $scope.clearInput = function (type) {
+            if (is.equal(type, 'Customer')) {
+                $scope.Rcbp1.selected= null;
+                $scope.GrnNo.selected = null;
+                $scope.showImgr1(null);
+            } else if (is.equal(type, 'GrnNo')) {
+                $scope.GrnNo.selected = null;
+                $scope.showImgr2(null, null);
+            }
+        };
+
     }
 ]);
 
@@ -201,7 +213,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 if (hmImgr2.has(barcode)) {
                     if ($scope.OldBarCode === "" || $scope.OldBarCode != barcode) {
                         var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
-                        SqlService.Select('Imgr2_Putaway', '*', "ProductIndex='" + imgr2.ProductIndex + "' AND ActualQty!=ScanQty").then(function (results) {
+                        SqlService.Select('Imgr2_Putaway', '*', "ProductIndex='" + imgr2.ProductIndex + "' AND StagingAreaFlag!='Y' AND ActualQty!=ScanQty").then(function (results) {
                             if (results.rows.length === 1) {
                                 $scope.Detail.Scan.TrxNo = results.rows.item(0).TrxNo;
                                 $scope.Detail.Scan.LineItemNo = results.rows.item(0).LineItemNo;
@@ -226,7 +238,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     $scope.OldBarCode = $scope.Detail.Scan.BarCode;
                                 }
                             } else {
-                                SqlService.Select('Imgr2_Putaway', '*', "(BarCode1='" + $scope.Detail.Scan.BarCode + "' OR BarCode2='" + $scope.Detail.Scan.BarCode + "'  OR BarCode3='" + $scope.Detail.Scan.BarCode + "' )").then(function (results) {
+                                SqlService.Select('Imgr2_Putaway', '*', " StagingAreaFlag!='Y' AND (BarCode1='" + $scope.Detail.Scan.BarCode + "' OR BarCode2='" + $scope.Detail.Scan.BarCode + "'  OR BarCode3='" + $scope.Detail.Scan.BarCode + "' )").then(function (results) {
                                     if (results.rows.length >= 1) {
                                         for (var i = 0; i < results.rows.length; i++) {
                                             if (results.rows.item(i).ActualQty != results.rows.item(i).ScanQty || i === results.rows.length - 1) {
@@ -238,7 +250,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                                 imgr2.ProductIndex = results.rows.item(i).ProductIndex;
                                                 var objUpdate = {
                                                     NewBarCode: barcode
-                                                }
+                                                };
                                                 SqlService.Update('Imgr2_Putaway', objUpdate, "ProductIndex='" + imgr2.ProductIndex + "'").then(function (res) {
                                                     hmImgr2.remove(imgr2.NewBarCode);
                                                     hmImgr2.set(imgr2.NewBarCode, imgr2);
@@ -321,7 +333,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     });
                 }
             }
-        }
+        };
 
         var showImpr = function (barcode) {
             UpdateInsertImgr2(barcode, "B");
@@ -358,7 +370,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                         LineItemNo: imgr2.LineItemNo,
                         Qty: imgr2.ScanQty
                     };
-                })
+                });
                 $('#txt-sn').removeAttr('readonly');
             } else {
                 SqlService.Select('Imgr2_Putaway', '*', "NewBarCode='" + barcode + "' And ProductIndex='" + imgr2.ProductIndex + "'").then(function (results) {
@@ -386,7 +398,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                         LineItemNo: imgr2.LineItemNo,
                         Qty: imgr2.ScanQty
                     };
-                })
+                });
             }
         };
 
@@ -398,7 +410,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 $scope.ShowImprDetailNotQty();
                 $('#txt-StoreNo').select();
             }
-        }
+        };
         $scope.ShowImprDetailNotQty = function () {
             if ($scope.Detail.Scan.BarCode != $scope.OldBarCode) {
                 var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
@@ -556,7 +568,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 $scope.Detail.Imgr2sDb.push(imgr2);
             }
             $ionicLoading.hide();
-        }
+        };
         $scope.StatusAll = ["", "Damaged", "Shortlanded", "Overlanded"];
         $scope.updateQtyStatus = function () {
             var len = $scope.Detail.Imgr2sDb.length;
@@ -564,12 +576,13 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 for (var i = 0; i < len; i++) {
                     var Imgr2_PutawayFilter = " ProductIndex='" + $scope.Detail.Imgr2sDb[i].ProductIndex + "' "; // not record
                     var objImgr2_Putaway = {
-                        QtyStatus: $scope.Detail.Imgr2sDb[i].QtyStatus
+                        QtyStatus: $scope.Detail.Imgr2sDb[i].QtyStatus,
+                        StoreNo:$scope.Detail.Imgr2sDb[i].StoreNo,
                     };
                     SqlService.Update('Imgr2_Putaway', objImgr2_Putaway, Imgr2_PutawayFilter).then(function (res) {});
                 }
             }
-        }
+        };
         $scope.closeModal = function () {
             $scope.updateQtyStatus();
             $scope.Detail.Imgr2sDb = {};
@@ -614,13 +627,18 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 $scope.showImprk();
                 if (hmImgr2.count() > 0 && hmImgr2.has($scope.Detail.Scan.BarCode)) {
                     var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
+                    var TempQty=  $scope.Detail.Scan.Qty;
                     var promptPopup = $ionicPopup.show({
                         template: '<input type="number" ng-model="Detail.Scan.Qty">',
                         title: 'Enter Qty',
                         subTitle: 'Are you sure to change Qty manually?',
                         scope: $scope,
                         buttons: [{
-                            text: 'Cancel'
+                            text: 'Cancel',
+                            onTap: function(e){
+                              // var TempQty=$scope.Detail.Scan.Qty;
+                               $scope.Detail.Scan.Qty=TempQty;
+                    }
                         }, {
                             text: '<b>Save</b>',
                             type: 'button-positive',
@@ -630,7 +648,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     StoreNo: $scope.Detail.Scan.StoreNo,
                                     ScanQty: imgr2.ScanQty
                                 };
-                                var strFilter = "NewBarCode='" + imgr2.BarCode + "' And ProductIndex='" + $scope.Detail.Scan.ProductIndex + "'";
+                                var strFilter = "NewBarCode='" + imgr2.BarCode + "' And ProductIndex='" + imgr2.ProductIndex + "'";
                                 SqlService.Update('Imgr2_Putaway', obj, strFilter).then();
                             }
                         }]
@@ -774,7 +792,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     var objUri = ApiService.Uri(true, '/api/wms/imsn1/create');
                     objUri.addSearch('ReceiptNoteNo', $scope.Detail.GRN);
                     objUri.addSearch('ReceiptLineItemNo', imgr2.LineItemNo);
-                    objUri.addSearch('SerialNos=', SerialNos);
+                    objUri.addSearch('SerialNos', SerialNos);
                     objUri.addSearch('Imgr2TrxNo', imgr2.TrxNo);
                     ApiService.Get(objUri, true).then(function success(result) {});
                 }
@@ -825,6 +843,12 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 SqlService.Delete('Imgr2_Putaway').then(function (res) {
                     for (var i = 0; i < $scope.Detail.Imgr2s.length; i++) {
                         var objImgr2 = $scope.Detail.Imgr2s[i];
+                        if (objImgr2.StagingAreaFlag==="Y"){
+                          objImgr2.ScanQty=objImgr2.Qty;
+                        }
+                        else {
+                          objImgr2.StoreNo=objImgr2.DefaultStoreNo;
+                        }
                         objImgr2.ProductIndex = i;
                         hmImgr2.set(objImgr2.BarCode, objImgr2);
                         hmImgr2.set(objImgr2.BarCode2, objImgr2);

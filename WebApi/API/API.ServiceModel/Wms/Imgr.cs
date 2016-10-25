@@ -58,6 +58,7 @@ namespace WebApi.ServiceModel.Wms
                             Result = db.Select<Imgr1>(
                                             "Select Top 10 Imgr1.* From Imgr1 " +
                                             "Where IsNull(GoodsReceiptNoteNo,'')<>'' And IsNUll(StatusCode,'')<>'DEL' And IsNUll(StatusCode,'')<>'EXE' And IsNUll(StatusCode,'')<>'CMP' " +
+                                             "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
                                             "And IsNUll(CustomerCode,'') = '" + request.CustomerCode + "' " +
                                             "Order By Imgr1.ReceiptDate Desc"
                             );
@@ -73,6 +74,7 @@ namespace WebApi.ServiceModel.Wms
                                                 "Select Top 10 Imgr1.* From Imgr1 " +
                                                 "Where IsNull(GoodsReceiptNoteNo,'')<>'' " +
                                                 "And (IsNUll(StatusCode,'') != 'EXE' AND IsNUll(StatusCode,'') != 'DEL') " +
+                                                "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
                                                 "And IsNUll(CustomerCode,'') = '" + request.CustomerCode + "' " +
                                                 "Order By Imgr1.ReceiptDate Desc"
                                 );
@@ -82,6 +84,7 @@ namespace WebApi.ServiceModel.Wms
                                 Result = db.Select<Imgr1>(
                                             "Select Top 10 Imgr1.* From Imgr1 " +
                                             "Where IsNull(GoodsReceiptNoteNo,'')<>'' " +
+                                            "And (Select count(*) from Imgr2 Where Imgr2.TrxNo=Imgr1.TrxNo) > 0 " +
                                             "And IsNUll(StatusCode,'') = '" + request.StatusCode + "' " +
                                             "And IsNUll(CustomerCode,'') = '" + request.CustomerCode + "' " +
                                             "Order By Imgr1.ReceiptDate Desc"
@@ -220,8 +223,8 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS StoreNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS DefaultStoreNo,0 as ProductIndex," +
-                                    "(Select StagingAreaFlag From Whwh2 Where WarehouseCode=Imgr2.WarehouseCode And StoreNo=IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'')) AS StagingAreaFlag," +
+                    string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, Imgr2.StoreNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS DefaultStoreNo,0 as ProductIndex," +
+                                    "isnull((Select StagingAreaFlag From Whwh2 Where WarehouseCode=Imgr2.WarehouseCode And StoreNo=Imgr2.StoreNo),'N') AS StagingAreaFlag," +
                                     "IsNull(Imgr2.ProductCode,'') AS ProductCode, IsNull(Imgr2.ProductDescription,'') AS ProductDescription, IsNull(Imgr2.UserDefine1,'') AS UserDefine1," +
                                     "(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS Qty,(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS ActualQty," + getBarCodeListSelect() +
                                      "(Select Top 1 SerialNoFlag From Impr1 Where TrxNo=Imgr2.ProductTrxNo) AS SerialNoFlag," +
