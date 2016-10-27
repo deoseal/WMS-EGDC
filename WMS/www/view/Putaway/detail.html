@@ -44,7 +44,7 @@
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-keypress="enter($event, 'StoreNo')">
+								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;"   ng-blur= "lost()"  ng-keypress="enter($event, 'StoreNo')">
 							</label>
 						</div>
 						<div class="col col-10">

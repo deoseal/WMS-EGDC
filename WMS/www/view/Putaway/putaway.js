@@ -265,6 +265,9 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                             }
                                         }
                                     }
+                                    else{
+                                          PopupService.Alert(popup, 'StagingAreaFlag Equal To Y');
+                                    }
                                 });
                             }
                         });
@@ -441,7 +444,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
             }
         };
         $scope.setStoreNo = function () {
-            if ($scope.Detail.Scan != null && is.not.empty($scope.Detail.Scan.StoreNo) && is.not.empty($scope.Detail.Scan.ProductIndex)) {
+            if ($scope.Detail.Scan !== null && is.not.empty($scope.Detail.Scan.StoreNo) && is.not.empty($scope.Detail.Scan.ProductIndex)) {
                 $scope.StoreNo = $scope.Detail.Scan.StoreNo;
                 var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
                 imgr2.StoreNo = $scope.Detail.Scan.StoreNo;
@@ -536,6 +539,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
         $scope.openModal = function () {
             $scope.modal.show();
             $ionicLoading.show();
+            $scope.lost();
             SqlService.Select('Imgr2_Putaway', '*').then(function (results) {
                 if (results.rows.length > 0) {
                     $scope.ShowModalDetail(results);
@@ -694,8 +698,8 @@ appControllers.controller('GrPutawayDetailCtrl', [
                             NewFlag:results.rows.item(i).NewFlag
                         };
                         hmImgr2Confirm.set(imgr2.ProductIndex,imgr2);
-                        if (imgr2.StoreNo != null && imgr2.StoreNo.length > 0) {
-                            if (imgr2.BarCode != null && imgr2.BarCode.length > 0) {
+                        if (imgr2.StoreNo !== null && imgr2.StoreNo.length > 0) {
+                            if (imgr2.BarCode !== null && imgr2.BarCode.length > 0) {
                                 switch (results.rows.item(i).DimensionFlag) {
                                 case '1':
                                     imgr2.QtyName = 'PackingQty';
@@ -707,10 +711,10 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     imgr2.QtyName = 'LooseQty';
                                 }
                                 if (imgr2.Qty != imgr2.ScanQty) {
-                                    if (imgr2.Qty < imgr2.ScanQty && imgr2.QtyStatus != null && imgr2.QtyStatus === 'Overlanded') {
+                                    if (imgr2.Qty < imgr2.ScanQty && imgr2.QtyStatus !==null && imgr2.QtyStatus === 'Overlanded') {
                                         hmImgr2.remove(imgr2.BarCode);
                                         hmImgr2.set(imgr2.BarCode, imgr2);
-                                    } else if (imgr2.Qty > imgr2.ScanQty && imgr2.QtyStatus != null && (imgr2.QtyStatus === 'Damaged' || imgr2.QtyStatus === 'Shortlanded')) {
+                                    } else if (imgr2.Qty > imgr2.ScanQty && imgr2.QtyStatus !== null && (imgr2.QtyStatus === 'Damaged' || imgr2.QtyStatus === 'Shortlanded')) {
                                         hmImgr2.remove(imgr2.BarCode);
                                         hmImgr2.set(imgr2.BarCode, imgr2);
                                     } else {
@@ -735,6 +739,14 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     }
                 }
             });
+        };
+        $scope.lost=function(){
+          $scope.setStoreNo();
+          if (ENV.parameter.showSerialNo) {
+              $('#txt-sn').select();
+          } else {
+              $('#txt-barcode').select();
+          }
         };
         $scope.enter = function (ev, type) {
             if (is.equal(ev.keyCode, 13)) {
@@ -782,11 +794,11 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 GoodsReceiptNoteNo = imgr2.GoodsReceiptNoteNo;
 
                 if (is.equal(imgr2.SerialNoFlag, 'Y')) {
-                    if (hmImsn1.count() > 0 && hmImsn1.has(barcode)) {
-                        SnArray = hmImsn1.get(barcode);
+                    if (hmImsn1.count() > 0 && hmImsn1.has(imgr2.BarCode)) {
+                        SnArray = hmImsn1.get(imgr2.BarCode);
                     }
                     for (var i in SnArray) {
-                        SerialNos = SerialNos + ',' + SnArray[i];
+                        SerialNos =SerialNos + ',' +  SnArray[i] ;
                     }
                     SerialNos = SerialNos.substr(1, SerialNos.length);
                     var objUri = ApiService.Uri(true, '/api/wms/imsn1/create');
@@ -830,7 +842,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
             objUriUpdate.addSearch('UserId', userID);
             ApiService.Get(objUriUpdate, false).then(function success(result) {});
             $ionicLoading.hide();
-            PopupService.Info(popup, 'Comfirm Success').then(function () {
+            PopupService.Info(popup, 'Confirm Success').then(function () {
                 $scope.returnList();
             });
         };
