@@ -748,6 +748,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
               $('#txt-barcode').select();
           }
         };
+
         $scope.enter = function (ev, type) {
             if (is.equal(ev.keyCode, 13)) {
                 if (is.null(popup)) {

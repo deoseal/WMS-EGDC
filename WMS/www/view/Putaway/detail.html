@@ -44,7 +44,7 @@
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;"   ng-blur= "lost()"  ng-keypress="enter($event, 'StoreNo')">
+								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-blur="lost()" ng-keypress="enter($event, 'StoreNo')">
 							</label>
 						</div>
 						<div class="col col-10">
@@ -111,7 +111,7 @@
 			<ion-content style="padding-top:14px; ">
 				<ion-list>
 					<!-- <ion-item nav-clear menu-close class="item item-icon-right" ng-repeat="Imgr2 in Detail.Imgr2sDb "> -->
-					<div class="card " ng-repeat="Imgr2 in Detail.Imgr2sDb " >
+					<div class="card " ng-repeat="Imgr2 in Detail.Imgr2sDb ">
 						<div class="item item-input ">
 							<div class="col-33 ">
 								<p>BarCode<span class="pull-right ">:&nbsp;</span></p>
@@ -142,50 +142,50 @@
 							</div>
 							<div class="col-67 ">
 								<div class="item-text-wrap ">
-									<p>
-									<input type="text " ng-model="Imgr2.StoreNo " style="padding-right: 14px; " ">
-						</p>
+									<!-- <p> -->
+										<input type="text " ng-model="Imgr2.StoreNo " style="padding-right: 14px;" >
+						<!-- </p> -->
 						</div>
 						</div>
 						</div>
-						<div class="item item-input">
-							<div class="col-33">
-								<p>Scan Qty<span class="pull-right">:&nbsp;</span></p>
+						<div class="item item-input ">
+							<div class="col-33 ">
+								<p>Scan Qty<span class="pull-right ">:&nbsp;</span></p>
 							</div>
-							<div class="col-67">
-								<div class="item-text-wrap">
+							<div class="col-67 ">
+								<div class="item-text-wrap ">
 									<p>
-										<span ng-bind="Imgr2.ScanQty"></span>
+										<span ng-bind="Imgr2.ScanQty "></span>
 									</p>
 								</div>
 							</div>
 						</div>
-						<div class="item item-input">
-							<div class="col-33">
-								<p>Actual Qty<span class="pull-right">:&nbsp;</span></p>
+						<div class="item item-input ">
+							<div class="col-33 ">
+								<p>Actual Qty<span class="pull-right ">:&nbsp;</span></p>
 							</div>
-							<div class="col-67">
-								<div class="item-text-wrap">
+							<div class="col-67 ">
+								<div class="item-text-wrap ">
 									<p>
-										<span ng-bind="Imgr2.ActualQty"></span>
+										<span ng-bind="Imgr2.ActualQty "></span>
 									</p>
 								</div>
 							</div>
 						</div>
-						<label class="item item-input item-select">
-							<div class="col col-33" style="padding-top:2px; padding-bottom: 2px; min-width:85%;">
+						<label class="item item-input item-select ">
+							<div class="col col-33 " style="padding-top:2px; padding-bottom: 2px; min-width:85%; ">
 								<label>Status:</label>
 							</div>
-							<div class="col col-67" ng-show="true">
-								<select ng-model="Imgr2.QtyStatus" ng-options="item for item in StatusAll"></select>
+							<div class="col col-67 " ng-show="true ">
+								<select ng-model="Imgr2.QtyStatus " ng-options="item for item in StatusAll "></select>
 							</div>
 						</label>
 						</div>
 				</ion-list>
 			</ion-content>
-			<ion-footer-bar class="bar-positive">
-				<div class="button-bar">
-					<button class="button icon ion-arrow-return-right" ng-click="closeModal()">&nbsp;Return</button>
+			<ion-footer-bar class="bar-positive ">
+				<div class="button-bar ">
+					<button class="button icon ion-arrow-return-right " ng-click="closeModal() ">&nbsp;Return</button>
 				</div>
 			</ion-footer-bar>
 		</ion-modal-view>
