@@ -25,5 +25,7 @@ namespace WebApi.ServiceModel.Tables
         public int ScanQty { get; set; }
         public string QtyStatus { get; set; }
         public string GoodsReceiptNoteNo { get; set; }
+        public string CustomerCode { get; set; }
+        
     }
 }

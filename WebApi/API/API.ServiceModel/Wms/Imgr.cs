@@ -272,12 +272,27 @@ namespace WebApi.ServiceModel.Wms
             catch { throw; }
             return Result;
         }
+
+        //public string[] test(string[] s) {
+        //    if (s == null)
+        //    {
+        //        return null;
+        //    }
+        //    else {
+        //        return s;
+        //    }
+           
+        //}
         public int Update_Imgr2_StoreNo(Imgr request)
         {
             int Result = -1;
             try
             {
-                string[] QtyRemarkDetail = request.QtyRemarkList.Split(',');
+                string[] QtyRemarkDetail = { "" };
+                if (request.QtyRemarkList != null && request.NewFlagList.Trim() != "")
+                {
+                    QtyRemarkDetail= request.QtyRemarkList.Split(',');
+                }                                 
                 string[] LineItemNoDetail = request.LineItemNoList.Split(',');
                 string[] DimensionFlagDetail = request.DimensionFlagList.Split(',');
                 string[] NewFlagDetail = request.NewFlagList.Split(',');
@@ -286,7 +301,7 @@ namespace WebApi.ServiceModel.Wms
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
                     string UpdateNewFlag = "N";
-                    if (request.NewFlagList.Trim() == "")
+                    if (request.NewFlagList == null || request.NewFlagList.Trim() == "")
                     {
                         Result = db.SqlScalar<int>("EXEC spi_Imgr2_Mobile @TrxNo,@LineItemNo,@NewFlag,@DimensionQty,@QtyRemark,@DimensionFlag,@StoreNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), LineItemNo = int.Parse(request.LineItemNoList), NewFlag = UpdateNewFlag, DimensionQty = int.Parse(request.DimensionQtyList), QtyRemark = request.QtyRemarkList, DimensionFlag = request.DimensionFlagList, StoreNo = request.StoreNoList, UpdateBy = request.UserID });
                     }
@@ -301,6 +316,20 @@ namespace WebApi.ServiceModel.Wms
                         }
                     }
                     Result = db.SqlScalar<int>("EXEC spi_Imgr_Confirm @TrxNo,@UpdateBy", new { TrxNo = int.Parse(request.TrxNo), UpdateBy = request.UserID });
+                    if (Result != -1)
+                    {
+                        List<Imgr2_Receipt> Result1 = null;
+                        Result1 = db.Select<Imgr2_Receipt>(
+                                                "select Imgr1.GoodsReceiptNoteNo,Imgr1.CustomerCode,Imgr2.LineItemNo,Imgr1.TrxNo from imgr1 join imgr2 on imgr1.TrxNo =imgr2.TrxNo where Imgr1.TrxNo =  '" + request.TrxNo + "' "
+                                );
+                        if (Result1 != null && Result1.Count > 0)
+                        {
+                            for (int i = 0; i < Result1.Count; i++)
+                            {
+                                Result = db.SqlScalar<int>("Update Imgr2 Set MovementTrxNo=(Select TrxNo From Impm1 Where BatchNo=@GoodsReceiptNoteNo And BatchLineItemNo=@BatchLineItemNo And CustomerCode=@CustomerCode) Where TrxNo=@TrxNo  And LineItemNo=@LineItemNo", new { GoodsReceiptNoteNo = Result1[i].GoodsReceiptNoteNo, BatchLineItemNo = Result1[i].LineItemNo, CustomerCode = Result1[i].CustomerCode, TrxNo = int.Parse(request.TrxNo), LineItemNo = Result1[i].LineItemNo });
+                            }
+                        }
+                    }
                 }
             }
             catch { throw; }

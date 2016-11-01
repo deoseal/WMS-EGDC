@@ -304,6 +304,9 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                 var objimgr2 = {
                                     ActualQty: results.rows.item(i).ScanQty
                                 };
+                                if( results.rows.item(i).Qty<=results.rows.item(i).ScanQty){
+                                  objimgr2.ActualQty=results.rows.item(i).Qty;
+                                }
                                 SqlService.Update('Imgr2_Putaway', objimgr2, "ProductIndex=" + results.rows.item(i).ProductIndex).then();
                             }
                             if (imgr2.ScanQty < 0) {
@@ -312,6 +315,9 @@ appControllers.controller('GrPutawayDetailCtrl', [
                             $scope.StoreNo = imgr2.DefaultStoreNo;
                             imgr2.StoreNo = $scope.StoreNo;
                             imgr2.ActualQty = imgr2.ScanQty;
+                            if( imgr2.Qty<=imgr2.ScanQty){
+                              imgr2.ActualQty =imgr2.Qty;
+                            }
                             imgr2.NewBarCode = $scope.Detail.Scan.BarCode;
                             imgr2.NewFlag = "Y";
                             SqlService.Select('Imgr2_Putaway', '*').then(function (results1) {
@@ -583,6 +589,10 @@ appControllers.controller('GrPutawayDetailCtrl', [
                         QtyStatus: $scope.Detail.Imgr2sDb[i].QtyStatus,
                         StoreNo:$scope.Detail.Imgr2sDb[i].StoreNo,
                     };
+                    if($scope.Detail.Scan.ProductIndex===$scope.Detail.Imgr2sDb[i].ProductIndex)
+                    {
+                      $scope.Detail.Scan.StoreNo=$scope.Detail.Imgr2sDb[i].StoreNo;
+                    }
                     SqlService.Update('Imgr2_Putaway', objImgr2_Putaway, Imgr2_PutawayFilter).then(function (res) {});
                 }
             }
@@ -726,7 +736,10 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                 blnDiscrepancies = true;
                             }
                         } else {
-                            blnDiscrepancies = true;
+                            // blnDiscrepancies = true;
+                            $ionicLoading.hide();
+                            PopupService.Alert(popup, 'Must enter the Store No').then(function (res) {
+                            });
                         }
                     }
                     if (blnDiscrepancies) {
@@ -810,7 +823,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     ApiService.Get(objUri, true).then(function success(result) {});
                 }
                 var QtyRemark = "";
-                if (imgr2.QtyStatus != null && imgr2.QtyStatus != '' && imgr2.Qty != imgr2.ScanQty) {
+                if (imgr2.QtyStatus !== null && imgr2.QtyStatus !== '' && imgr2.Qty != imgr2.ScanQty) {
                     QtyRemark = imgr2.QtyStatus + ' LN:' + imgr2.LineItemNo + ' ' + imgr2.ProductCode + ' ' + imgr2.Qty + '>' + imgr2.ScanQty;
                 }
                 if (intUpdate === 0) {
@@ -838,6 +851,8 @@ appControllers.controller('GrPutawayDetailCtrl', [
             objUriUpdate.addSearch('StoreNoList', StoreNoList);
             objUriUpdate.addSearch('LineItemNoList', LineItemNoList);
             objUriUpdate.addSearch('DimensionFlagList', DimensionFlagList);
+            if (NewFlagList===""){
+              NewFlagList="N";}
             objUriUpdate.addSearch('NewFlagList', NewFlagList);
             objUriUpdate.addSearch('DimensionQtyList', DimensionQtyList);
             objUriUpdate.addSearch('UserId', userID);
