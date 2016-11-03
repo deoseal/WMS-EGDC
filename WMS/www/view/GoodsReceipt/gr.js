@@ -576,11 +576,11 @@ appControllers.controller('GrDetailCtrl', [
                     var objUri = ApiService.Uri(true, '/api/wms/imsn1/create');
                     objUri.addSearch('ReceiptNoteNo', $scope.Detail.GRN);
                     objUri.addSearch('ReceiptLineItemNo', imgr2.LineItemNo);
-                    objUri.addSearch('SerialNos=', SerialNos);
+                    objUri.addSearch('SerialNos', SerialNos);
                     objUri.addSearch('Imgr2TrxNo', imgr2.TrxNo);
                     ApiService.Get(objUri, true).then(function success(result) {});
                 }
-                if (imgr2.QtyStatus != null && imgr2.QtyStatus != '' && imgr2.Qty != imgr2.ScanQty) {
+                if (imgr2.QtyStatus !== null && imgr2.QtyStatus !== '' && imgr2.Qty != imgr2.ScanQty) {
                     var objUri = ApiService.Uri(true, '/api/wms/imgr2/qtyremark');
                     objUri.addSearch('LineItemNo', imgr2.LineItemNo);
                     objUri.addSearch('TrxNo', imgr2.TrxNo);

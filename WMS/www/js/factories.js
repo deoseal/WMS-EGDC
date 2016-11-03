@@ -21,7 +21,8 @@ appFactory.factory( 'TABLE_DB', function () {
             WholeQty: 'INT',
             LooseQty: 'INT',
             ScanQty: 'INT',
-            QtyStatus:'TEXT'
+            QtyStatus:'TEXT',
+            CustomerCode:'TEXT'
         },
         Imsn1_Receipt: {
             ReceiptNoteNo: 'TEXT',
