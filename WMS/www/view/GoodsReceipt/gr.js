@@ -49,7 +49,7 @@ appControllers.controller('GrListCtrl', [
             return moment(utc).format('DD-MMM-YYYY');
         };
         $scope.GoToDetail = function (Imgr1) {
-            if (Imgr1 != null) {
+            if (Imgr1 !== null) {
                 $state.go('grDetail', {
                     'CustomerCode': Imgr1.CustomerCode,
                     'TrxNo': Imgr1.TrxNo,
@@ -346,7 +346,7 @@ appControllers.controller('GrDetailCtrl', [
                     SqlService.Update('Imgr2_Receipt', objImgr2_Receipt, Imgr2_ReceiptFilter).then(function (res) {});
                 }
             }
-        }
+        };
 
         $scope.closeModal = function () {
             $scope.updateQtyStatus();
