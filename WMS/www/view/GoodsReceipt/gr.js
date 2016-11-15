@@ -359,7 +359,7 @@ appControllers.controller('GrDetailCtrl', [
                 $ionicHistory.goBack();
             } else {
                 $state.go('grList', {}, {
-                    reload: true
+                    reload: false
                 });
             }
         };
