@@ -309,6 +309,12 @@ app.config( [ '$httpProvider', '$stateProvider', '$urlRouterProvider', '$ionicCo
                 cache: 'false',
                 templateUrl: 'view/GoodsTransfer/list.html',
                 controller: 'GtListCtrl'
+            } )
+            .state( 'cycleCountList', {
+                url: '/cycleCount/list',
+                cache: 'false',
+                templateUrl: 'view/CycleCount/list.html',
+                controller: 'cycleCountCtrl'
             } );
         $urlRouterProvider.otherwise( '/login' );
     } ] );

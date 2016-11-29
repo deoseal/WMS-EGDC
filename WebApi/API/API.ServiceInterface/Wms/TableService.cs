@@ -161,6 +161,7 @@ namespace WebApi.ServiceInterface.Wms
                 ecr.meta.message = "Unauthorized";
             }
         }
+
         public void TS_Imsn(Auth auth, Imsn request, Imsn_Logic imsn_Logic, CommonResponse ecr, string[] token, string uri)
         {
             if (auth.AuthResult(token, uri))
@@ -223,6 +224,25 @@ namespace WebApi.ServiceInterface.Wms
                 {
                     ecr.data.results = impm_Logic.Get_Impm1_List(request);
                 }
+                ecr.meta.code = 200;
+                ecr.meta.message = "OK";
+            }
+            else
+            {
+                ecr.meta.code = 401;
+                ecr.meta.message = "Unauthorized";
+            }
+        }
+        public void TS_Imcc(Auth auth, imcc request, imcc_loigc imcc_Logic, CommonResponse ecr, string[] token, string uri)
+        {
+            if (auth.AuthResult(token, uri))
+            {
+              
+                 if (uri.IndexOf("/wms/imcc1") > 0)
+                {
+                    ecr.data.results = imcc_Logic.Get_Imcc1_List(request);
+                }
+               
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";
             }

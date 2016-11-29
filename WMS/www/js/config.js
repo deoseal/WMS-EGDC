@@ -2,7 +2,7 @@
 var appConfig = angular.module('WMSAPP.config',[]);
 appConfig.constant('ENV', {
     website:      'www.sysfreight.net/app/wms/egdcwms',
-    // api:          'www.sysfreight.net/apis/wms/egdcwms',
+// api:          'www.sysfreight.net/apis/wms/egdcwms',
     api:        'localhost:5550',
     reset:  {
         website:      'www.sysfreight.net/app/wms/egdcwms',

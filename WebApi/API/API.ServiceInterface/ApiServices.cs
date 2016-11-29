@@ -156,6 +156,21 @@ namespace WebApi.ServiceInterface
             catch (Exception ex) { cr(ecr, ex); }
             return ecr;
         }
+
+        public ServiceModel.Wms.imcc_loigc wms_Imcc_Logic { get; set; }
+        public object Any(ServiceModel.Wms.imcc request)
+        {
+            CommonResponse ecr = new CommonResponse();
+            ecr.initial();
+            try
+            {
+                ServiceInterface.Wms.TableService ls = new ServiceInterface.Wms.TableService();
+                ls.TS_Imcc(auth, request, wms_Imcc_Logic, ecr, this.Request.Headers.GetValues("Signature"), this.Request.RawUrl);
+            }
+            catch (Exception ex) { cr(ecr, ex); }
+            return ecr;
+        }
+
         /*
         public object Any(List_AsnNo request)
         {

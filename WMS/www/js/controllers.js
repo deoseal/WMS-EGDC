@@ -395,4 +395,9 @@ appControllers.controller( 'MainCtrl', [
                 reload: true
             } );
         };
+        $scope.func_CycleCount = function() {
+            $state.go( 'cycleCountList', {}, {
+                reload: true
+            } );
+        };
     } ] );
