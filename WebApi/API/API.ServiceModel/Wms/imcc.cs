@@ -10,7 +10,8 @@ using WebApi.ServiceModel.Tables;
 
 namespace WebApi.ServiceModel.Wms
 {
-    [Route("/wms/imcc1", "Get")]
+    [Route("/wms/imcc1", "Get")]   //imcc1?CustomerCode ,imcc1?TrxNo
+    [Route("/wms/imcc2", "Get")]     //imcc2?TrxNo
     public class imcc : IReturn<CommonResponse>
     {
         public string CustomerCode { get; set; }
@@ -43,6 +44,28 @@ namespace WebApi.ServiceModel.Wms
                       
                     }
 
+                }
+            }
+            catch { throw; }
+            return Result;
+        }
+
+
+        public List<Imcc2> Get_Imcc2_List(imcc request)
+        {
+            List<Imcc2> Result = null;
+            try
+            {
+                using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
+                {
+                    string strSql = " select TrxNo ,LineItemNo ,WarehouseCode ,StoreNo ,ProductTrxNo ,'' as Description,'' as PackingQtyTempValue ,'' as WholeQtyTempValue ,'' as LooseQtyTempValue, " +
+                                    " isnull((select DimensionFlag from impr1 where impr1.TrxNo =imcc2.ProductTrxNo),'') as DimensionFlag, " +
+                                    " (select PackingUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo) as PackingUomCode, " +
+                                    " (select LooseUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo) as LooseUomCode, " +
+                                    " (select WholeUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo) as WholeUomCode  " +
+                        " from Imcc2 " +
+                                    " Where Imcc2.TrxNo='" + request.TrxNo + "'";
+                    Result = db.Select<Imcc2>(strSql);
                 }
             }
             catch { throw; }

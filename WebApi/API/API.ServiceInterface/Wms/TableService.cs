@@ -46,7 +46,7 @@ namespace WebApi.ServiceInterface.Wms
                 {
                     ecr.data.results = imgr_Logic.Update_Imgr2_QtyRemark(request);
                 }
-                
+
                 else if (uri.IndexOf("/wms/imgr2/putaway") > 0)
                 {
                     ecr.data.results = imgr_Logic.Get_Imgr2_Putaway_List(request);
@@ -113,7 +113,7 @@ namespace WebApi.ServiceInterface.Wms
                 if (uri.IndexOf("/wms/saal/create") > 0)
                 {
                     ecr.data.results = saal_Logic.Update_Saal(request);
-                }                
+                }
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";
             }
@@ -215,7 +215,7 @@ namespace WebApi.ServiceInterface.Wms
                 if (uri.IndexOf("/wms/impm1/enquiry") > 0)
                 {
                     ecr.data.results = impm_Logic.Get_Impm1_Enquiry_List(request);
-                }               
+                }
                 else if (uri.IndexOf("/wms/impm1/transfer") > 0)
                 {
                     ecr.data.results = impm_Logic.Get_Impm1_Transfer_List(request);
@@ -241,6 +241,8 @@ namespace WebApi.ServiceInterface.Wms
                  if (uri.IndexOf("/wms/imcc1") > 0)
                 {
                     ecr.data.results = imcc_Logic.Get_Imcc1_List(request);
+                }else if (uri.IndexOf("/wms/imcc2") > 0) {
+                    ecr.data.results = imcc_Logic.Get_Imcc2_List(request);
                 }
                
                 ecr.meta.code = 200;

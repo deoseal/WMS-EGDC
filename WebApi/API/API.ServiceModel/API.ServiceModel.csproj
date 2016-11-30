@@ -93,6 +93,7 @@
     <Compile Include="Freight\Rcvy.cs" />
     <Compile Include="Freight\ViewPDF.cs" />
     <Compile Include="Tables\Imcc1.cs" />
+    <Compile Include="Tables\Imcc2.cs" />
     <Compile Include="Tables\saal1.cs" />
     <Compile Include="Tables\Imgi2_Verify.cs" />
     <Compile Include="Tables\Imgi2_Picking.cs" />
