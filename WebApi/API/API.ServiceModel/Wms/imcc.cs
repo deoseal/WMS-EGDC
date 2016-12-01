@@ -38,7 +38,7 @@ namespace WebApi.ServiceModel.Wms
                     {
                         
                             Result = db.SelectParam<Imcc1>(
-                                            i => i.CustomerCode != null && i.CustomerCode != ""  && i.TrxNo == request.TrxNo
+                                            i => i.TrxNo >0 && i.TrxNo == request.TrxNo
                             ).OrderByDescending(i => i.CycleCountDateTime).ToList<Imcc1>();
                         
                       
@@ -60,11 +60,13 @@ namespace WebApi.ServiceModel.Wms
                 {
                     string strSql = " select TrxNo ,LineItemNo ,WarehouseCode ,StoreNo ,ProductTrxNo ,'' as Description,'' as PackingQtyTempValue ,'' as WholeQtyTempValue ,'' as LooseQtyTempValue, " +
                                     " isnull((select DimensionFlag from impr1 where impr1.TrxNo =imcc2.ProductTrxNo),'') as DimensionFlag, " +
-                                    " (select PackingUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo) as PackingUomCode, " +
-                                    " (select LooseUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo) as LooseUomCode, " +
-                                    " (select WholeUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo) as WholeUomCode  " +
+                                    " isnull((select PackingUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo),'') as PackingUomCode, " +
+                                    " isnull((select LooseUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo),'') as LooseUomCode, " +
+                                    " isnull((select WholeUomCode from impr1 where impr1.TrxNo =imcc2.ProductTrxNo),'') as WholeUomCode,  " +
+                                    " isnull((select ProductCode from impr1 where  impr1.TrxNo=imcc2.ProductTrxNo),'') as  ProductCode ," +
+                                    "   RowNum = ROW_NUMBER() OVER (ORDER BY Imcc2.lineItemNo ASC) " +
                         " from Imcc2 " +
-                                    " Where Imcc2.TrxNo='" + request.TrxNo + "'";
+                                    " Where Imcc2.TrxNo='" + request.TrxNo + "' order by LineItemNo";
                     Result = db.Select<Imcc2>(strSql);
                 }
             }

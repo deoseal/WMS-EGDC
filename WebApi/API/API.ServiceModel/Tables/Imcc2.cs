@@ -6,7 +6,8 @@ using System.Text;
 namespace WebApi.ServiceModel.Tables
 {
      public  class Imcc2
-{
+    {
+        public int RowNum { get; set; }
         public int TrxNo { get; set; }
         public int LineItemNo { get; set; }
         public string WarehouseCode { get; set; }
@@ -20,7 +21,8 @@ namespace WebApi.ServiceModel.Tables
         public string DimensionFlag { get; set; }
         public string PackingUomCode { get; set; }
         public string LooseUomCode { get; set; }
-        public string WholeUomCode { get; set; }
+        public string WholeUomCode { get; set; }      
+        public string ProductCode { get; set; }
 
     }
 }

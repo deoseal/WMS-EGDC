@@ -147,6 +147,7 @@ appFactory.factory('TABLE_DB', function () {
             SerialNo: 'TEXT'
         },
         Imcc2_CycleCount: {
+            RowNum: 'INT',
             TrxNo: 'INT',
             LineItemNo: 'INT',
             WarehouseCode: 'TEXT',
@@ -161,6 +162,7 @@ appFactory.factory('TABLE_DB', function () {
             PackingUomCode: 'TEXT',
             LooseUomCode: 'TEXT',
             WholeUomCode: 'TEXT',
+            ProductCode: 'TEXT',
         }
     };
     return TABLE_DB;

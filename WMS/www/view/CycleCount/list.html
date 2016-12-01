@@ -27,9 +27,9 @@
                 </div>
                 <div class="col col-67">
                     <ui-select theme="bootstrap" ng-model="TrxNo.selected" reset-search-input="true" on-select="GoToDetail(TrxNo.selected)">
-                        <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">{{$select.selected.GoodsReceiptNoteNo}}</ui-select-match>
+                        <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">{{$select.selected.TrxNo}}</ui-select-match>
                         <ui-select-choices repeat="TrxNo in TrxNos track by $index" refresh="refreshTrxNos($select.search)" refresh-delay="0" position="down">
-                            <div ng-bind-html="TrxNo.GoodsReceiptNoteNo | highlight: $select.search"></div>
+                            <div ng-bind-html="TrxNo.TrxNo | highlight: $select.search"></div>
                         </ui-select-choices>
                     </ui-select>
                 </div>

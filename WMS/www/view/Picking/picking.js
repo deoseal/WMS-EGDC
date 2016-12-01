@@ -343,7 +343,7 @@ appControllers.controller('PickingDetailCtrl', [
                     SqlService.Update('Imgi2_Picking', objImgi2_Picking, Imgi2_PickingFilter).then(function (res) {});
                 }
             }
-        }
+        };
 
         $scope.closeModal = function () {
             $scope.updateQtyStatus();
@@ -382,7 +382,7 @@ appControllers.controller('PickingDetailCtrl', [
                             $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
                             var obj = {
                                 ScanQty: imgi2.ScanQty
-                            }
+                            };
                             var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
                             SqlService.Update('Imgi2_Picking', obj, strFilter).then();
                         }
@@ -466,7 +466,7 @@ appControllers.controller('PickingDetailCtrl', [
             } else {
                 PopupService.Info(popup, 'Already the first one');
             }
-        }
+        };
         $scope.showNext = function () {
             var intRow = $scope.Detail.Imgi2.RowNum + 1;
             if ($scope.Detail.Imgi2s.length > 0 && $scope.Detail.Imgi2s.length >= intRow && is.equal($scope.Detail.Imgi2s[intRow - 1].RowNum, intRow)) {
@@ -475,7 +475,7 @@ appControllers.controller('PickingDetailCtrl', [
             } else {
                 PopupService.Info(popup, 'Already the last one');
             }
-        }
+        };
         $scope.checkConfirm = function () {
             $ionicLoading.show();
             SqlService.Select('Imgi2_Picking', '*').then(function (results) {
