@@ -102,7 +102,7 @@ appControllers.controller('cycleCountDetailCtrl', [
         PopupService) {
         var popup = null;
         var hmImcc2 = new HashMap();
-        var hmImsn1 = new HashMap();
+        var Imcc2dataResults = new Array();
         $scope.Detail = {
             Customer: $stateParams.CustomerCode,
             TrxNo: $stateParams.TrxNo,
@@ -165,17 +165,57 @@ appControllers.controller('cycleCountDetailCtrl', [
                 } else {}
             }
         };
-        $scope.showNext = function () {
+
+        $scope.showNext = function (comfirmLastRecord) {
             var DimensionFlag = $scope.Detail.Imcc2.DimensionFlag;
-            var intRow = $scope.Detail.Imcc2.RowNum + 1;
-            if ($scope.Detail.Imcc2s.length > 0 && $scope.Detail.Imcc2s.length >= intRow && is.equal($scope.Detail.Imcc2s[intRow - 1].RowNum, intRow)) {
-                // $scope.clearInput();
+            if (comfirmLastRecord === 1) {
+                var intRow = $scope.Detail.Imcc2.RowNum + 1;
+                if ($scope.Detail.Imcc2s.length > 0 && $scope.Detail.Imcc2s.length >= intRow && is.equal($scope.Detail.Imcc2s[intRow - 1].RowNum, intRow)) {
+                    // $scope.clearInput();
+                    checkDimensionQty(DimensionFlag);
+                    if ($scope.Detail.NextStatus === false) {
+                        var obj = {
+                            PackingQtyTempValue: $scope.Detail.Imcc2.PackingQtyTempValue,
+                            WholeQtyTempValue: $scope.Detail.Imcc2.WholeQtyTempValue,
+                            LooseQtyTempValue: $scope.Detail.Imcc2.LooseQtyTempValue
+                        };
+                        var strFilter = 'TrxNo=' + $scope.Detail.Imcc2.TrxNo + ' And LineItemNo=' + $scope.Detail.Imcc2.LineItemNo;
+                        SqlService.Update('Imcc2_CycleCount', obj, strFilter).then(function (res) {
+                             $scope.Detail.Imcc2s[intRow-2].PackingQtyTempValue=$scope.Detail.Imcc2.PackingQtyTempValue;
+                            $scope.Detail.Imcc2s[intRow-2].WholeQtyTempValue=$scope.Detail.Imcc2.WholeQtyTempValue;
+                            $scope.Detail.Imcc2s[intRow-2].LooseQtyTempValue=$scope.Detail.Imcc2.LooseQtyTempValue ;
+                              showImcc2(intRow - 1);
+                            // SqlService.Select('Imcc2_CycleCount', '*').then(function (results) {
+                            //     if (results.rows.length > 0) {
+                            //         for (var i = 0; i < results.rows.length; i++) {
+                            //             var Imcc2_CycleCount = results.rows.item(i);
+                            //             Imcc2dataResults = Imcc2dataResults.concat(Imcc2_CycleCount);
+                            //             $scope.Detail.Imcc2s = Imcc2dataResults;
+                            //         }
+                            //         showImcc2(intRow - 1);
+                            //     }
+                            //     $ionicLoading.hide();
+                            // }, function (res) {
+                            //     $ionicLoading.hide();
+                            // });
+
+                        });
+
+                    }
+                } else {
+                    PopupService.Info(popup, 'Already the last one');
+                }
+            } else if (comfirmLastRecord === 2) {
                 checkDimensionQty(DimensionFlag);
                 if ($scope.Detail.NextStatus === false) {
-                    showImcc2(intRow - 1);
+                    var obj = {
+                        PackingQtyTempValue: $scope.Detail.Imcc2.PackingQtyTempValue,
+                        WholeQtyTempValue: $scope.Detail.Imcc2.WholeQtyTempValue,
+                        LooseQtyTempValue: $scope.Detail.Imcc2.LooseQtyTempValue
+                    };
+                    var strFilter = 'TrxNo=' + $scope.Detail.Imcc2.TrxNo + ' And LineItemNo=' + $scope.Detail.Imcc2.LineItemNo;
+                    SqlService.Update('Imcc2_CycleCount', obj, strFilter).then(function (res) {});
                 }
-            } else {
-                PopupService.Info(popup, 'Already the last one');
             }
         };
         var showImcc2 = function (row) {
@@ -224,20 +264,52 @@ appControllers.controller('cycleCountDetailCtrl', [
                 } else {}
             }
         };
-
+        $scope.Confirm = function () {
+            $scope.showNext(2);
+            if ($scope.Detail.NextStatus === true) {
+            } else if ($scope.Detail.NextStatus === false) {
+              SqlService.Select('Imcc2_CycleCount', '*').then(function (results) {
+                  if (results.rows.length > 0) {
+                      for (var i = 0; i < results.rows.length; i++) {
+                          var Imcc2_CycleCount = results.rows.item(i);
+                          Imcc2_CycleCount.UserId=sessionStorage.getItem('UserId').toString();
+                          Imcc2dataResults = Imcc2dataResults.concat(Imcc2_CycleCount);
+                      }
+                      var jsonData= {
+                        "UpdateAllString": JSON.stringify(Imcc2dataResults)
+                      } ;
+                        var objUri = ApiService.Uri(true, '/api/wms/imcc2/confirm');
+                      ApiService.Post(objUri, jsonData, true).then(function success(result) {
+                                  PopupService.Info(null, 'Confirm Success', '').then(function (res) {
+                                      $scope.returnList();
+                                  });
+                              });
+                  }
+                  $ionicLoading.hide();
+              }, function (res) {
+                  $ionicLoading.hide();
+              });
+            }
+        };
         var GetImcc2ProductTrxNo = function (TrxNo) {
             var objUri = ApiService.Uri(true, '/api/wms/imcc2');
             objUri.addSearch('TrxNo', TrxNo);
             ApiService.Get(objUri, true).then(function success(result) {
                 $scope.Detail.Imcc2s = result.data.results;
-                SqlService.Delete('Imcc2_CycleCount').then(function (res) {
-                    for (var i = 0; i < $scope.Detail.Imcc2s.length; i++) {
-                        var objImcc2 = $scope.Detail.Imcc2s[i];
-                        SqlService.Insert('Imcc2_CycleCount', objImcc2).then();
-                    }
-                    showImcc2(0);
+                  if ($scope.Detail.Imcc2s !== null && $scope.Detail.Imcc2s.length > 0) {
+                    SqlService.Delete('Imcc2_CycleCount').then(function (res) {
+                        for (var i = 0; i < $scope.Detail.Imcc2s.length; i++) {
+                            var objImcc2 = $scope.Detail.Imcc2s[i];
+                            SqlService.Insert('Imcc2_CycleCount', objImcc2).then();
+                        }
+                        showImcc2(0);
+                    });
+                  }else{
+                    PopupService.Info(null, 'Imcc2 Not Record', '').then(function (res) {
+                        $scope.returnList();
+                    });
+                  }
 
-                });
             });
         };
         GetImcc2ProductTrxNo($scope.Detail.TrxNo);

@@ -244,7 +244,7 @@ appControllers.controller('GrDetailCtrl', [
             SqlService.Update('Imgr2_Receipt', objImgr2, strFilter).then();
             $scope.Detail.Scan.Qty = imgr2.ScanQty;
             $scope.Detail.Scan.SerialNo = '';
-          })
+          });
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {

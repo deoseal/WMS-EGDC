@@ -82,10 +82,10 @@
 			<button class="button icon ion-android-arrow-dropleft" ng-click="showPrev()">
 				&nbsp;Previous
 			</button>
-			<button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext()">
+			<button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext(1)">
 				&nbsp;Next
 			</button>
-			<button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="checkConfirm()">
+			<button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="Confirm()">
 				Confirm
 			</button>
 			<button class="button icon ion-arrow-return-right" ng-click="returnList()">

@@ -241,10 +241,17 @@ namespace WebApi.ServiceInterface.Wms
                  if (uri.IndexOf("/wms/imcc1") > 0)
                 {
                     ecr.data.results = imcc_Logic.Get_Imcc1_List(request);
-                }else if (uri.IndexOf("/wms/imcc2") > 0) {
-                    ecr.data.results = imcc_Logic.Get_Imcc2_List(request);
                 }
-               
+                else if (uri.IndexOf("/wms/imcc2/confirm") > 0)
+                {
+                    ecr.data.results = imcc_Logic.ConfirmAll_Imcc2(request);
+                }
+                else if (uri.IndexOf("/wms/imcc2") > 0) {
+                    ecr.data.results = imcc_Logic.Get_Imcc2_List(request);
+                } 
+                
+
+
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";
             }

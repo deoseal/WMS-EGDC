@@ -163,6 +163,7 @@ appFactory.factory('TABLE_DB', function () {
             LooseUomCode: 'TEXT',
             WholeUomCode: 'TEXT',
             ProductCode: 'TEXT',
+            UserId: 'TEXT'
         }
     };
     return TABLE_DB;
