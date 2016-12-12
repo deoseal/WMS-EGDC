@@ -250,7 +250,7 @@ appControllers.controller('PickingDetailCtrl', [
             }
         };
         var showImgi2 = function (row) {
-            if (row != null && $scope.Detail.Imgi2s.length >= row) {
+            if (row !== null && $scope.Detail.Imgi2s.length >= row) {
                 $scope.Detail.Imgi2 = {
                     RowNum: $scope.Detail.Imgi2s[row].RowNum,
                     TrxNo: $scope.Detail.Imgi2s[row].TrxNo,
@@ -503,7 +503,7 @@ appControllers.controller('PickingDetailCtrl', [
                                     console.log('Product (' + imgi2.ProductCode + ') Qty not equal.');
                                     blnDiscrepancies = true;
                                 }
-                            } else if (imgi2.PackingNo != null && imgi2.PackingNo != '') {
+                            } else if (imgi2.PackingNo !== null && imgi2.PackingNo !== '') {
                                 var objUri = ApiService.Uri(true, '/api/wms/imgi2/packingno');
                                 objUri.addSearch('LineItemNo', imgi2.LineItemNo);
                                 objUri.addSearch('TrxNo', imgi2.TrxNo);
@@ -546,7 +546,7 @@ appControllers.controller('PickingDetailCtrl', [
                     if (blnVerifyInput('BarCode')) {
                         showImpr($scope.Detail.Scan.BarCode);
                     }
-                } else if (is.equal(type, 'serialno') && is.not.empty($scope.Detail.Scan.StoreNo)) {
+                } else if (is.equal(type, 'serialno') && is.not.empty($scope.Detail.Imgi2.StoreNo)) {
                     if (blnVerifyInput('SerialNo')) {
                         showSn($scope.Detail.SerialNo);
                     }
