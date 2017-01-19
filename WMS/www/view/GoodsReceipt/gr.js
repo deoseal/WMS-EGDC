@@ -399,7 +399,7 @@ appControllers.controller('GrDetailCtrl', [
                                 var OldQty=imgr2.ScanQty;
                                 imgr2.ScanQty = $scope.Detail.Scan.Qty;
                                 var obj = {
-                                    ScanQty:ScanQty+ imgr2.ScanQty- OldQty
+                                    ScanQty: imgr2.ScanQty- OldQty
                                 };
                                 var strFilter = 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo;
                                 SqlService.Update('Imgr2_Receipt', obj, strFilter).then();

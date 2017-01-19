@@ -237,7 +237,7 @@ appControllers.controller('PickingDetailCtrl', [
                         hmImsn1.set(barcode, SnArray);
                     } else {
                         $scope.Detail.Scan.SerialNo = '';
-                        $scope.$apply();
+                        // $scope.$apply();
                         return;
                     }
                 } else {
@@ -394,6 +394,7 @@ appControllers.controller('PickingDetailCtrl', [
             if (!ENV.fromWeb) {
                 if (is.equal(type, 'StoreNo')) {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
+
                         $scope.Detail.Scan.StoreNo = imageData.text;
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
@@ -408,7 +409,10 @@ appControllers.controller('PickingDetailCtrl', [
                 } else if (is.equal(type, 'BarCode')) {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.Detail.Scan.BarCode = imageData.text;
-                        showImpr($scope.Detail.Scan.BarCode, true);
+                        if (blnVerifyInput('BarCode')) {
+                          showImpr($scope.Detail.Scan.BarCode, true);
+                        }
+
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
                     });

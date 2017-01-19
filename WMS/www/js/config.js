@@ -3,7 +3,7 @@ var appConfig = angular.module('WMSAPP.config',[]);
 appConfig.constant('ENV', {
     website:      'www.sysfreight.net/app/wms/egdcwms',
      api:          'www.sysfreight.net/apis/wms/egdcwms',
-    // api:        'localhost:5550',
+    // api:        'localhost:18104',
     reset:  {
         website:      'www.sysfreight.net/app/wms/egdcwms',
         api:          'www.sysfreight.net/apis/wms/egdcwms',
@@ -29,7 +29,7 @@ appConfig.constant('ENV', {
     updateFile:   'update.json',
     rootPath:     'WMSEGDC',
     configFile:   'config.txt',
-    version:      '1.0.1.7',
+    version:      '1.0.1.9',
     parameter: {
         showSerialNo : false
     },

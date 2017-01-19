@@ -213,7 +213,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                 if (hmImgr2.has(barcode)) {
                     if ($scope.OldBarCode === "" || $scope.OldBarCode != barcode) {
                         var imgr2 = hmImgr2.get($scope.Detail.Scan.BarCode);
-                        SqlService.Select('Imgr2_Putaway', '*', "ProductIndex='" + imgr2.ProductIndex + "' AND StagingAreaFlag!='Y' AND ActualQty!=ScanQty").then(function (results) {
+                        SqlService.Select('Imgr2_Putaway', '*', "ProductIndex='" + imgr2.ProductIndex + "' AND StagingAreaFlag ='Y' AND ActualQty!=ScanQty").then(function (results) {
                             if (results.rows.length === 1) {
                                 $scope.Detail.Scan.TrxNo = results.rows.item(0).TrxNo;
                                 $scope.Detail.Scan.LineItemNo = results.rows.item(0).LineItemNo;
@@ -238,7 +238,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                     $scope.OldBarCode = $scope.Detail.Scan.BarCode;
                                 }
                             } else {
-                                SqlService.Select('Imgr2_Putaway', '*', " StagingAreaFlag!='Y' AND (BarCode1='" + $scope.Detail.Scan.BarCode + "' OR BarCode2='" + $scope.Detail.Scan.BarCode + "'  OR BarCode3='" + $scope.Detail.Scan.BarCode + "' )").then(function (results) {
+                                SqlService.Select('Imgr2_Putaway', '*', " StagingAreaFlag ='Y' AND (BarCode1='" + $scope.Detail.Scan.BarCode + "' OR BarCode2='" + $scope.Detail.Scan.BarCode + "'  OR BarCode3='" + $scope.Detail.Scan.BarCode + "' )").then(function (results) {
                                     if (results.rows.length >= 1) {
                                         for (var i = 0; i < results.rows.length; i++) {
                                             if (results.rows.item(i).ActualQty != results.rows.item(i).ScanQty || i === results.rows.length - 1) {
@@ -266,7 +266,7 @@ appControllers.controller('GrPutawayDetailCtrl', [
                                         }
                                     }
                                     else{
-                                          PopupService.Alert(popup, 'StagingAreaFlag Equal To Y');
+                                          PopupService.Alert(popup, 'StagingAreaFlag Un Equal To Y');
                                     }
                                 });
                             }
@@ -872,11 +872,9 @@ appControllers.controller('GrPutawayDetailCtrl', [
                     for (var i = 0; i < $scope.Detail.Imgr2s.length; i++) {
                         var objImgr2 = $scope.Detail.Imgr2s[i];
                         if (objImgr2.StagingAreaFlag==="Y"){
-                          objImgr2.ScanQty=objImgr2.Qty;
+                         objImgr2.StoreNo=objImgr2.DefaultStoreNo;
                         }
-                        else {
-                          objImgr2.StoreNo=objImgr2.DefaultStoreNo;
-                        }
+
                         objImgr2.ProductIndex = i;
                         hmImgr2.set(objImgr2.BarCode, objImgr2);
                         hmImgr2.set(objImgr2.BarCode2, objImgr2);
