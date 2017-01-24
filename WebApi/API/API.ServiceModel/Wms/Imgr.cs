@@ -223,7 +223,14 @@ namespace WebApi.ServiceModel.Wms
             {
                 using (var db = DbConnectionFactory.OpenDbConnection("WMS"))
                 {
-                    string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, Imgr2.StoreNo, IsNull((Select Top 1 StoreNo from Impm1 Where Impm1.CustomerCode = Imgr1.CustomerCode and Impm1.ProductTrxNo =imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc),'') AS DefaultStoreNo,0 as ProductIndex," +
+                    //string strDefaultStoreNo = " IsNull(( Select  Top 1  StoreNo from Impm1 Where Impm1.CustomerCode = 'UNITED' and Impm1.ProductTrxNo = 5 AND Impm1.TrxType = '1' and( case  DimensionFlag when '1' then " +
+                    //"  isnull(BalancePackingQty, 0)  when '2' then isnull(BalanceWholeQty, 0) else isnull(BalanceLooseQty, 0) end) > 0 Order By Impm1.ReceiptDate DEsc),'') as DefaultStoreNo ";
+
+                    string strDefaultStoreNo = " IsNull(( Select Top 1 case (( case DimensionFlag when '1'   then isnull(BalancePackingQty,0)  when '2'  then isnull(BalanceWholeQty,0)  else " +
+                                              " isnull(BalanceLooseQty, 0)  end )) when 0  then '' else StoreNo end AS DefaultStoreNo from Impm1 Where "+
+                                            "  Impm1.CustomerCode =Imgr1.CustomerCode  and Impm1.ProductTrxNo = imgr2.ProductTrxNo AND Impm1.TrxType = '1' Order By Impm1.ReceiptDate DEsc ),'') as    DefaultStoreNo ";
+
+                    string strSql = "Select Imgr2.TrxNo, Imgr2.LineItemNo, Imgr2.StoreNo,"+ strDefaultStoreNo + ",0 as ProductIndex," +
                                     "isnull((Select StagingAreaFlag From Whwh2 Where WarehouseCode=Imgr2.WarehouseCode And StoreNo=Imgr2.StoreNo),'N') AS StagingAreaFlag," +
                                     "IsNull(Imgr2.ProductCode,'') AS ProductCode, IsNull(Imgr2.ProductDescription,'') AS ProductDescription, IsNull(Imgr2.UserDefine1,'') AS UserDefine1," +
                                     "(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS Qty,(Case Imgr2.DimensionFlag When '1' Then Imgr2.PackingQty When '2' Then Imgr2.WholeQty Else Imgr2.LooseQty End) AS ActualQty," + getBarCodeListSelect() +
@@ -326,7 +333,7 @@ namespace WebApi.ServiceModel.Wms
                         {
                             for (int i = 0; i < Result1.Count; i++)
                             {
-                                Result = db.SqlScalar<int>("Update Imgr2 Set MovementTrxNo=(Select TrxNo From Impm1 Where BatchNo=@GoodsReceiptNoteNo And BatchLineItemNo=@BatchLineItemNo And CustomerCode=@CustomerCode) Where TrxNo=@TrxNo  And LineItemNo=@LineItemNo", new { GoodsReceiptNoteNo = Result1[i].GoodsReceiptNoteNo, BatchLineItemNo = Result1[i].LineItemNo, CustomerCode = Result1[i].CustomerCode, TrxNo = int.Parse(request.TrxNo), LineItemNo = Result1[i].LineItemNo });
+                                Result = db.SqlScalar<int>("Update Imgr2 Set MovementTrxNo=(Select top 1 TrxNo From Impm1 Where BatchNo=@GoodsReceiptNoteNo And BatchLineItemNo=@BatchLineItemNo And CustomerCode=@CustomerCode) Where TrxNo=@TrxNo  And LineItemNo=@LineItemNo", new { GoodsReceiptNoteNo = Result1[i].GoodsReceiptNoteNo, BatchLineItemNo = Result1[i].LineItemNo, CustomerCode = Result1[i].CustomerCode, TrxNo = int.Parse(request.TrxNo), LineItemNo = Result1[i].LineItemNo });
                             }
                         }
                     }

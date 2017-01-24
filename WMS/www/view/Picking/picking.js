@@ -172,6 +172,10 @@ appControllers.controller('PickingDetailCtrl', [
                 SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
                     $scope.Detail.Scan.Qty = imgi2.ScanQty;
                     $scope.Detail.Scan.BarCode = '';
+                    //yicong 170124
+                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum-1].ScanQty = imgi2.ScanQty;
+                    $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
+                    //end
                     $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
                     if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
                         $scope.showNext();
@@ -184,8 +188,11 @@ appControllers.controller('PickingDetailCtrl', [
           if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
           {
             if (hmImgi2.has(barcode)) {
-                var imgi2 = hmImgi2.get(barcode);
-                setScanQty(barcode, imgi2);
+                // var imgi2 = hmImgi2.get(barcode);
+                // setScanQty(barcode, imgi2);
+                hmImgi2.remove(barcode);
+                hmImgi2.set(barcode, $scope.Detail.Imgi2);
+                setScanQty(barcode, $scope.Detail.Imgi2);
             } else {
                 showPopup('Invalid Product Picked', 'assertive');
             }
@@ -208,6 +215,10 @@ appControllers.controller('PickingDetailCtrl', [
             SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
                 $scope.Detail.Scan.Qty = imgi2.ScanQty;
                 $scope.Detail.Scan.SerialNo = '';
+                //yicong 170124
+                $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum-1].ScanQty = imgi2.ScanQty;
+                           $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
+                //end
                 if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
                     $scope.showNext();
                 } else {
@@ -219,6 +230,10 @@ appControllers.controller('PickingDetailCtrl', [
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {
+              //yicong 170124
+              hmImgi2.remove(barcode);
+              // hmImgi2.set(barcode, $scope.Detail.Imgi2);
+              //yicong 170124
                 var barcode = $scope.Detail.Scan.BarCode,
                     SnArray = null,
                     imgi2 = hmImgi2.get(barcode);
@@ -366,7 +381,12 @@ appControllers.controller('PickingDetailCtrl', [
         };
         $scope.changeQty = function () {
             if (is.not.empty($scope.Detail.Imgi2.BarCode) && hmImgi2.count() > 0) {
-                var imgi2 = hmImgi2.get($scope.Detail.Imgi2.BarCode);
+                // var imgi2 = hmImgi2.get($scope.Detail.Imgi2.BarCode);
+ // yicong 170114
+                hmImgi2.remove($scope.Detail.Imgi2.BarCode);
+             hmImgi2.set($scope.Detail.Imgi2.BarCode, $scope.Detail.Imgi2);
+             var imgi2 = $scope.Detail.Imgi2;
+  //  end
                 var promptPopup = $ionicPopup.show({
                     template: '<input type="number" ng-model="Detail.Scan.Qty" ng-change="checkQty();">',
                     title: 'Enter Qty',
@@ -379,6 +399,10 @@ appControllers.controller('PickingDetailCtrl', [
                         type: 'button-positive',
                         onTap: function (e) {
                             imgi2.ScanQty = $scope.Detail.Scan.Qty;
+                        // yicong 170114
+                            $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum-1].ScanQty = imgi2.ScanQty;
+                          $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
+                          //  end
                             $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
                             var obj = {
                                 ScanQty: imgi2.ScanQty

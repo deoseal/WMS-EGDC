@@ -38,7 +38,7 @@ appControllers.controller('EnquiryListCtrl', [
                     $scope.Whwh1.selected = $scope.Whwh1s[0];
                 });
             }
-        }
+        };
         $scope.refreshImpr1 = function (ScanProductCode, ProductCode) {
             if (is.not.undefined(ProductCode) && is.not.empty(ProductCode)) {
                 var objUri = ApiService.Uri(true, '/api/wms/impr1');
