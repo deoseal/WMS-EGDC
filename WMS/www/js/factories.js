@@ -111,7 +111,9 @@ appFactory.factory('TABLE_DB', function () {
             ScanQty: 'INT',
             QtyBal: 'INT',
             ReceiptMovementTrxNo: 'INT',
-            QtyStatus: 'TEXT'
+            QtyStatus: 'TEXT',
+            DimensionFlag: 'TEXT',
+            QtyName:'TEXT'
         },
         Imsn1_Picking: {
             ReceiptNoteNo: 'TEXT',

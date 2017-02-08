@@ -26,5 +26,7 @@ namespace WebApi.ServiceModel.Tables
         public int QtyBal { get; set; }
         public int ScanQty { get; set; }
         public string QtyStatus { get; set; }
-    }
+        public string DimensionFlag { get; set; }
+
+            }
 }

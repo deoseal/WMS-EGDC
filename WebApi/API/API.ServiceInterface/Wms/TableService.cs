@@ -250,8 +250,6 @@ namespace WebApi.ServiceInterface.Wms
                     ecr.data.results = imcc_Logic.Get_Imcc2_List(request);
                 } 
                 
-
-
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";
             }

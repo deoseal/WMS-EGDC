@@ -103,11 +103,13 @@ appControllers.controller('PickingDetailCtrl', [
         $scope.Detail = {
             Customer: $stateParams.CustomerCode,
             GIN: $stateParams.GoodsIssueNoteNo,
+            QtyName: '',
             Scan: {
                 StoreNo: '',
                 BarCode: '',
                 SerialNo: '',
-                Qty: 0
+                Qty: 0,
+                PackingNo: ''
             },
             Imgi2: {
                 RowNum: 0,
@@ -156,84 +158,81 @@ appControllers.controller('PickingDetailCtrl', [
                 //$( '#txt-sn' ).removeAttr( 'readonly' );
                 $('#txt-sn').select();
             } else {
-              SqlService.Select('Imgi2_Picking',  '*','TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
-                if(results.rows.length===1)
-                {
-                  imgi2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
-               }
+                SqlService.Select('Imgi2_Picking', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+                    if (results.rows.length === 1) {
+                        imgi2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
+                    }
+                    imgi2.ScanQty += 1;
+                    hmImgi2.remove(barcode);
+                    hmImgi2.set(barcode, imgi2);
+                    var obj = {
+                        ScanQty: imgi2.ScanQty,
+                        PackingNo: $scope.Detail.Scan.PackingNo
+                    };
+                    var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
+                    SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
+                        $scope.Detail.Scan.Qty = imgi2.ScanQty;
+                        $scope.Detail.Scan.BarCode = '';
+                        //yicong 170124
+                        $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].ScanQty = imgi2.ScanQty;
+                        $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
+                        //end
+                        $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
+                        if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
+                            $scope.showNext();
+                        }
+                    });
+                });
+            }
+        };
+        var showImpr = function (barcode, blnScan) {
+            if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode)) {
+                if (hmImgi2.has(barcode)) {
+                    // var imgi2 = hmImgi2.get(barcode);
+                    // setScanQty(barcode, imgi2);
+                    hmImgi2.remove(barcode);
+                    hmImgi2.set(barcode, $scope.Detail.Imgi2);
+                    setScanQty(barcode, $scope.Detail.Imgi2);
+                } else {
+                    showPopup('Invalid Product Picked', 'assertive');
+                }
+            }
+        };
+        var setSnQty = function (barcode, imgi2) {
+            SqlService.Select('Imgi2_Picking', '*', 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+                if (results.rows.length === 1) {
+                    imgi2.ScanQty = (results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0);
+                }
                 imgi2.ScanQty += 1;
                 hmImgi2.remove(barcode);
                 hmImgi2.set(barcode, imgi2);
                 var obj = {
                     ScanQty: imgi2.ScanQty,
-                    PackingNo:$scope.Detail.Scan.PackingNo
+
                 };
                 var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
                 SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
                     $scope.Detail.Scan.Qty = imgi2.ScanQty;
-                    $scope.Detail.Scan.BarCode = '';
+                    $scope.Detail.Scan.SerialNo = '';
                     //yicong 170124
-                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum-1].ScanQty = imgi2.ScanQty;
+                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].ScanQty = imgi2.ScanQty;
                     $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
                     //end
-                    $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
                     if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
                         $scope.showNext();
+                    } else {
+                        $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
+                        $('#txt-sn').select();
                     }
                 });
-              });
-            }
-        };
-        var showImpr = function (barcode, blnScan) {
-          if (is.not.undefined(barcode) && is.not.null(barcode) && is.not.empty(barcode))
-          {
-            if (hmImgi2.has(barcode)) {
-                // var imgi2 = hmImgi2.get(barcode);
-                // setScanQty(barcode, imgi2);
-                hmImgi2.remove(barcode);
-                hmImgi2.set(barcode, $scope.Detail.Imgi2);
-                setScanQty(barcode, $scope.Detail.Imgi2);
-            } else {
-                showPopup('Invalid Product Picked', 'assertive');
-            }
-          }
-        };
-        var setSnQty = function (barcode, imgi2) {
-          SqlService.Select('Imgi2_Picking',  '*','TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo).then(function (results) {
-            if(results.rows.length===1)
-            {
-              imgi2.ScanQty=(results.rows.item(0).ScanQty > 0 ? results.rows.item(0).ScanQty : 0 );
-           }
-            imgi2.ScanQty += 1;
-            hmImgi2.remove(barcode);
-            hmImgi2.set(barcode, imgi2);
-            var obj = {
-                ScanQty: imgi2.ScanQty,
-
-            };
-            var strFilter = 'TrxNo=' + imgi2.TrxNo + ' And LineItemNo=' + imgi2.LineItemNo;
-            SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
-                $scope.Detail.Scan.Qty = imgi2.ScanQty;
-                $scope.Detail.Scan.SerialNo = '';
-                //yicong 170124
-                $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum-1].ScanQty = imgi2.ScanQty;
-                           $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
-                //end
-                if (is.equal(imgi2.Qty, imgi2.ScanQty)) {
-                    $scope.showNext();
-                } else {
-                    $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
-                    $('#txt-sn').select();
-                }
             });
-          });
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {
-              //yicong 170124
-              hmImgi2.remove(barcode);
-              // hmImgi2.set(barcode, $scope.Detail.Imgi2);
-              //yicong 170124
+                //yicong 170124
+                hmImgi2.remove(barcode);
+                // hmImgi2.set(barcode, $scope.Detail.Imgi2);
+                //yicong 170124
                 var barcode = $scope.Detail.Scan.BarCode,
                     SnArray = null,
                     imgi2 = hmImgi2.get(barcode);
@@ -282,6 +281,7 @@ appControllers.controller('PickingDetailCtrl', [
                     QtyBal: $scope.Detail.Imgi2s[row].Qty - $scope.Detail.Imgi2s[row].ScanQty
                 };
                 $scope.Detail.Scan.Qty = $scope.Detail.Imgi2s[row].ScanQty;
+                $scope.Detail.Scan.PackingNo = $scope.Detail.Imgi2s[row].PackingNo;
             }
             if (is.equal(row, $scope.Detail.Imgi2s.length - 1)) {
                 $scope.Detail.blnNext = false;
@@ -382,11 +382,11 @@ appControllers.controller('PickingDetailCtrl', [
         $scope.changeQty = function () {
             if (is.not.empty($scope.Detail.Imgi2.BarCode) && hmImgi2.count() > 0) {
                 // var imgi2 = hmImgi2.get($scope.Detail.Imgi2.BarCode);
- // yicong 170114
+                // yicong 170114
                 hmImgi2.remove($scope.Detail.Imgi2.BarCode);
-             hmImgi2.set($scope.Detail.Imgi2.BarCode, $scope.Detail.Imgi2);
-             var imgi2 = $scope.Detail.Imgi2;
-  //  end
+                hmImgi2.set($scope.Detail.Imgi2.BarCode, $scope.Detail.Imgi2);
+                var imgi2 = $scope.Detail.Imgi2;
+                //  end
                 var promptPopup = $ionicPopup.show({
                     template: '<input type="number" ng-model="Detail.Scan.Qty" ng-change="checkQty();">',
                     title: 'Enter Qty',
@@ -399,10 +399,10 @@ appControllers.controller('PickingDetailCtrl', [
                         type: 'button-positive',
                         onTap: function (e) {
                             imgi2.ScanQty = $scope.Detail.Scan.Qty;
-                        // yicong 170114
-                            $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum-1].ScanQty = imgi2.ScanQty;
-                          $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
-                          //  end
+                            // yicong 170114
+                            $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].ScanQty = imgi2.ScanQty;
+                            $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
+                            //  end
                             $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
                             var obj = {
                                 ScanQty: imgi2.ScanQty
@@ -426,7 +426,7 @@ appControllers.controller('PickingDetailCtrl', [
                 } else if (is.equal(type, 'PackingNo')) {
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.PackingNo = imageData.text;
-                        $scope.Detail.Scan.PackingNo = $scope.Detail.Scan.PackingNo === '' ?  imageData.text :　$scope.Detail.Scan.PackingNo;
+                        $scope.Detail.Scan.PackingNo = $scope.Detail.Scan.PackingNo === '' ? imageData.text : 　$scope.Detail.Scan.PackingNo;
                     }, function (error) {
                         $cordovaToast.showShortBottom(error);
                     });
@@ -434,7 +434,7 @@ appControllers.controller('PickingDetailCtrl', [
                     $cordovaBarcodeScanner.scan().then(function (imageData) {
                         $scope.Detail.Scan.BarCode = imageData.text;
                         if (blnVerifyInput('BarCode')) {
-                          showImpr($scope.Detail.Scan.BarCode, true);
+                            showImpr($scope.Detail.Scan.BarCode, true);
                         }
 
                     }, function (error) {
@@ -472,8 +472,8 @@ appControllers.controller('PickingDetailCtrl', [
                     $('#txt-storeno').select();
                 }
             } else if (is.equal(type, 'PackingNo')) {
-                if ($scope.PackingNo.length > 0) {
-                    $scope.PackingNo = '';
+                if ($scope.Detail.Scan.PackingNo.length > 0) {
+                    $scope.Detail.Scan.PackingNo = '';
                     $('#txt-packingno').select();
                 }
             } else {
@@ -481,7 +481,8 @@ appControllers.controller('PickingDetailCtrl', [
                 $scope.Detail.Scan.BarCode = '';
                 $scope.Detail.Scan.SerialNo = '';
                 $scope.Detail.Scan.Qty = 0;
-                $scope.Detail.Scan.PackingNo = $scope.PackingNo;
+                // $scope.Detail.Scan.PackingNo = $scope.PackingNo;
+
                 //$('#txt-sn').attr('readonly', true);
                 $('#txt-storeno').select();
             }
@@ -516,13 +517,23 @@ appControllers.controller('PickingDetailCtrl', [
                         if (is.not.empty(imgi2.BarCode)) {
                             if (imgi2.Qty != imgi2.ScanQty) {
                                 if (imgi2.Qty > imgi2.ScanQty && imgi2.QtyStatus != null && (imgi2.QtyStatus === 'Damaged' || imgi2.QtyStatus === 'Shortlanded')) {
+                                    switch (imgi2.DimensionFlag) {
+                                    case '1':
+                                        $scope.Detail.QtyName = 'PackingQty';
+                                        break;
+                                    case '2':
+                                        $scope.Detail.QtyName = 'WholeQty';
+                                        break;
+                                    default:
+                                        $scope.Detail.QtyName = 'LooseQty';
+                                    }
                                     var objUri = ApiService.Uri(true, '/api/wms/imgi2/qtyremark');
                                     objUri.addSearch('LineItemNo', imgi2.LineItemNo);
                                     objUri.addSearch('TrxNo', imgi2.TrxNo);
                                     objUri.addSearch('ReceiptMovementTrxNo', imgi2.ReceiptMovementTrxNo);
                                     objUri.addSearch('QtyRemarkQty', imgi2.ScanQty);
                                     objUri.addSearch('QtyRemarkBackQty', (imgi2.Qty - imgi2.ScanQty));
-                                    objUri.addSearch('QtyFieldName', imgi2.QtyName);
+                                    objUri.addSearch('QtyFieldName', $scope.Detail.QtyName);
                                     objUri.addSearch('PackingNo', imgi2.PackingNo);
                                     objUri.addSearch('UserId', sessionStorage.getItem('UserId').toString());
                                     objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:' + imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>' + imgi2.ScanQty);
@@ -567,7 +578,15 @@ appControllers.controller('PickingDetailCtrl', [
                 }
             });
         };
-        $scope.PackingNo;
+        // $scope.PackingNo;
+        var updatePackingNo = function (PackingNo) {
+            $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].PackingNo = PackingNo;
+            var obj = {
+                PackingNo: PackingNo
+            };
+            var strFilter = 'TrxNo=' + $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].TrxNo + ' And LineItemNo=' + $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].LineItemNo;
+            SqlService.Update('Imgi2_Picking', obj, strFilter).then();
+        };
         $scope.enter = function (ev, type) {
             if (is.equal(ev.keyCode, 13)) {
                 if (is.equal(type, 'barcode') && is.not.empty($scope.Detail.Scan.BarCode)) {
@@ -582,8 +601,8 @@ appControllers.controller('PickingDetailCtrl', [
                     if (blnVerifyInput('StoreNo')) {
                         $('#txt-barcode').focus();
                     }
-                }else if (is.equal(type,'packingno') && is.not.empty($scope.PackingNo)){
-                    $scope.Detail.Scan.PackingNo = $scope.PackingNo;
+                } else if (is.equal(type, 'PackingNo') && is.not.empty($scope.Detail.Scan.PackingNo)) {
+                    updatePackingNo($scope.Detail.Scan.PackingNo);
                     $('#txt-storeno').focus();
                 }
 
