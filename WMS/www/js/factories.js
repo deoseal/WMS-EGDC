@@ -148,6 +148,16 @@ appFactory.factory('TABLE_DB', function () {
             IssueLineItemNo: 'INT',
             SerialNo: 'TEXT'
         },
+        Imgi3_Picking: {
+            LineItemNo: 'INT',
+            PackingNo: 'TEXT',
+            Qty: 'INT',
+            ProductCode: 'TEXT',
+            ProductTrxNo: 'INT',
+            TrxNo: 'INT',
+            UomCode: 'TEXT',
+            ProductDescription: 'TEXT'
+        },
         Imcc2_CycleCount: {
             RowNum: 'INT',
             TrxNo: 'INT',

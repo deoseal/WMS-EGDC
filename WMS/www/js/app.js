@@ -87,6 +87,11 @@ app.run( [
 
                     } );
                 } );
+                SqlService.Drop( 'Imgi3_Picking' ).then( function ( res ) {
+                    SqlService.Create( 'Imgi3_Picking', TABLE_DB.Imgi3_Picking ).then( function ( res ) {
+
+                    } );
+                } );
                 SqlService.Drop( 'Imcc2_CycleCount' ).then( function ( res ) {
                     SqlService.Create( 'Imcc2_CycleCount', TABLE_DB.Imcc2_CycleCount ).then( function ( res ) {
 
@@ -297,6 +302,12 @@ app.config( [ '$httpProvider', '$stateProvider', '$urlRouterProvider', '$ionicCo
                 cache: 'false',
                 templateUrl: 'view/Picking/detail.html',
                 controller: 'PickingDetailCtrl'
+            } )
+            .state( 'CartonDetail', {
+                url: '/picking/Carton/:LineItemNo/:CustomerCode/:TrxNo/:GoodsIssueNoteNo',
+                cache: 'false',
+                templateUrl: 'view/Picking/CartonDetail.html',
+                controller: 'CartonDetailCtrl'
             } )
             .state( 'putawayList', {
                 url: '/putaway/list',

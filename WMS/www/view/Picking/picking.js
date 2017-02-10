@@ -138,6 +138,23 @@ appControllers.controller('PickingDetailCtrl', [
         $scope.$on('$destroy', function () {
             $scope.modal.remove();
         });
+
+        $ionicModal.fromTemplateUrl('Imgi3.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function (modal) {
+            $scope.modalImgi3 = modal;
+        });
+        $scope.$on('$destroy', function () {
+            $scope.modalImgi3.remove();
+        });
+        $scope.openModalImgi3 = function () {
+            $scope.modalImgi3.show();
+          $ionicLoading.hide();
+        };
+        $scope.closeModalImgi3 = function () {
+            $scope.modalImgi3.hide();
+        };
         var blnVerifyInput = function (type) {
             var blnPass = true;
             if (is.equal(type, 'StoreNo') && is.not.equal($scope.Detail.Scan.StoreNo, $scope.Detail.Imgi2.StoreNo)) {
@@ -614,5 +631,53 @@ appControllers.controller('PickingDetailCtrl', [
         $ionicPlatform.ready(function () {
             GetImgi2s($scope.Detail.GIN);
         });
+
+        $scope.GoToCartonDetail = function (Imgi2,Detail) {
+            if (Imgi2 !== null) {
+                $state.go('CartonDetail', {
+                    'LineItemNo': Imgi2.LineItemNo,
+                    'CustomerCode': Detail.Customer,
+                    'TrxNo': Imgi2.TrxNo,
+                    'GoodsIssueNoteNo': Detail.GIN
+                }, {
+                    reload: true
+                });
+            }
+        };
+    }
+]);
+
+
+appControllers.controller('CartonDetailCtrl', [
+    'ENV',
+    '$scope',
+    '$stateParams',
+    '$state',
+    '$cordovaKeyboard',
+    'ApiService',
+    function (
+        ENV,
+        $scope,
+        $stateParams,
+        $state,
+        $cordovaKeyboard,
+        ApiService) {
+          $scope.Detail = {
+              Customer: $stateParams.CustomerCode,
+              GIN: $stateParams.GoodsIssueNoteNo,
+              TrxNo:  $stateParams.TrxNo,
+              LineItemNo: $stateParams.LineItemNo
+            };
+        $scope.GoToDetail = function (Imgi1) {
+            if (Imgi1 !== null) {
+                $state.go('pickingDetail', {
+                    'CustomerCode': Imgi1.Customer,
+                    'TrxNo': Imgi1.TrxNo,
+                    'GoodsIssueNoteNo': Imgi1.GIN
+                }, {
+                    reload: true
+                });
+            }
+        };
     }
 ]);
