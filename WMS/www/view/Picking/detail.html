@@ -44,13 +44,27 @@
                         </span>
                     </label>
                     <div class="row">
-                        <div class="col col-80" style="padding:0px;" >
 
-                            <label class="item item-input">
-                            <div class="input-label" style="padding-top:2px; padding-bottom: 2px; " >Carton No&nbsp;&nbsp;:&nbsp;&nbsp;</div>
+                        <div class="col col-80" style="padding:0px;" >
+                        <div class="row">
+<div class="col col-60" style="padding:18px;padding-bottom: 2px;color:blue"  ng-click="openModalImgi3(Detail.Imgi2)">
+  Carton No&nbsp;&nbsp;:
+</div>
+<div class="col col-30" >
+  <label class="item item-input">
+      <input type="text" id="txt-packing" ng-model="Detail.Scan.PackingNo" ng-keypress="enter($event, 'PackingNo')">
+  </label>
+</div>
+
+  </div>
+
+                            <!-- <label class="item item-input">
+                              <span  style="padding:2px;padding-bottom: 2px;">Carton No&nbsp;&nbsp;:&nbsp;&nbsp;</span>
                                 <input type="text" id="txt-packing" ng-model="Detail.Scan.PackingNo" ng-keypress="enter($event, 'PackingNo')">
-                            </label>
+                            </label> -->
+
                         </div>
+
                         <div class="col col-10">
                             <button class="button button-clear button-positive button-small" ng-click="openCam('PackingNo')"><i class="icon ion-qr-scanner"></i></button>
                         </div>
@@ -58,6 +72,12 @@
                             <button class="button button-clear button-positive button-small" ng-click="clearInput('PackingNo')"><i class="icon ion-android-close"></i></button>
                         </div>
                     </div>
+
+                    <!-- <button class="button  button-positive button-small icon ion-arrow-return-right" ng-click="openModalImgi3(Detail.Imgi2)">
+                        &nbsp;split
+                    </button> -->
+
+                        <hr style="margin: 0;"/>
                     <div class="row">
                         <div class="col col-80" style="padding:0px;">
                             <label class="item item-input">
@@ -110,11 +130,8 @@
                         </span>
                         <button class="button button-clear button-positive button-small" ng-click="changeQty()"><i class="icon ion-android-create"></i></button>
                     </label>
-
                 </div>
-                <button class="button icon ion-arrow-return-right" ng-click="openModalImgi3()">
-                    &nbsp;split
-                </button>
+
             </div>
         </div>
   </ion-content>
@@ -240,21 +257,23 @@
           </ion-header-bar>
           <ion-content>
               <!-- <div style="height: 43px;"></div> -->
-              <div class="list card">
-                  <div class="item item-body" style="padding:8px;">
-                      <div class="list">
-
+              <!-- <div class="list card" ng-repeat="Imgi3 in Detail.imgi3">
+                  <div class="item item-body" style="padding:8px;"> -->
+                  <ion-list>
+                      <div class="card" ng-repeat="Imgi3 in Detail.imgi3" >
+                        <div>
                           <label class="item item-input" style="padding-left:6px;">
                               <span class="input-label col-33" style="padding-top:2px; padding-bottom: 2px; font-size: x-small;">
                                   Product Code
                               </span>&nbsp;:&nbsp;
-                              <span style="font-size: medium;" ng-bind="Detail.Imgi2.ProductCode"></span>
+                              <span style="font-size: medium;" ng-bind="Imgi3.ProductCode"></span>
                           </label>
+                        </div>
                           <div class="row">
                               <div class="col col-80" style="padding:0px;">
                                   <label class="item item-input">
                                       <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Carton No&nbsp;&nbsp;:&nbsp;&nbsp;</span>
-                                      <input type="text" id="txt-packing" ng-model="Detail.Scan.PackingNo" ng-keypress="enter($event, 'PackingNo')">
+                                      <input type="text" id="txt-packing" ng-model="Imgi3.PackingNo" ng-keypress="enter($event, 'PackingNo')">
                                   </label>
                               </div>
                               <div class="col col-10">
@@ -267,17 +286,18 @@
                           <hr style="margin: 0;"/>
                           <label class="item item-input">
                               <span class="input-label" style="padding-top:2px; padding-bottom: 2px; min-width:85%;">Qty&nbsp;&nbsp;:&nbsp;&nbsp;
-                                  <span id="txt-qty" style="font-weight:bold;" ng-bind="Detail.Scan.Qty"></span>
+                                  <span id="txt-qty" style="font-weight:bold;" ng-bind="Imgi3.Qty"></span>
                               </span>
                               <button class="button button-clear button-positive button-small" ng-click="changeQty()"><i class="icon ion-android-create"></i></button>
                           </label>
                       </div>
-                  </div>
-              </div>
+                  <!-- </div>
+              </div> -->
+                  </ion-list>
         </ion-content>
           <ion-footer-bar class="bar-positive">
               <div class="button-bar">
-                  <button class="button icon ion-arrow-return-right" ng-click="closeModalImgi3()">
+                  <button class="button icon ion-arrow-return-right" ng-click="closeModalImgi3(Detail.Imgi2)">
                       &nbsp;Cancel
                   </button>
               </div>

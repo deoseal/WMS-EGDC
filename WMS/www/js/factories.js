@@ -156,7 +156,8 @@ appFactory.factory('TABLE_DB', function () {
             ProductTrxNo: 'INT',
             TrxNo: 'INT',
             UomCode: 'TEXT',
-            ProductDescription: 'TEXT'
+            ProductDescription: 'TEXT',
+            DimensionFlag: 'TEXT'
         },
         Imcc2_CycleCount: {
             RowNum: 'INT',

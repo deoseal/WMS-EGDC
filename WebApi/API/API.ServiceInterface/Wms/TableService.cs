@@ -152,6 +152,10 @@ namespace WebApi.ServiceInterface.Wms
                 {
                     ecr.data.results = imgi_Logic.Update_Imgi2_PackingNo(request);
                 }
+                else if (uri.IndexOf("/wms/imgi3/picking/confim") > 0)
+                {
+                    ecr.data.results = imgi_Logic.Comfirm_Picking_Imgi3(request);
+                }
                 ecr.meta.code = 200;
                 ecr.meta.message = "OK";
             }

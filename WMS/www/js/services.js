@@ -183,7 +183,7 @@ appService.service( 'SqlService', [
                 }
             }
             return deferred.promise;
-        }
+        };
         this.Drop = function ( table ) {
             var deferred = $q.defer();
             var strSql = 'Drop Table If Exists ' + table;

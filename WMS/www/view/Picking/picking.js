@@ -124,6 +124,9 @@ appControllers.controller('PickingDetailCtrl', [
                 Qty: 0,
                 QtyBal: 0
             },
+            Imgi3: {
+            },
+
             Imgi2s: {},
             Imgi2sDb: {},
             Imsn1s: {},
@@ -148,12 +151,127 @@ appControllers.controller('PickingDetailCtrl', [
         $scope.$on('$destroy', function () {
             $scope.modalImgi3.remove();
         });
-        $scope.openModalImgi3 = function () {
-            $scope.modalImgi3.show();
-          $ionicLoading.hide();
+        $scope.openModalImgi3 = function (imgi2) {
+            if ($scope.Detail.Scan.PackingNo !== '' && $scope.Detail.Scan.Qty > 0) {
+
+                SqlService.Select('Imgi3_Picking', '*', 'LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+                    var len = results.rows.length;
+                    var intQty = 0;
+                    if (len > 0) {
+                        for (var i = 0; i < len; i++) {
+                            intQty = intQty + results.rows.item(i).Qty;
+
+                        }
+                        intQty = $scope.Detail.Scan.Qty + intQty;
+                        if (intQty > imgi2.Qty) {
+                            var outDoneQty = intQty - imgi2.Qty;
+                            PopupService.Alert(popup, 'outdone: ' + outDoneQty + ' Qty').then();
+                        } else {
+                            SqlService.Select('Imgi3_Picking', '*', "PackingNo='" + $scope.Detail.Scan.PackingNo + "' And LineItemNo=' + imgi2.LineItemNo+'").then(function (results) {
+                                var len = results.rows.length;
+                                var intQty = 0;
+                                if (len > 0) {
+                                    if ($scope.Detail.Scan.PackingNo === results.rows.item(0).PackingNo)
+                                        intQty = $scope.Detail.Scan.Qty + results.rows.item(0).Qty;
+                                    var obj = {
+                                        Qty: intQty,
+                                    };
+                                    var strFilter = 'LineItemNo=' + imgi2.LineItemNo + ' And PackingNo=' + $scope.Detail.Scan.PackingNo;
+                                    SqlService.Update('Imgi3_Picking', obj, strFilter).then(function (res) {
+                                        getImgi3(imgi2.LineItemNo);
+                                    });
+                                } else {
+                                    var objImgi3 = {
+                                        PackingNo: $scope.Detail.Scan.PackingNo,
+                                        LineItemNo: imgi2.LineItemNo,
+                                        Qty: $scope.Detail.Scan.Qty,
+                                        ProductCode: imgi2.ProductCode,
+                                        ProductTrxNo: imgi2.ProductTrxNo,
+                                        TrxNo: imgi2.TrxNo,
+                                        // UomCode: imgi2.UomCode,   //
+                                        ProductDescription: imgi2.ProductDescription,
+                                      DimensionFlag:$scope.Detail.Imgi2s[0].DimensionFlag
+                                    };
+                                    SqlService.Insert('Imgi3_Picking', objImgi3).then(
+                                        getImgi3(objImgi3.LineItemNo)
+                                    );
+                                }
+                            });
+                        }
+                    } else {
+                        var objImgi3 = {
+                            PackingNo: $scope.Detail.Scan.PackingNo,
+                            LineItemNo: imgi2.LineItemNo,
+                            Qty: $scope.Detail.Scan.Qty,
+                            ProductCode: imgi2.ProductCode,
+                            ProductTrxNo: imgi2.ProductTrxNo,
+                            TrxNo: imgi2.TrxNo,
+                            // UomCode: imgi2.UomCode,   //
+                            ProductDescription: imgi2.ProductDescription,
+                           DimensionFlag:$scope.Detail.Imgi2s[0].DimensionFlag
+                        };
+                        SqlService.Insert('Imgi3_Picking', objImgi3).then(
+                            getImgi3(objImgi3.LineItemNo)
+                        );
+                    }
+                });
+            } else {
+                PopupService.Alert(popup, 'Please Enter PackingNo And Qty').then();
+            }
+
+            // console.log(imgi2.LineItemNo);
+            //   $scope.modalImgi3.show();
+            //   // $ionicLoading.Hide();
+            //
+            //   SqlService.Select('Imgi3_Picking', '*', 'LineItemNo=' + imgi2.LineItemNo).then(function (results) {
+            //       if (results.rows.length>0) {
+            //         var objImgi3 = results.rows.item(i);
+            //
+            //       }
+            //   });
         };
-        $scope.closeModalImgi3 = function () {
+        var getImgi3 = function (LineItemNo) {
+            SqlService.Select('Imgi3_Picking', '*', 'LineItemNo=' + LineItemNo).then(function (results) {
+                var len = results.rows.length;
+                var arrImgi3 = new Array();
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        var objImgi3 = results.rows.item(i);
+                        arrImgi3.push(objImgi3);
+                    }
+                    $scope.Detail.imgi3 = arrImgi3;
+                    $scope.modalImgi3.show();
+                }
+            });
+        };
+        var sumQty = function (Imgi2) {
+            SqlService.Select('Imgi3_Picking', '*', 'LineItemNo=' + Imgi2.LineItemNo).then(function (results) {
+                var len = results.rows.length;
+                var intQty = 0;
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
+                        intQty = intQty + results.rows.item(i).Qty;
+                    }
+                    $scope.Detail.Scan.Qty = intQty;
+                    //  $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].PackingNo='';
+                    $scope.Detail.Scan.PackingNo = '';
+                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].PackingNo = '';
+                    $scope.Detail.Imgi2.QtyBal = Imgi2.Qty - intQty;
+                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].ScanQty = intQty;
+
+                    var obj = {
+                        ScanQty: intQty,
+                    };
+                    var strFilter = 'TrxNo=' + Imgi2.TrxNo + ' And LineItemNo=' + Imgi2.LineItemNo;
+                    SqlService.Update('Imgi2_Picking', obj, strFilter).then(function (res) {
+
+                    });
+                }
+            });
+        };
+        $scope.closeModalImgi3 = function (Imgi2) {
             $scope.modalImgi3.hide();
+            sumQty(Imgi2);
         };
         var blnVerifyInput = function (type) {
             var blnPass = true;
@@ -522,7 +640,9 @@ appControllers.controller('PickingDetailCtrl', [
                 PopupService.Info(popup, 'Already the last one');
             }
         };
+
         $scope.checkConfirm = function () {
+
             $ionicLoading.show();
             SqlService.Select('Imgi2_Picking', '*').then(function (results) {
                 var len = results.rows.length;
@@ -564,7 +684,7 @@ appControllers.controller('PickingDetailCtrl', [
                                 objUri.addSearch('LineItemNo', imgi2.LineItemNo);
                                 objUri.addSearch('TrxNo', imgi2.TrxNo);
                                 objUri.addSearch('UserId', sessionStorage.getItem('UserId').toString());
-                                objUri.addSearch('PackingNo', imgi2.PackingNo);
+                                objUri.addSearch('PackingNo', '');
                                 ApiService.Get(objUri, true).then(function success(result) {});
                             }
                         } else {
@@ -582,6 +702,7 @@ appControllers.controller('PickingDetailCtrl', [
                         objUri.addSearch('UserID', sessionStorage.getItem('UserId').toString());
                         objUri.addSearch('StatusCode', 'CMP');
                         ApiService.Get(objUri, true).then(function (res) {
+                            confirmImgi3();
                             return PopupService.Info(popup, 'Confirm Success');
                         }).then(function (res) {
                             $scope.returnList();
@@ -597,12 +718,23 @@ appControllers.controller('PickingDetailCtrl', [
         };
         // $scope.PackingNo;
         var updatePackingNo = function (PackingNo) {
-            $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].PackingNo = PackingNo;
-            var obj = {
-                PackingNo: PackingNo
-            };
-            var strFilter = 'TrxNo=' + $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].TrxNo + ' And LineItemNo=' + $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].LineItemNo;
-            SqlService.Update('Imgi2_Picking', obj, strFilter).then();
+            SqlService.Select('Imgi3_Picking', '*', "PackingNo='"+PackingNo+"' And LineItemNo='" + $scope.Detail.Imgi2.LineItemNo+"'").then(function (results) {
+
+                if (results.rows.length > 0) {
+                    var imgi3 = results.rows.item(0);
+                    $scope.Detail.Scan.Qty = imgi3.Qty;
+                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].PackingNo = imgi3.PackingNo;
+                } else {
+                    $scope.Detail.Scan.Qty = 0;
+                    $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].PackingNo = PackingNo;
+                    var obj = {
+                        PackingNo: PackingNo
+                    };
+                    var strFilter = 'TrxNo=' + $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].TrxNo + ' And LineItemNo=' + $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].LineItemNo;
+                    SqlService.Update('Imgi2_Picking', obj, strFilter).then();
+                }
+            });
+
         };
         $scope.enter = function (ev, type) {
             if (is.equal(ev.keyCode, 13)) {
@@ -632,7 +764,7 @@ appControllers.controller('PickingDetailCtrl', [
             GetImgi2s($scope.Detail.GIN);
         });
 
-        $scope.GoToCartonDetail = function (Imgi2,Detail) {
+        $scope.GoToCartonDetail = function (Imgi2, Detail) {
             if (Imgi2 !== null) {
                 $state.go('CartonDetail', {
                     'LineItemNo': Imgi2.LineItemNo,
@@ -644,40 +776,78 @@ appControllers.controller('PickingDetailCtrl', [
                 });
             }
         };
-    }
-]);
+
+        var confirmImgi3 = function () {
+            SqlService.Select('Imgi3_Picking', '*').then(function (results) {
+                var len = results.rows.length;
+                var LineItemNoList = "";
+                var QtyList = "";
+                var PackingNoList = "";
+                var ProductDescriptionList = "";
+                var ProductTrxNoList = "";
+                ProductCodeList="";
+                var TrxNo = "";
+                var DimensionFlag="";
+                if (len > 0) {
+                    for (var i = 0; i < len; i++) {
 
 
-appControllers.controller('CartonDetailCtrl', [
-    'ENV',
-    '$scope',
-    '$stateParams',
-    '$state',
-    '$cordovaKeyboard',
-    'ApiService',
-    function (
-        ENV,
-        $scope,
-        $stateParams,
-        $state,
-        $cordovaKeyboard,
-        ApiService) {
-          $scope.Detail = {
-              Customer: $stateParams.CustomerCode,
-              GIN: $stateParams.GoodsIssueNoteNo,
-              TrxNo:  $stateParams.TrxNo,
-              LineItemNo: $stateParams.LineItemNo
-            };
-        $scope.GoToDetail = function (Imgi1) {
-            if (Imgi1 !== null) {
-                $state.go('pickingDetail', {
-                    'CustomerCode': Imgi1.Customer,
-                    'TrxNo': Imgi1.TrxNo,
-                    'GoodsIssueNoteNo': Imgi1.GIN
-                }, {
-                    reload: true
-                });
-            }
+                        var objImgi3 = results.rows.item(i);
+                        TrxNo = objImgi3.TrxNo;
+                        LineItemNoList = LineItemNoList + ',' + objImgi3.LineItemNo;
+                        QtyList = QtyList + ',' + objImgi3.Qty;
+                        PackingNoList = PackingNoList + ',' + objImgi3.PackingNo;
+                        ProductDescriptionList = ProductDescriptionList + ',' + objImgi3.ProductDescription;
+                        ProductTrxNoList = ProductTrxNoList + ',' + objImgi3.ProductTrxNo;
+                       ProductCodeList=ProductCodeList+ ',' + objImgi3.ProductCode;
+                       DimensionFlag=objImgi3.DimensionFlag;
+                    }
+                    var objUriUpdate = ApiService.Uri(true, '/api/wms/imgi3/picking/confim');
+                    objUriUpdate.addSearch('LineItemNoList', LineItemNoList);
+                    objUriUpdate.addSearch('QtyList', QtyList);
+                    objUriUpdate.addSearch('PackingNoList', PackingNoList);
+                    objUriUpdate.addSearch('TrxNo', TrxNo);
+                    objUriUpdate.addSearch('ProductDescriptionList', ProductDescriptionList);
+                    objUriUpdate.addSearch('ProductTrxNoList', ProductTrxNoList);
+                      objUriUpdate.addSearch('ProductCodeList', ProductCodeList);
+                        objUriUpdate.addSearch('DimensionFlag', DimensionFlag);
+                    ApiService.Get(objUriUpdate, false).then(function success(result) {});
+                }
+            });
         };
     }
 ]);
+
+// appControllers.controller('CartonDetailCtrl', [
+//     'ENV',
+//     '$scope',
+//     '$stateParams',
+//     '$state',
+//     '$cordovaKeyboard',
+//     'ApiService',
+//     function (
+//         ENV,
+//         $scope,
+//         $stateParams,
+//         $state,
+//         $cordovaKeyboard,
+//         ApiService) {
+//           $scope.Detail = {
+//               Customer: $stateParams.CustomerCode,
+//               GIN: $stateParams.GoodsIssueNoteNo,
+//               TrxNo:  $stateParams.TrxNo,
+//               LineItemNo: $stateParams.LineItemNo
+//             };
+//         $scope.GoToDetail = function (Imgi1) {
+//             if (Imgi1 !== null) {
+//                 $state.go('pickingDetail', {
+//                     'CustomerCode': Imgi1.Customer,
+//                     'TrxNo': Imgi1.TrxNo,
+//                     'GoodsIssueNoteNo': Imgi1.GIN
+//                 }, {
+//                     reload: true
+//                 });
+//             }
+//         };
+//     }
+// ]);

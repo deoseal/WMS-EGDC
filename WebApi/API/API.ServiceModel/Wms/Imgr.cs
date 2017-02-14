@@ -37,6 +37,10 @@ namespace WebApi.ServiceModel.Wms
         public string DimensionQtyList { get; set; }
         public string StoreNoList { get; set; }
 
+
+      
+
+
     }
     public class Imgr_Logic
     {
