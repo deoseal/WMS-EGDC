@@ -124,8 +124,7 @@ appControllers.controller('PickingDetailCtrl', [
                 Qty: 0,
                 QtyBal: 0
             },
-            Imgi3: {
-            },
+            Imgi3: {},
 
             Imgi2s: {},
             Imgi2sDb: {},
@@ -167,16 +166,17 @@ appControllers.controller('PickingDetailCtrl', [
                             var outDoneQty = intQty - imgi2.Qty;
                             PopupService.Alert(popup, 'outdone: ' + outDoneQty + ' Qty').then();
                         } else {
-                            SqlService.Select('Imgi3_Picking', '*', "PackingNo='" + $scope.Detail.Scan.PackingNo + "' And LineItemNo=' + imgi2.LineItemNo+'").then(function (results) {
+                            SqlService.Select('Imgi3_Picking', '*', "PackingNo='" + $scope.Detail.Scan.PackingNo + "' And LineItemNo='" + imgi2.LineItemNo + "'").then(function (results) {
                                 var len = results.rows.length;
                                 var intQty = 0;
                                 if (len > 0) {
                                     if ($scope.Detail.Scan.PackingNo === results.rows.item(0).PackingNo)
-                                        intQty = $scope.Detail.Scan.Qty + results.rows.item(0).Qty;
+                                         intQty = $scope.Detail.Scan.Qty + results.rows.item(0).Qty;
+
                                     var obj = {
                                         Qty: intQty,
                                     };
-                                    var strFilter = 'LineItemNo=' + imgi2.LineItemNo + ' And PackingNo=' + $scope.Detail.Scan.PackingNo;
+                                    var strFilter = "LineItemNo='" + imgi2.LineItemNo + "' And PackingNo='" + $scope.Detail.Scan.PackingNo + "'";
                                     SqlService.Update('Imgi3_Picking', obj, strFilter).then(function (res) {
                                         getImgi3(imgi2.LineItemNo);
                                     });
@@ -190,7 +190,7 @@ appControllers.controller('PickingDetailCtrl', [
                                         TrxNo: imgi2.TrxNo,
                                         // UomCode: imgi2.UomCode,   //
                                         ProductDescription: imgi2.ProductDescription,
-                                      DimensionFlag:$scope.Detail.Imgi2s[0].DimensionFlag
+                                        DimensionFlag: $scope.Detail.Imgi2s[0].DimensionFlag
                                     };
                                     SqlService.Insert('Imgi3_Picking', objImgi3).then(
                                         getImgi3(objImgi3.LineItemNo)
@@ -208,7 +208,7 @@ appControllers.controller('PickingDetailCtrl', [
                             TrxNo: imgi2.TrxNo,
                             // UomCode: imgi2.UomCode,   //
                             ProductDescription: imgi2.ProductDescription,
-                           DimensionFlag:$scope.Detail.Imgi2s[0].DimensionFlag
+                            DimensionFlag: $scope.Detail.Imgi2s[0].DimensionFlag
                         };
                         SqlService.Insert('Imgi3_Picking', objImgi3).then(
                             getImgi3(objImgi3.LineItemNo)
@@ -430,6 +430,7 @@ appControllers.controller('PickingDetailCtrl', [
             ApiService.Get(objUri, true).then(function success(result) {
                 $scope.Detail.Imgi2s = result.data.results;
                 SqlService.Delete('Imgi2_Picking').then(function () {
+                SqlService.Delete('Imgi3_Picking').then(function () {});
                     if (is.array($scope.Detail.Imgi2s) && is.not.empty($scope.Detail.Imgi2s)) {
                         for (var i in $scope.Detail.Imgi2s) {
                             var imgi2 = $scope.Detail.Imgi2s[i];
@@ -671,7 +672,7 @@ appControllers.controller('PickingDetailCtrl', [
                                     objUri.addSearch('QtyRemarkQty', imgi2.ScanQty);
                                     objUri.addSearch('QtyRemarkBackQty', (imgi2.Qty - imgi2.ScanQty));
                                     objUri.addSearch('QtyFieldName', $scope.Detail.QtyName);
-                                    objUri.addSearch('PackingNo', imgi2.PackingNo);
+                                    objUri.addSearch('PackingNo', '');
                                     objUri.addSearch('UserId', sessionStorage.getItem('UserId').toString());
                                     objUri.addSearch('QtyRemark', imgi2.QtyStatus + ' LN:' + imgi2.LineItemNo + ' ' + imgi2.ProductCode + ' ' + imgi2.Qty + '>' + imgi2.ScanQty);
                                     ApiService.Get(objUri, true).then(function success(result) {});
@@ -718,7 +719,7 @@ appControllers.controller('PickingDetailCtrl', [
         };
         // $scope.PackingNo;
         var updatePackingNo = function (PackingNo) {
-            SqlService.Select('Imgi3_Picking', '*', "PackingNo='"+PackingNo+"' And LineItemNo='" + $scope.Detail.Imgi2.LineItemNo+"'").then(function (results) {
+            SqlService.Select('Imgi3_Picking', '*', "PackingNo='" + PackingNo + "' And LineItemNo='" + $scope.Detail.Imgi2.LineItemNo + "'").then(function (results) {
 
                 if (results.rows.length > 0) {
                     var imgi3 = results.rows.item(0);
@@ -785,12 +786,11 @@ appControllers.controller('PickingDetailCtrl', [
                 var PackingNoList = "";
                 var ProductDescriptionList = "";
                 var ProductTrxNoList = "";
-                ProductCodeList="";
+                var  ProductCodeList = "";
                 var TrxNo = "";
-                var DimensionFlag="";
+                var DimensionFlag = "";
                 if (len > 0) {
                     for (var i = 0; i < len; i++) {
-
 
                         var objImgi3 = results.rows.item(i);
                         TrxNo = objImgi3.TrxNo;
@@ -799,8 +799,8 @@ appControllers.controller('PickingDetailCtrl', [
                         PackingNoList = PackingNoList + ',' + objImgi3.PackingNo;
                         ProductDescriptionList = ProductDescriptionList + ',' + objImgi3.ProductDescription;
                         ProductTrxNoList = ProductTrxNoList + ',' + objImgi3.ProductTrxNo;
-                       ProductCodeList=ProductCodeList+ ',' + objImgi3.ProductCode;
-                       DimensionFlag=objImgi3.DimensionFlag;
+                        ProductCodeList = ProductCodeList + ',' + objImgi3.ProductCode;
+                        DimensionFlag = objImgi3.DimensionFlag;
                     }
                     var objUriUpdate = ApiService.Uri(true, '/api/wms/imgi3/picking/confim');
                     objUriUpdate.addSearch('LineItemNoList', LineItemNoList);
@@ -809,8 +809,8 @@ appControllers.controller('PickingDetailCtrl', [
                     objUriUpdate.addSearch('TrxNo', TrxNo);
                     objUriUpdate.addSearch('ProductDescriptionList', ProductDescriptionList);
                     objUriUpdate.addSearch('ProductTrxNoList', ProductTrxNoList);
-                      objUriUpdate.addSearch('ProductCodeList', ProductCodeList);
-                        objUriUpdate.addSearch('DimensionFlag', DimensionFlag);
+                    objUriUpdate.addSearch('ProductCodeList', ProductCodeList);
+                    objUriUpdate.addSearch('DimensionFlag', DimensionFlag);
                     ApiService.Get(objUriUpdate, false).then(function success(result) {});
                 }
             });
