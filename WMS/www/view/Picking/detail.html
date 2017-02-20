@@ -48,7 +48,7 @@
 
                         <div class="col col-80" style="padding:0px;">
                             <div class="row">
-                                <div class="col col-60" style="padding:18px;padding-bottom: 2px;color:blue" ng-click="openModalImgi3(Detail.Imgi2)">
+                                <div class="col col-60" style="padding:18px;padding-bottom: 2px;color:blue" ng-click="ListImgi3(Detail.Imgi2)">
                                     Carton No&nbsp;&nbsp;:
                                 </div>
                                 <div class="col col-30">
@@ -136,23 +136,35 @@
             </div>
         </div>
     </ion-content>
-    <ion-footer-bar class="bar-positive">
-        <div class="button-bar">
-            <button class="button icon ion-android-arrow-dropleft" ng-click="showPrev()">
-                &nbsp;Previous
-            </button>
-            <button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext()">
-                &nbsp;Next
-            </button>
-            <button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="checkConfirm()">
-                Confirm
-            </button>
-            <button class="button icon ion-arrow-return-right" ng-click="returnList()">
-                &nbsp;Cancel
-            </button>
 
+
+          <!-- <div class="button-bar">
+              <button class="button icon ion-android-arrow-dropleft" ng-click="">
+              split
+              </button>
+          </div> -->
+
+ <ion-footer-bar class="bar-positive">
+          <div  class="button-bar">
+              <button class="button icon ion-android-arrow-dropleft" ng-click="showPrev()">
+                  Previous
+              </button>
+              <button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext()">
+                  Next
+              </button>
+
+              <button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="checkConfirm()">
+                  Confirm
+              </button>
+              <!-- <button class="button icon ion-arrow-return-right" ng-click="returnList()">
+                Cancel
+              </button> -->
+              <button class="button icon ion-arrow-expand"  ng-click="openModalImgi3(Detail.Imgi2)">
+                  Split
+              </button>
         </div>
-    </ion-footer-bar>
+
+</ion-footer-bar>
     <script id="scan.html" type="text/ng-template">
         <ion-modal-view>
             <ion-header-bar class="bar-positive" align-title="center">
@@ -274,7 +286,7 @@
                             <div class="col col-80" style="padding:0px;">
                                 <label class="item item-input">
                                     <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Carton No&nbsp;&nbsp;:&nbsp;&nbsp;</span>
-                                    <input type="text" id="txt-packing" ng-model="Imgi3.PackingNo" ng-keypress="enter($event, 'PackingNo')" readonly>
+                                    <input type="text" id="txt-packing" ng-model="Imgi3.PackingNo" ng-keypress="enter($event, 'PackingNo')" >
                                 </label>
                             </div>
                             <!-- <div class="col col-10">
@@ -289,7 +301,7 @@
                             <span class="input-label" style="padding-top:2px; padding-bottom: 2px; min-width:85%;">Qty&nbsp;&nbsp;:&nbsp;&nbsp;
                                   <span id="txt-qty" style="font-weight:bold;" ng-bind="Imgi3.Qty"></span>
                             </span>
-                            <!-- <button class="button button-clear button-positive button-small" ng-click="changeQty()"><i class="icon ion-android-create"></i></button> -->
+                         <button class="button button-clear button-positive button-small" ng-click="changeImgi3Qty(Imgi3)"><i class="icon ion-android-create"></i></button>
                         </label>
                     </div>
                     <!-- </div>
