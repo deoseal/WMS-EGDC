@@ -29,7 +29,7 @@ appConfig.constant('ENV', {
     updateFile:   'update.json',
     rootPath:     'WMSEGDC',
     configFile:   'config.txt',
-    version:      '1.0.1.11',
+    version:      '1.0.1.12',
     parameter: {
         showSerialNo : false
     },
