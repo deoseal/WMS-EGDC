@@ -154,8 +154,8 @@ namespace WebApi.ServiceModel.Wms
                                 if (list1[0].LineItemNo > 0)
                                     intMaxLineItemNo = list1[0].LineItemNo + 1;
                             }
-                                       db.ExecuteSql("insert into imgi3 (TrxNo, LineItemNo, PackingNo,ProductTrxNo, ProductDescription,PackingQty, WholeQty, LooseQty) values (" +
-                            Modfunction.SQLSafe(request.TrxNo) + "," + intMaxLineItemNo + "," + Modfunction.SQLSafeValue(PackingNoList[i].ToString()) + "," + int.Parse (ProductTrxNoList[i].ToString() )+ " ," + Modfunction.SQLSafeValue(ProductDescriptionList[i].ToString()) + ","+PackingQty + "," + WholeQty + "," + LooseQty + " )");
+                                       db.ExecuteSql("insert into imgi3 (TrxNo, LineItemNo, PackingNo,ProductTrxNo, ProductDescription,PackingQty, WholeQty, LooseQty,Volume) values (" +
+                            Modfunction.SQLSafe(request.TrxNo) + "," + intMaxLineItemNo + "," + Modfunction.SQLSafeValue(PackingNoList[i].ToString()) + "," + int.Parse (ProductTrxNoList[i].ToString() )+ " ," + Modfunction.SQLSafeValue(ProductDescriptionList[i].ToString()) + ","+PackingQty + "," + WholeQty + "," + LooseQty + " ,0 )");
 
           
 

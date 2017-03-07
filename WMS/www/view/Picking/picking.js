@@ -673,19 +673,19 @@ appControllers.controller('PickingDetailCtrl', [
 
                                         });
 
-                                        imgi2.ScanQty = Qty;
+                                        imgi2.ScanQty = Qty+intQty;
                                     } else if ($scope.Detail.Imgi2.Qty === imgi2.ScanQty) {
                                         imgi2.ScanQty = $scope.Detail.Scan.Qty;
                                     } else {
                                         PopupService.Alert(popup, 'Qty Is less than BalanceQty').then(function (res) {});
-                                        imgi2.ScanQty = $scope.Detail.Scan.Qty;
+                                        imgi2.ScanQty = $scope.Detail.Scan.Qty+intQty;
                                     }
                                     // imgi2.ScanQty = $scope.Detail.Scan.Qty;
                                     // // yicong 170114
                                     // $scope.Detail.Imgi2s[$scope.Detail.Imgi2.RowNum - 1].ScanQty = imgi2.ScanQty;
                                     // $scope.Detail.Imgi2.ScanQty = imgi2.ScanQty;
                                     // //  end
-                                    $scope.Detail.Scan.Qty = imgi2.ScanQty;
+                                    $scope.Detail.Scan.Qty = $scope.Detail.Scan.Qty;
                                     $scope.Detail.Imgi2.QtyBal = imgi2.Qty - imgi2.ScanQty;
 
                                     //

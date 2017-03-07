@@ -1,4 +1,3 @@
-
 <ion-view title="Picking-Detail">
     <ion-header-bar class="bar-positive" align-title="center">
         <button class="button button-icon icon ion-android-arrow-back" ng-click="returnList()"></button>
@@ -80,13 +79,18 @@
                     <hr style="margin: 0;" />
                     <div class="row">
                         <div class="col col-80" style="padding:0px;">
-                            <!-- <label class="item item-input"> -->
+                            <!-- <label class="item item-input">
                                 <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">CartonNoList&nbsp;&nbsp;:&nbsp;</span>
-                                  <p><span ng-bind="Detail.DetailPackingNoList" style="    white-space: normal;"></span></p>
-                                <!-- <input type="text" id="txt-storeno" ng-model="Detail.DetailPackingNoList" ng-keypress="enter($event, 'storeno')" readonly> -->
-                                  <!-- </label> -->
-                        </div>
+                              <p><span ng-bind="Detail.DetailPackingNoList" style="    white-space: normal;"></span>
+                               <input type="text" id="txt-storeno" ng-model="Detail.DetailPackingNoList" ng-keypress="enter($event, 'storeno')" readonly>
+                                </label> -->
 
+                            <label class="item item-input">
+                                <span class="input-label" style="padding-top:2px; padding-bottom: 2px; min-width:85%;">CartonNoList&nbsp;&nbsp;:&nbsp;&nbsp;
+                                        <span id="" style="white-space: normal;" ng-bind="Detail.DetailPackingNoList"></span>
+                                </span>
+                            </label>
+                        </div>
                     </div>
                     <hr style="margin: 0;" />
                     <div class="row">
@@ -147,34 +151,33 @@
         </div>
     </ion-content>
 
-
-          <!-- <div class="button-bar">
+    <!-- <div class="button-bar">
               <button class="button icon ion-android-arrow-dropleft" ng-click="">
               split
               </button>
           </div> -->
 
- <ion-footer-bar class="bar-positive">
-          <div  class="button-bar">
-              <button class="button icon ion-android-arrow-dropleft" ng-click="showPrev()">
-                  Previous
-              </button>
-              <button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext()">
-                  Next
-              </button>
+    <ion-footer-bar class="bar-positive">
+        <div class="button-bar">
+            <button class="button icon ion-android-arrow-dropleft" ng-click="showPrev()">
+                Previous
+            </button>
+            <button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext()">
+                Next
+            </button>
 
-              <button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="checkConfirm()">
-                  Confirm
-              </button>
-              <!-- <button class="button icon ion-arrow-return-right" ng-click="returnList()">
+            <button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="checkConfirm()">
+                Confirm
+            </button>
+            <!-- <button class="button icon ion-arrow-return-right" ng-click="returnList()">
                 Cancel
               </button> -->
-              <button class="button icon ion-arrow-expand"  ng-click="openModalImgi3(Detail.Imgi2)">
-                  Split
-              </button>
+            <button class="button icon ion-arrow-expand" ng-click="openModalImgi3(Detail.Imgi2)">
+                Split
+            </button>
         </div>
 
-</ion-footer-bar>
+    </ion-footer-bar>
     <script id="scan.html" type="text/ng-template">
         <ion-modal-view>
             <ion-header-bar class="bar-positive" align-title="center">
@@ -296,7 +299,7 @@
                             <div class="col col-80" style="padding:0px;">
                                 <label class="item item-input">
                                     <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Carton No&nbsp;&nbsp;:&nbsp;&nbsp;</span>
-                                    <input type="text" id="txt-packing" ng-model="Imgi3.PackingNo" ng-keypress="enter($event, 'PackingNo')" >
+                                    <input type="text" id="txt-packing" ng-model="Imgi3.PackingNo" ng-keypress="enter($event, 'PackingNo')">
                                 </label>
                             </div>
                             <!-- <div class="col col-10">
@@ -311,7 +314,7 @@
                             <span class="input-label" style="padding-top:2px; padding-bottom: 2px; min-width:85%;">Qty&nbsp;&nbsp;:&nbsp;&nbsp;
                                   <span id="txt-qty" style="font-weight:bold;" ng-bind="Imgi3.Qty"></span>
                             </span>
-                         <button class="button button-clear button-positive button-small" ng-click="changeImgi3Qty(Imgi3)"><i class="icon ion-android-create"></i></button>
+                            <button class="button button-clear button-positive button-small" ng-click="changeImgi3Qty(Imgi3)"><i class="icon ion-android-create"></i></button>
                         </label>
                     </div>
                     <!-- </div>
