@@ -29,20 +29,6 @@
 					<div class="row">
 						<div class="col col-80" style="padding:0px;">
 							<label class="item item-input">
-								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Bar Code&nbsp;&nbsp;:</span>
-								<input type="text" id="txt-barcode" ng-model="Detail.Scan.BarCode" style="padding-right: 14px;" ng-keypress="enter($event, 'BarCode')" ng-focus="Onfocus('BarCode')">
-							</label>
-						</div>
-						<div class="col col-10">
-							<button class="button button-clear button-positive button-small" ng-click="openCam('BarCode')"><i class="icon ion-qr-scanner"></i></button>
-						</div>
-						<div class="col">
-							<button class="button button-clear button-positive button-small" ng-click="clearInput('BarCode')"><i class="icon ion-android-close"></i></button>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col col-80" style="padding:0px;">
-							<label class="item item-input">
 								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Store No&nbsp;&nbsp;:</span>
 								<input type="text" id="txt-StoreNo" ng-model="Detail.Scan.StoreNo" style="padding-right: 14px;" ng-blur="lost()" ng-keypress="enter($event, 'StoreNo')">
 							</label>
@@ -54,6 +40,21 @@
 							<button class="button button-clear button-positive button-small" ng-click="clearInput('StoreNo')"><i class="icon ion-android-close"></i></button>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col col-80" style="padding:0px;">
+							<label class="item item-input">
+								<span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Bar Code&nbsp;&nbsp;:</span>
+								<input type="text" id="txt-barcode" ng-model="Detail.Scan.BarCode" style="padding-right: 14px;" ng-keypress="enter($event, 'BarCode')" ng-focus="Onfocus('BarCode')">
+							</label>
+						</div>
+						<div class="col col-10">
+							<button class="button button-clear button-positive button-small" ng-click="openCam('BarCode')"><i class="icon ion-qr-scanner"></i></button>
+						</div>
+						<div class="col">
+							<button class="button button-clear button-positive button-small" ng-click="clearInput('BarCode')"><i class="icon ion-android-close"></i></button>
+						</div>
+					</div>
+
 					<label class="item item-input">
 						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Product Code : <span ng-bind="Detail.Impr1.ProductCode"></span></span>
 					</label>
