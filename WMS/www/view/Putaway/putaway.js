@@ -54,8 +54,8 @@ appControllers.controller('PutawayListCtrl', [
                     $scope.GrnNos = result.data.results;
                     if (is.equal(scanGrn, 'scanGrn')) {
                         if ($scope.GrnNos !== null && $scope.GrnNos.length > 0) {
-                            $scope.GrnNo.selected = $scope.GrnNos[0];
-                            $scope.GoToDetail($scope.GrnNo.selected);
+                          //  $scope.GrnNo.selected = $scope.GrnNos[0];
+                            $scope.GoToDetail($scope.GrnNos[0]);
                         } else {}
                     }
                 });
