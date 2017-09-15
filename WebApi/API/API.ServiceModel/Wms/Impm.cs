@@ -45,13 +45,13 @@ namespace WebApi.ServiceModel.Wms
                     string strSqlDetail = "";
                     if (strBarCodeList.Length <= 1)
                     {
-                        strSqlDetail = "Select Cast(" + strBarCodeFiled + " AS nvarchar(2000)) AS UserDefine1,TrxNo from Impr1 Where " + strBarCodeFiled + " like '" + Modfunction.SQLSafe(request.UserDefine1) + "%'";
+                        strSqlDetail = "Select Cast(" + strBarCodeFiled + " AS nvarchar(2000)) AS UserDefine1,TrxNo from Impr1 Where " + strBarCodeFiled + " = '" + Modfunction.SQLSafe(request.UserDefine1) + "'";
                     }
                     else
                     {
                         for (int i = 0; i < strBarCodeList.Length; i++)
                         {
-                          string strSqlNew = "Select Cast(" + strBarCodeList[i] + " AS nvarchar(2000)) AS UserDefine1,TrxNo from Impr1 Where " + strBarCodeList[i] + " like '" + Modfunction.SQLSafe(request.UserDefine1) + "%'";
+                          string strSqlNew = "Select Cast(" + strBarCodeList[i] + " AS nvarchar(2000)) AS UserDefine1,TrxNo from Impr1 Where " + strBarCodeList[i] + " = '" + Modfunction.SQLSafe(request.UserDefine1) + "'";
                             if (strSqlDetail == "")
                             {
                                 strSqlDetail = strSqlNew;

@@ -7,6 +7,7 @@ appControllers.controller('EnquiryListCtrl', [
     '$cordovaBarcodeScanner',
     '$cordovaToast',
     'ApiService',
+    'PopupService',
     function (
         ENV,
         $scope,
@@ -15,11 +16,19 @@ appControllers.controller('EnquiryListCtrl', [
         $cordovaKeyboard,
         $cordovaBarcodeScanner,
         $cordovaToast,
-        ApiService) {
+        ApiService,
+        PopupService
+    ) {
+        var popup = null;
         $scope.Impr1 = {};
-        $scope.Impm1 = {};
+        $scope.Impm1 = {
+            UserDefine1: '',
+        };
         $scope.Whwh1 = {};
-        $scope.Whwh2 = {};
+        $scope.Whwh2 = {
+            StoreNo: '',
+        };
+
         $scope.Impm1sEnquiry = {};
         $scope.defaultWhwh1 = function () {
             var objUri1 = ApiService.Uri(true, '/api/wms/whwh1');
@@ -74,29 +83,74 @@ appControllers.controller('EnquiryListCtrl', [
                 var objUri = ApiService.Uri(true, '/api/wms/whwh2');
                 objUri.addSearch('WarehouseCode', $scope.Whwh1.selected.WarehouseCode);
                 objUri.addSearch('StoreNo', StoreNo);
+                objUri.addSearch('EnquiryFlag', 'Y');
                 ApiService.Get(objUri, false).then(function success(result) {
                     $scope.Whwh2s = result.data.results;
-                    if (is.equal(ScanStoreNo, 'ScanStoreNo')) {
-                        if ($scope.Whwh2s !== null && $scope.Whwh2s.length > 0) {
-                            $scope.Whwh2.selected = $scope.Whwh2s[0];
-                            $scope.showImpmwh(null, $scope.Whwh2.selected.StoreNo);
-                        } else {
-                            $scope.showImpmwh(null, null);
-                        }
+
+                    if ($scope.Whwh2s.length > 0) {
+                        $scope.Whwh2.StoreNo = $scope.Whwh2s[0].StoreNo;
+                        // $scope.Whwh2.selected = $scope.Whwh2s[0];
+                        $scope.showImpmwh(null, $scope.Whwh2.StoreNo);
+                    } else {
+                        $scope.Whwh2.StoreNo = '';
+                        $scope.showImpmwh(null, null);
+                        PopupService.Alert(popup, 'Wrong StoreNo');
+
                     }
+
+                    // if (is.equal(ScanStoreNo, 'ScanStoreNo')) {
+                    //     if ( $scope.Whwh2s.length > 0) {
+                    //         $scope.Whwh2.StoreNo = $scope.Whwh2s[0].StoreNo;
+                    //         // $scope.Whwh2.selected = $scope.Whwh2s[0];
+                    //         $scope.showImpmwh(null, $scope.Whwh2.StoreNo);
+                    //     } else {
+                    //         $scope.showImpmwh(null, null);
+                    //         PopupService.Alert(popup, 'Wrong StoreNo');
+                    //         $scope.Whwh2.StoreNo = '';
+                    //     }
+                    // } else {
+                    //     if ($scope.Whwh2s.length > 0) {
+                    //         $scope.Whwh2.StoreNo = $scope.Whwh2s[0].StoreNo;
+                    //         $scope.showImpmwh(null, $scope.Whwh2.StoreNo);
+                    //     } else {
+                    //         $scope.showImpmwh(null, null);
+                    //         PopupService.Alert(popup, 'Wrong StoreNo');
+                    //         $scope.Whwh2.StoreNo = '';
+                    //     }
+                    // }
                 });
+            }
+        };
+
+        $scope.enter = function (ev, type) {
+            if (is.equal(ev.keyCode, 13)) {
+                if (is.null(popup)) {
+                    if (is.equal(type, 'StoreNo')) {
+                        $scope.refreshWhwh2('EnterStoreNo', $scope.Whwh2.StoreNo);
+                        $('#txt-StoreNo').select();
+                    } else if (is.equal(type, 'BarCode')) {
+                        $scope.refreshImpm1s('EnterBarCode', $scope.Impm1.UserDefine1);
+                        $('#iCustBatchNo').focus();
+                    }
+                } else {
+                    popup.close();
+                    popup = null;
+                }
+                if (!ENV.fromWeb) {
+                    $cordovaKeyboard.close();
+                }
             }
         };
         $scope.clearInput = function (type) {
             if (is.equal(type, 'WarehouseName')) {
                 $scope.Whwh1.selected = null;
-                $scope.Whwh2.selected = null;
+                $scope.Whwh2.StoreNo = null;
                 $scope.showImpm(null, null);
             } else if (is.equal(type, 'UserDefine1')) {
-                $scope.Impm1.selected = null;
+                $scope.Impm1.UserDefine1 = '';
                 $scope.showImpm(null, null);
             } else if (is.equal(type, 'StoreNo')) {
-                $scope.Whwh2.selected = null;
+                $scope.Whwh2.StoreNo = '';
                 $scope.showImpm(null, null);
             } else if (is.equal(type, 'ProductCode')) {
                 $scope.Impr1.selected = null;
@@ -109,14 +163,23 @@ appControllers.controller('EnquiryListCtrl', [
                 objUri.addSearch('UserDefine1', UserDefine1);
                 ApiService.Get(objUri, false).then(function success(result) {
                     $scope.Impm1s = result.data.results;
-                    if (is.equal(ScanUserDefine1, 'ScanUserDefine1')) {
-                        if ($scope.Impm1s !== null && $scope.Impm1s.length > 0) {
-                            $scope.Impm1.selected = $scope.Impm1s[0];
-                            $scope.showImpm(null, $scope.Impm1.selected);
-                        } else {
-                            $scope.showImpm(null, null);
-                        }
+                    if ($scope.Impm1s.length > 0) {
+                        $scope.Impm1.UserDefine1 = $scope.Impm1s[0].UserDefine1;
+                        $scope.Impm1.TrxNo = $scope.Impm1s[0].TrxNo;
+                        $scope.showImpm(null, $scope.Impm1.UserDefine1);
+                    } else {
+                        $scope.Impm1.UserDefine1 = '';
+                        $scope.showImpm(null, null);
+                        PopupService.Alert(popup, 'Wrong BarCode');
                     }
+                    // if (is.equal(ScanUserDefine1, 'ScanUserDefine1')) {
+                    //     if ($scope.Impm1s !== null && $scope.Impm1s.length > 0) {
+                    //         $scope.Impm1.selected = $scope.Impm1s[0];
+                    //         $scope.showImpm(null, $scope.Impm1.selected);
+                    //     } else {
+                    //         $scope.showImpm(null, null);
+                    //     }
+                    // }
                 });
             } else {
                 $scope.showImpm(null, null);
@@ -154,7 +217,7 @@ appControllers.controller('EnquiryListCtrl', [
             // }
         };
         $scope.showImpmwh = function (WarehouseCode, StoreNo) {
-          $scope.showImpmAll();
+            $scope.showImpmAll();
             // if (is.not.undefined(StoreNo) && is.not.null(StoreNo)) {
             //     var objUri = ApiService.Uri(true, '/api/wms/impm1/enquiry');
             //     objUri.addSearch('WarehouseCode', $scope.Whwh1.selected.WarehouseCode);
@@ -170,17 +233,17 @@ appControllers.controller('EnquiryListCtrl', [
             // }
         };
         $scope.showImpmAll = function () {
-            if ((is.not.undefined($scope.Whwh2.selected) && is.not.null($scope.Whwh2.selected)) || (is.not.undefined($scope.Impr1.selected) && is.not.null($scope.Impr1.selected)) || (is.not.undefined($scope.Impm1.selected) && is.not.null($scope.Impm1.selected))) {
+            if (is.not.empty($scope.Whwh2.StoreNo) || (is.not.undefined($scope.Impr1.selected) && is.not.null($scope.Impr1.selected)) || (is.not.empty($scope.Impm1.UserDefine1))) {
                 var objUri = ApiService.Uri(true, '/api/wms/impm1/enquiry');
-                if (is.not.undefined($scope.Whwh2.selected) && is.not.null($scope.Whwh2.selected)) {
+                if (is.not.undefined($scope.Whwh2.StoreNo) && is.not.null($scope.Whwh2.StoreNo)) {
                     objUri.addSearch('WarehouseCode', $scope.Whwh1.selected.WarehouseCode);
-                    objUri.addSearch('StoreNo', $scope.Whwh2.selected.StoreNo);
+                    objUri.addSearch('StoreNo', $scope.Whwh2.StoreNo);
                 }
                 if (is.not.undefined($scope.Impr1.selected) && is.not.null($scope.Impr1.selected)) {
                     objUri.addSearch('ProductCode', $scope.Impr1.selected.ProductCode);
                 }
-                if (is.not.undefined($scope.Impm1.selected) && is.not.null($scope.Impm1.selected)) {
-                    objUri.addSearch('ProductTrxNo', $scope.Impm1.selected.TrxNo);
+                if (is.not.undefined($scope.Impm1.UserDefine1) && is.not.null($scope.Impm1.UserDefine1)) {
+                    objUri.addSearch('ProductTrxNo', $scope.Impm1.TrxNo);
                 }
                 ApiService.Get(objUri, false).then(function success(result) {
                     $scope.Impm1sEnquiry = result.data.results;

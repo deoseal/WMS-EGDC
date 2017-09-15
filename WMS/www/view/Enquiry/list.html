@@ -7,8 +7,8 @@
         <div>
             <div class="row row-center" id="div-list-whwh">
                 <div class="col col-30" style="text-align:center;">
-               <label  ng-click="openCam('WarehouseName')">Warehouse</label>
-            </div>
+                    <label ng-click="openCam('WarehouseName')">Warehouse</label>
+                </div>
                 <div class="col col-60">
                     <ui-select ng-model="Whwh1.selected" theme="bootstrap" reset-search-input="true">
                         <ui-select-match allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">{{$select.selected.WarehouseName | limitTo:16}}</ui-select-match>
@@ -20,8 +20,38 @@
                 <div class="col col-10">
                     <button class="button button-clear button-positive button-small" ng-click="clearInput('WarehouseName')"><i class="icon ion-android-close"></i></button>
                 </div>
-                </div>
+            </div>
+
             <div class="row row-center" id="div-list-storeno">
+                <div class="col col-30" style="text-align:center;">
+                    <label ng-click="openCam('StoreNo')">Store No</label>
+                </div>
+                <div class="col col-60">
+                    <label class="item item-input">
+                        <input type="text" id="txt-storeno" ng-model="Whwh2.StoreNo" ng-keypress="enter($event, 'StoreNo')" style="padding-right: 14px;">
+                    </label>
+                </div>
+                <div class="col col-10">
+                    <button class="button button-clear button-positive button-small" ng-click="clearInput('StoreNo')"><i class="icon ion-android-close"></i></button>
+                </div>
+            </div>
+
+            <!-- <div class="row">
+                  <div class="col col-80" style="padding:0px;">
+                    <label class="item item-input">
+                      <span class="input-label" style="padding-top:2px; padding-bottom: 2px;">Bar Code&nbsp;&nbsp;:</span>
+                      <input type="text" id="txt-barcode" ng-model="Detail.Scan.BarCode" style="padding-right: 14px;" ng-keypress="enter($event, 'BarCode')" ng-focus="Onfocus('BarCode')">
+                    </label>
+                  </div>
+                  <div class="col col-10">
+                    <button class="button button-clear button-positive button-small" ng-click="openCam('BarCode')"><i class="icon ion-qr-scanner"></i></button>
+                  </div>
+                  <div class="col">
+                    <button class="button button-clear button-positive button-small" ng-click="clearInput('BarCode')"><i class="icon ion-android-close"></i></button>
+                  </div>
+                </div> -->
+
+            <!-- <div class="row row-center" id="div-list-storeno">
                 <div class="col col-30" style="text-align:center;">
             <label  ng-click="openCam('StoreNo')">Store No</label>
             </div>
@@ -36,11 +66,11 @@
                 <div class="col col-10">
                     <button class="button button-clear button-positive button-small" ng-click="clearInput('StoreNo')"><i class="icon ion-android-close"></i></button>
                 </div>
-            </div>
+            </div> -->
             <div class="row row-center" id="div-list-impr">
                 <div class="col col-30" style="text-align:center;">
 
-              <label ng-click="openCam('ProductCode')">Product</label>
+                    <label ng-click="openCam('ProductCode')">Product</label>
                 </div>
                 <div class="col col-60">
                     <ui-select ng-model="Impr1.selected" theme="bootstrap" reset-search-input="true" on-select="showImpm(Impr1.selected.ProductCode,null)">
@@ -59,23 +89,26 @@
             </div>
             <div class="row row-center" id="div-list-impm">
                 <div class="col col-30" style="text-align:center;">
-            <label ng-click="openCam('UserDefine1')">Bar Code</label>
-            </div>
+                    <label ng-click="openCam('UserDefine1')">Bar Code</label>
+                </div>
                 <div class="col col-60">
-                    <ui-select theme="bootstrap" ng-model="Impm1.selected" reset-search-input="true" on-select="showImpm(null,Impm1.selected)" focus-on='SetFocus'>
+                  <label class="item item-input">
+                      <input type="text" id="iCustBatchNo" ng-model="Impm1.UserDefine1" ng-keypress="enter($event, 'BarCode')" style="padding-right: 14px;">
+                  </label>
+                    <!-- <ui-select theme="bootstrap" ng-model="Impm1.selected" reset-search-input="true" on-select="showImpm(null,Impm1.selected)" focus-on='SetFocus'>
                         <ui-select-match id="iCustBatchNo" allow-clear="true" placeholder="Enter to search..." style="overflow:hidden;">
                             {{$select.selected.UserDefine1 | limitTo:16}}
                         </ui-select-match>
                         <ui-select-choices repeat="Impm1 in Impm1s track by $index" refresh="refreshImpm1s(null,$select.search)" refresh-delay="0">
                             <div ng-bind-html="Impm1.UserDefine1 | highlight: $select.search"></div>
                         </ui-select-choices>
-                    </ui-select>
+                    </ui-select> -->
                 </div>
                 <div class="col col-10">
                     <button class="button button-clear button-positive button-small" ng-click="clearInput('UserDefine1')"><i class="icon ion-android-close"></i></button>
                 </div>
 
-              </div>
+            </div>
             <hr style="margin-top:-0.3em;">
         </div>
     </ion-pane>

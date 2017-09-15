@@ -18,6 +18,7 @@ namespace WebApi.ServiceModel.Wms
         public string WarehouseCode { get; set; }
         public string StagingAreaFlag { get; set; }
         public string StoreNo { get; set; }
+        public string  EnquiryFlag { get; set; }
     }
     public class Whwh_Logic
     {
@@ -47,7 +48,14 @@ namespace WebApi.ServiceModel.Wms
                 {
                     if (!string.IsNullOrEmpty(request.StoreNo))
                     {
-                        strSQL = "Select Top 10 * From Whwh2 Where WarehouseCode='" + request.WarehouseCode + "' And StoreNo LIKE '" + request.StoreNo + "%'";
+                        if (request.EnquiryFlag == "Y")
+                        {
+                            strSQL = "Select Top 10 * From Whwh2 Where WarehouseCode='" + request.WarehouseCode + "' And StoreNo = '" + request.StoreNo + "'";
+                        }
+                        else {
+                            strSQL = "Select Top 10 * From Whwh2 Where WarehouseCode='" + request.WarehouseCode + "' And StoreNo LIKE '" + request.StoreNo + "%'";
+                        }
+                       
                     }
                     else if (!string.IsNullOrEmpty(request.StagingAreaFlag))
                     {

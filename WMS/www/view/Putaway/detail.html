@@ -91,7 +91,8 @@
 		</div>
 		</div>
 	</ion-content>
-	<ion-footer-bar class="bar-positive hide-on-keyboard-open">
+		<!-- <ion-footer-bar class="bar-positive hide-on-keyboard-open"> -->
+	<ion-footer-bar class="bar-positive">
 		<div class="button-bar">
 			<button class="button icon ion-android-done" ng-click="checkConfirm()" style="overflow:visible ;">
 				&nbsp;Confirm
@@ -144,10 +145,10 @@
 							<div class="col-67 ">
 								<div class="item-text-wrap ">
 									<!-- <p> -->
-										<input type="text " ng-model="Imgr2.StoreNo " style="padding-right: 14px;" >
-						<!-- </p> -->
-						</div>
-						</div>
+									<input type="text " ng-model="Imgr2.StoreNo " style="padding-right: 14px;">
+									<!-- </p> -->
+								</div>
+							</div>
 						</div>
 						<div class="item item-input ">
 							<div class="col-33 ">
@@ -181,7 +182,7 @@
 								<select ng-model="Imgr2.QtyStatus " ng-options="item for item in StatusAll "></select>
 							</div>
 						</label>
-						</div>
+					</div>
 				</ion-list>
 			</ion-content>
 			<ion-footer-bar class="bar-positive ">
