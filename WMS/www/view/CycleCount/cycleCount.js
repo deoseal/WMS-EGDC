@@ -291,6 +291,7 @@ appControllers.controller('cycleCountDetailCtrl', [
               });
             }
         };
+
         var GetImcc2ProductTrxNo = function (TrxNo) {
             var objUri = ApiService.Uri(true, '/api/wms/imcc2');
             objUri.addSearch('TrxNo', TrxNo);
@@ -300,7 +301,9 @@ appControllers.controller('cycleCountDetailCtrl', [
                     SqlService.Delete('Imcc2_CycleCount').then(function (res) {
                         for (var i = 0; i < $scope.Detail.Imcc2s.length; i++) {
                             var objImcc2 = $scope.Detail.Imcc2s[i];
-                            SqlService.Insert('Imcc2_CycleCount', objImcc2).then();
+                            SqlService.Insert('Imcc2_CycleCount', objImcc2).then(
+
+                            );
                         }
                         showImcc2(0);
                     });
