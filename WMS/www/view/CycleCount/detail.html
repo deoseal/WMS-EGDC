@@ -1,0 +1,96 @@
+<ion-view title="CycleCount-Detail">
+	<ion-header-bar class="bar-positive" align-title="center">
+		<button class="button button-icon icon ion-android-arrow-back" ng-click="returnList()"></button>
+		<div class="h1 title">Cycle Count Detail</div>
+		<!-- <button class="button button-icon icon ion-android-open" ng-click="openModal()"></button> -->
+	</ion-header-bar>
+	<ion-content>
+		<div class="list card">
+			<div class="item" style="padding-top: 6px;padding-bottom: 6px;">
+				<div class="row">
+					<div class="col" style="max-width: 35%;">
+						<h2>Customer&nbsp;:</h2>
+					</div>
+					<div class="col">
+						<h2><span ng-bind="Detail.Customer"></span></h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col" style="max-width: 35%;">
+						<p>TrxNo&nbsp;:</p>
+					</div>
+					<div class="col">
+						<p><span ng-bind="Detail.TrxNo"></span></p>
+					</div>
+				</div>
+			</div>
+			<div class="item item-body" style="padding-top: 6px;padding-bottom: 6px;">
+				<div class="list">
+					<label class="item item-input">
+						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Warehouse Code : <span ng-bind="Detail.Imcc2.WarehouseCode"></span></span>
+					</label>
+					<label class="item item-input">
+						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Store No : <span ng-bind="Detail.Imcc2.StoreNo"></span></span>
+					</label>
+					<label class="item item-input">
+						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Product Code : <span ng-bind="Detail.Imcc2.ProductCode"></span></span>
+					</label>
+					<label class="item item-input">
+						<span class="input-label" style="padding-top:2px; padding-bottom: 2px; font-size: small;">Description : <span ng-bind="Detail.Imcc2.Description"></span></span>
+					</label>
+					<div class="row">
+						<div class="col col-80" style="padding:0px;">
+							<label class="item item-input">
+								<span class="input-label" ng-style="Detail.Imcc2.setColorPacking" style="padding-top:2px; padding-bottom: 2px;">Packing Qty&nbsp;&nbsp;:</span>
+								<input type="number" id="txt-sn" ng-model="Detail.Imcc2.PackingQtyTempValue" style="padding-right: 14px;" ng-keypress="enter($event, 'sn')">
+
+							</label>
+						</div>
+						<div class="col col-20">
+							<span ng-bind="Detail.Imcc2.PackingUomCode"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-80" style="padding:0px;">
+							<label class="item item-input">
+								<span class="input-label" ng-style="Detail.Imcc2.setColorWhole" style="padding-top:2px; padding-bottom: 2px;">Whole Qty&nbsp;&nbsp;:</span>
+								<input type="number" id="txt-sn" ng-model="Detail.Imcc2.WholeQtyTempValue" style="padding-right: 14px;" ng-keypress="enter($event, 'sn')">
+							</label>
+						</div>
+						<div class="col col-20">
+							<span ng-bind="Detail.Imcc2.WholeUomCode"></span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col col-80" style="padding:0px;">
+							<label class="item item-input">
+								<span class="input-label" ng-style="Detail.Imcc2.setColorLoose" style="padding-top:2px; padding-bottom: 2px;">Loose Qty&nbsp;&nbsp;:</span>
+								<input type="number" id="txt-sn" ng-model="Detail.Imcc2.LooseQtyTempValue" style="padding-right: 14px;" ng-keypress="enter($event, 'sn')">
+							</label>
+						</div>
+						<div class="col col-20">
+							<span ng-bind="Detail.Imcc2.LooseUomCode"></span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar class="bar-positive">
+		<div class="button-bar">
+			<button class="button icon ion-android-arrow-dropleft" ng-click="showPrev()">
+				&nbsp;Previous
+			</button>
+			<button class="button icon ion-android-arrow-dropright" ng-show="Detail.blnNext" ng-click="showNext(1)">
+				&nbsp;Next
+			</button>
+			<button class="button icon ion-android-done" ng-show="!Detail.blnNext" ng-click="Confirm()">
+				Confirm
+			</button>
+			<button class="button icon ion-arrow-return-right" ng-click="returnList()">
+				&nbsp;Cancel
+			</button>
+		</div>
+	</ion-footer-bar>
+</ion-view>

@@ -49,7 +49,7 @@ appControllers.controller('GrListCtrl', [
             return moment(utc).format('DD-MMM-YYYY');
         };
         $scope.GoToDetail = function (Imgr1) {
-            if (Imgr1 != null) {
+            if (Imgr1 !== null) {
                 $state.go('grDetail', {
                     'CustomerCode': Imgr1.CustomerCode,
                     'TrxNo': Imgr1.TrxNo,
@@ -244,7 +244,7 @@ appControllers.controller('GrDetailCtrl', [
             SqlService.Update('Imgr2_Receipt', objImgr2, strFilter).then();
             $scope.Detail.Scan.Qty = imgr2.ScanQty;
             $scope.Detail.Scan.SerialNo = '';
-          })
+          });
         };
         var showSn = function (sn) {
             if (is.not.empty(sn)) {
@@ -346,7 +346,7 @@ appControllers.controller('GrDetailCtrl', [
                     SqlService.Update('Imgr2_Receipt', objImgr2_Receipt, Imgr2_ReceiptFilter).then(function (res) {});
                 }
             }
-        }
+        };
 
         $scope.closeModal = function () {
             $scope.updateQtyStatus();
@@ -359,7 +359,7 @@ appControllers.controller('GrDetailCtrl', [
                 $ionicHistory.goBack();
             } else {
                 $state.go('grList', {}, {
-                    reload: true
+                    reload: false
                 });
             }
         };
@@ -399,7 +399,7 @@ appControllers.controller('GrDetailCtrl', [
                                 var OldQty=imgr2.ScanQty;
                                 imgr2.ScanQty = $scope.Detail.Scan.Qty;
                                 var obj = {
-                                    ScanQty:ScanQty+ imgr2.ScanQty- OldQty
+                                    ScanQty: imgr2.ScanQty- OldQty
                                 };
                                 var strFilter = 'TrxNo=' + imgr2.TrxNo + ' And LineItemNo=' + imgr2.LineItemNo;
                                 SqlService.Update('Imgr2_Receipt', obj, strFilter).then();
@@ -576,11 +576,11 @@ appControllers.controller('GrDetailCtrl', [
                     var objUri = ApiService.Uri(true, '/api/wms/imsn1/create');
                     objUri.addSearch('ReceiptNoteNo', $scope.Detail.GRN);
                     objUri.addSearch('ReceiptLineItemNo', imgr2.LineItemNo);
-                    objUri.addSearch('SerialNos=', SerialNos);
+                    objUri.addSearch('SerialNos', SerialNos);
                     objUri.addSearch('Imgr2TrxNo', imgr2.TrxNo);
                     ApiService.Get(objUri, true).then(function success(result) {});
                 }
-                if (imgr2.QtyStatus != null && imgr2.QtyStatus != '' && imgr2.Qty != imgr2.ScanQty) {
+                if (imgr2.QtyStatus !== null && imgr2.QtyStatus !== '' && imgr2.Qty != imgr2.ScanQty) {
                     var objUri = ApiService.Uri(true, '/api/wms/imgr2/qtyremark');
                     objUri.addSearch('LineItemNo', imgr2.LineItemNo);
                     objUri.addSearch('TrxNo', imgr2.TrxNo);

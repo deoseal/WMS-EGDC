@@ -69,7 +69,7 @@ appControllers.controller( 'IndexCtrl', [
             } else {
                 PopupService.Info(popup, 'No Updates!').then();
             }
-        }
+        };
         $rootScope.$on( 'logout', function() {
             $scope.Status.Login = false;
             $ionicSideMenuDelegate.toggleLeft();
@@ -392,6 +392,11 @@ appControllers.controller( 'MainCtrl', [
         };
         $scope.func_Picking = function() {
             $state.go( 'pickingList', {}, {
+                reload: true
+            } );
+        };
+        $scope.func_CycleCount = function() {
+            $state.go( 'cycleCountList', {}, {
                 reload: true
             } );
         };

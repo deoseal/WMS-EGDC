@@ -22,6 +22,16 @@ namespace WebApi.ServiceModel.Tables
         public int PackingPackageSize{ get; set; }
         public int WholePackageSize { get; set; }
         public int BatchLineItemNo { get; set; }
-        public string BatchNo { get; set; }       
+        public string BatchNo { get; set; }
+        public string Description { get; set; }
+        public string ProductCode { get; set; }
+        public string RefNo { get; set; }
+        public int LooseQty { get; set; }
+        public int PackingQty { get; set; }
+        public int WholeQty { get; set; }
+        public string UpdateBy { get; set; }
+        public string CustomerCode { get; set; }
+
+        
     }
 }
